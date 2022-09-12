@@ -1,0 +1,43 @@
+- type: dataType
+  inputs:
+    df_1: t1
+    df_3: t3
+  options:
+    - type: "StringToDate"                                   # 判断使用哪种数据类型
+      params:
+        convert-columns: [ "col1", "col2" ]                  # 需要类型转换的字段
+        column-alias:
+          col1: col1
+          col2: col2
+        dataFormat: "yyyy-MM-dd"
+    - type: "IntToString"
+      params:
+        convert-columns: [ "col3", "col4" ]
+        column-alias:
+          col3: col3
+          col4: col4
+  outputs: [ df_11, df_31 ]
+
+- type: sparkSql
+  inputs:
+    df_11: t11
+  options:
+    params:
+      c1: 1
+    sql: select * from t11 where c1 > ${c1}
+  outputs: [ "df_111" ]
+  repartition:
+    nums: 20                           # 非必填
+    exprs:
+
+- type: pyspark
+  inputs:
+    df_31: t31
+  options:
+    params:
+      c1: 1
+    script: "# coding: UTF-8\n# ……"
+  outputs: [ "df_311" ]
+  repartition:
+    nums: 20                           # 非必填
+    exprs:
