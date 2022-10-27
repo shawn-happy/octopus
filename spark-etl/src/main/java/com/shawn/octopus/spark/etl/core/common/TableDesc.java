@@ -1,12 +1,12 @@
-package com.shawn.octopus.spark.etl.core;
+package com.shawn.octopus.spark.etl.core.common;
 
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class Output {
+public class TableDesc {
 
   private String alias;
-  private List<ColumnAlias> columns;
+  private List<ColumnDesc> columns;
 
   public String getAlias() {
     return alias;
@@ -16,11 +16,11 @@ public class Output {
     this.alias = alias;
   }
 
-  public List<ColumnAlias> getColumns() {
+  public List<ColumnDesc> getColumns() {
     return columns;
   }
 
-  public void setColumns(List<ColumnAlias> columns) {
+  public void setColumns(List<ColumnDesc> columns) {
     this.columns = columns;
   }
 

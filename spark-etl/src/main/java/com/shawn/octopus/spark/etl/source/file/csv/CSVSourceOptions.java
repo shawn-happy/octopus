@@ -1,16 +1,25 @@
-package com.shawn.octopus.spark.etl.source.file;
+package com.shawn.octopus.spark.etl.source.file.csv;
 
-import com.shawn.octopus.spark.etl.core.Format;
-import com.shawn.octopus.spark.etl.core.ReadParseErrorPolicy;
+import static com.shawn.octopus.spark.etl.core.util.ETLUtils.columnDescToSchema;
+
+import com.shawn.octopus.spark.etl.core.common.ColumnDesc;
+import com.shawn.octopus.spark.etl.core.common.TableDesc;
+import com.shawn.octopus.spark.etl.core.enums.ReadParseErrorPolicy;
+import com.shawn.octopus.spark.etl.source.SourceOptions;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.spark.sql.types.StructType;
 
-public class CSVSourceConfig extends FileSourceConfig {
+public class CSVSourceOptions implements SourceOptions {
 
+  private String[] paths;
   private String pathGlobFilter;
   private boolean recursiveFileLookup;
+  private int repartition;
 
   private boolean header;
   private String encoding;
@@ -21,13 +30,27 @@ public class CSVSourceConfig extends FileSourceConfig {
   private ReadParseErrorPolicy parseErrorPolicy;
   private boolean inferSchema;
 
-  public CSVSourceConfig(String[] paths) {
-    super(paths);
+  private List<ColumnDesc> columns;
+  private List<TableDesc> outputs;
+
+  private CSVSourceOptions() {}
+
+  @Override
+  public int getRePartitions() {
+    return repartition;
   }
 
   @Override
-  public String getType() {
-    return Format.csv.name();
+  public List<TableDesc> getOutputs() {
+    return outputs;
+  }
+
+  public String[] getPaths() {
+    return paths;
+  }
+
+  public List<ColumnDesc> getColumns() {
+    return columns;
   }
 
   @Override
@@ -47,12 +70,15 @@ public class CSVSourceConfig extends FileSourceConfig {
     options.put("dateFormat", dateFormat);
     options.put("timestampFormat", dateTimeFormat);
     options.put("mode", parseErrorPolicy.name());
-    options.put("inferSchema", String.valueOf(inferSchema));
+    StructType schema = columnDescToSchema(columns);
+    if (schema == null || schema.isEmpty()) {
+      options.put("inferSchema", String.valueOf(inferSchema));
+    }
     return options;
   }
 
-  public static CSVSourceConfigBuilder builder() {
-    return new CSVSourceConfigBuilder();
+  public static CSVSourceOptionsBuilder builder() {
+    return new CSVSourceOptionsBuilder();
   }
 
   public boolean isHeader() {
@@ -87,10 +113,13 @@ public class CSVSourceConfig extends FileSourceConfig {
     return inferSchema;
   }
 
-  public static class CSVSourceConfigBuilder {
+  public static class CSVSourceOptionsBuilder {
     private String pathGlobFilter;
     private boolean recursiveFileLookup = true;
     private String[] paths;
+    private List<ColumnDesc> schemas;
+    private List<TableDesc> outputs;
+    private int repartition = 0;
 
     private boolean header = true;
     private String encoding = "UTF-8";
@@ -101,64 +130,81 @@ public class CSVSourceConfig extends FileSourceConfig {
     private ReadParseErrorPolicy parseErrorPolicy = ReadParseErrorPolicy.PERMISSIVE;
     private boolean inferSchema = false;
 
-    public CSVSourceConfigBuilder pathGlobFilter(String pathGlobFilter) {
+    public CSVSourceOptionsBuilder pathGlobFilter(String pathGlobFilter) {
       this.pathGlobFilter = pathGlobFilter;
       return this;
     }
 
-    public CSVSourceConfigBuilder recursiveFileLookup(boolean recursiveFileLookup) {
+    public CSVSourceOptionsBuilder recursiveFileLookup(boolean recursiveFileLookup) {
       this.recursiveFileLookup = recursiveFileLookup;
       return this;
     }
 
-    public CSVSourceConfigBuilder paths(String[] paths) {
+    public CSVSourceOptionsBuilder paths(String[] paths) {
       this.paths = paths;
       return this;
     }
 
-    public CSVSourceConfigBuilder header(boolean header) {
+    public CSVSourceOptionsBuilder repartition(int repartition) {
+      this.repartition = repartition;
+      return this;
+    }
+
+    public CSVSourceOptionsBuilder schemas(List<ColumnDesc> schemas) {
+      this.schemas = schemas;
+      return this;
+    }
+
+    public CSVSourceOptionsBuilder outputs(List<TableDesc> outputs) {
+      this.outputs = outputs;
+      return this;
+    }
+
+    public CSVSourceOptionsBuilder header(boolean header) {
       this.header = header;
       return this;
     }
 
-    public CSVSourceConfigBuilder encoding(String encoding) {
+    public CSVSourceOptionsBuilder encoding(String encoding) {
       this.encoding = encoding;
       return this;
     }
 
-    public CSVSourceConfigBuilder nullValue(String nullValue) {
+    public CSVSourceOptionsBuilder nullValue(String nullValue) {
       this.nullValue = nullValue;
       return this;
     }
 
-    public CSVSourceConfigBuilder nanValue(String nanValue) {
+    public CSVSourceOptionsBuilder nanValue(String nanValue) {
       this.nanValue = nanValue;
       return this;
     }
 
-    public CSVSourceConfigBuilder dateFormat(String dateFormat) {
+    public CSVSourceOptionsBuilder dateFormat(String dateFormat) {
       this.dateFormat = dateFormat;
       return this;
     }
 
-    public CSVSourceConfigBuilder dateTimeFormat(String dateTimeFormat) {
+    public CSVSourceOptionsBuilder dateTimeFormat(String dateTimeFormat) {
       this.dateTimeFormat = dateTimeFormat;
       return this;
     }
 
-    public CSVSourceConfigBuilder parseErrorPolicy(ReadParseErrorPolicy parseErrorPolicy) {
+    public CSVSourceOptionsBuilder parseErrorPolicy(ReadParseErrorPolicy parseErrorPolicy) {
       this.parseErrorPolicy = parseErrorPolicy;
       return this;
     }
 
-    public CSVSourceConfigBuilder inferSchema(boolean inferSchema) {
+    public CSVSourceOptionsBuilder inferSchema(boolean inferSchema) {
       this.inferSchema = inferSchema;
       return this;
     }
 
-    public CSVSourceConfig build() {
+    public CSVSourceOptions build() {
       valid();
-      CSVSourceConfig csvFileSourceConfig = new CSVSourceConfig(paths);
+      CSVSourceOptions csvFileSourceConfig = new CSVSourceOptions();
+      csvFileSourceConfig.paths = paths;
+      csvFileSourceConfig.repartition = repartition;
       csvFileSourceConfig.pathGlobFilter = pathGlobFilter;
       csvFileSourceConfig.recursiveFileLookup = recursiveFileLookup;
       csvFileSourceConfig.header = this.header;
@@ -169,12 +215,20 @@ public class CSVSourceConfig extends FileSourceConfig {
       csvFileSourceConfig.dateTimeFormat = this.dateTimeFormat;
       csvFileSourceConfig.parseErrorPolicy = this.parseErrorPolicy;
       csvFileSourceConfig.inferSchema = this.inferSchema;
+      csvFileSourceConfig.outputs = outputs;
+      csvFileSourceConfig.columns = schemas;
       return csvFileSourceConfig;
     }
 
     private void valid() {
       if (ArrayUtils.isEmpty(paths)) {
-        throw new IllegalArgumentException("paths can not be empty");
+        throw new IllegalArgumentException("paths can not be empty or null");
+      }
+      if (CollectionUtils.isEmpty(outputs)) {
+        throw new IllegalArgumentException("outputs can not be empty or null");
+      }
+      if (repartition < 0) {
+        throw new IllegalArgumentException("repartition can not be less than 0");
       }
     }
   }

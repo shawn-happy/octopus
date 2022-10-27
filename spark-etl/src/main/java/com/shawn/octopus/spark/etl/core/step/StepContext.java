@@ -1,4 +1,4 @@
-package com.shawn.octopus.spark.etl.core;
+package com.shawn.octopus.spark.etl.core.step;
 
 import java.util.ArrayList;
 import java.util.HashMap;

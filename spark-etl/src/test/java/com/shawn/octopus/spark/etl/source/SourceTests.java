@@ -1,9 +1,11 @@
 package com.shawn.octopus.spark.etl.source;
 
-import com.shawn.octopus.spark.etl.core.Output;
-import com.shawn.octopus.spark.etl.core.StepContext;
-import com.shawn.octopus.spark.etl.source.file.CSVSource;
-import com.shawn.octopus.spark.etl.source.file.CSVSourceConfig;
+import com.shawn.octopus.spark.etl.core.common.TableDesc;
+import com.shawn.octopus.spark.etl.core.enums.Format;
+import com.shawn.octopus.spark.etl.core.factory.DefaultStepFactory;
+import com.shawn.octopus.spark.etl.core.factory.StepFactory;
+import com.shawn.octopus.spark.etl.core.step.StepContext;
+import com.shawn.octopus.spark.etl.source.file.csv.CSVSourceOptions;
 import java.util.List;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -18,13 +20,20 @@ public class SourceTests {
     try (SparkSession spark =
         SparkSession.builder().appName("spark-etl").master("local[*]").getOrCreate()) {
       StepContext context = new StepContext(spark);
-      CSVSourceConfig csvSourceConfig =
-          CSVSourceConfig.builder().paths(new String[] {path}).header(false).build();
-      Output output = new Output();
+      TableDesc output = new TableDesc();
       output.setAlias("t1");
-      csvSourceConfig.setOutputs(List.of(output));
-      CSVSource source = new CSVSource(context, csvSourceConfig);
-      source.processRow();
+      StepFactory stepFactory = DefaultStepFactory.getStepFactory();
+
+      Source source =
+          stepFactory.createSource(
+              "test-csv",
+              Format.csv,
+              CSVSourceOptions.builder()
+                  .paths(new String[] {path})
+                  .header(false)
+                  .outputs(List.of(output))
+                  .build());
+      source.process(context);
       Dataset<Row> df = context.getDataFrame("t1");
       df.show(10);
     }
