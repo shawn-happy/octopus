@@ -1,8 +1,8 @@
 package com.shawn.octopus.spark.etl.sink;
 
 import com.shawn.octopus.spark.etl.core.api.Step;
-import com.shawn.octopus.spark.etl.core.common.StepType;
 import com.shawn.octopus.spark.etl.core.enums.SinkType;
+import com.shawn.octopus.spark.etl.core.enums.StepType;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 

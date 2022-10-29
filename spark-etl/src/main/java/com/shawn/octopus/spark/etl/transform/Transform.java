@@ -1,7 +1,7 @@
 package com.shawn.octopus.spark.etl.transform;
 
 import com.shawn.octopus.spark.etl.core.api.Step;
-import com.shawn.octopus.spark.etl.core.common.StepType;
+import com.shawn.octopus.spark.etl.core.enums.StepType;
 import com.shawn.octopus.spark.etl.core.enums.TransformType;
 import com.shawn.octopus.spark.etl.core.model.ETLContext;
 import org.apache.spark.sql.Dataset;

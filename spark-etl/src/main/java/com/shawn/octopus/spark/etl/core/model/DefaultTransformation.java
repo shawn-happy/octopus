@@ -33,8 +33,7 @@ public class DefaultTransformation implements Transformation {
     return ImmutableList.copyOf(hops);
   }
 
-  public Operation createOperation(String id) {
-    DefaultOperation operation = new DefaultOperation(id);
+  public Operation createOperation(Operation operation) {
     operations.add(operation);
     return operation;
   }

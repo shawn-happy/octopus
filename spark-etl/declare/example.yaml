@@ -11,14 +11,11 @@ sources:
       dateTimeFormat: "yyyy-MM-dd HH:mm:ss.SSS"           # 非必填，默认 yyyy-MM-dd HH:mm:ss.SSS
       parseErrorPolicy: "PERMISSIVE"                      # 非必填，默认 PERMISSIVE，可选值有【PERMISSIVE，DROPMAL_FORMED，FAILFAST】
       recursiveFileLookup: true                           # 非必填，默认 true
-    outputs:
-      - alias: df_1
-        columns: [ "col_1", "col_2" ]
+    output: df_1
+    repartition: 20
 
 transforms:
   - type: dataType
-    inputs:
-      df_1: t1
     options:
       - type: "StringToDate"                              # 判断使用哪种数据类型
         params:
@@ -31,23 +28,20 @@ transforms:
           convert-columns: [ "col_2" ]
           column-alias:
             col_2: col2
-    outputs: [ df_11 ]
+    outputs: df_11
+    repartition: 20
 
   - type: sparkSql
-    inputs:
-      df_11: t11
     options:
       params:
         c1: 1
       sql: select * from t11 where col1 > ${c1}
-    outputs: [ "df_111" ]
-    repartition:
-      nums: 20                           # 非必填
-      exprs:
+    output: "df_111"
+    repartition: 20                                          # 非必填
 
 sinks:
   - type: csv
-    input: [df_111]
+    input: df_111
     options:
       paths: [/tmp/csv_out]
       header: false              # 非必填，默认 true

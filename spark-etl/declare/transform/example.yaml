@@ -1,7 +1,4 @@
 - type: dataType
-  inputs:
-    df_1: t1
-    df_3: t3
   options:
     - type: "StringToDate"                                   # 判断使用哪种数据类型
       params:
@@ -16,28 +13,21 @@
         column-alias:
           col3: col3
           col4: col4
-  outputs: [ df_11, df_31 ]
+  output: df_11
+  repartition: 20
 
 - type: sparkSql
-  inputs:
-    df_11: t11
   options:
     params:
       c1: 1
-    sql: select * from t11 where c1 > ${c1}
-  outputs: [ "df_111" ]
-  repartition:
-    nums: 20                           # 非必填
-    exprs:
+    sql: select * from t11 where col1 > ${c1}
+  output: "df_111"
+  repartition: 20                                          # 非必填
 
 - type: pyspark
-  inputs:
-    df_31: t31
   options:
     params:
       c1: 1
     script: "# coding: UTF-8\n# ……"
-  outputs: [ "df_311" ]
-  repartition:
-    nums: 20                           # 非必填
-    exprs:
+  output: "df_311"
+  repartition: 20
