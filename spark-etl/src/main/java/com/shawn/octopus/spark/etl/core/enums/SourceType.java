@@ -1,6 +1,6 @@
 package com.shawn.octopus.spark.etl.core.enums;
 
-public enum Format {
+public enum SourceType {
   csv,
   parquet,
   json,

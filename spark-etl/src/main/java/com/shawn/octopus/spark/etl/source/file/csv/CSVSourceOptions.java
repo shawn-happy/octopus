@@ -3,15 +3,14 @@ package com.shawn.octopus.spark.etl.source.file.csv;
 import static com.shawn.octopus.spark.etl.core.util.ETLUtils.columnDescToSchema;
 
 import com.shawn.octopus.spark.etl.core.common.ColumnDesc;
-import com.shawn.octopus.spark.etl.core.common.TableDesc;
 import com.shawn.octopus.spark.etl.core.enums.ReadParseErrorPolicy;
 import com.shawn.octopus.spark.etl.source.SourceOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.sql.types.StructType;
 
 public class CSVSourceOptions implements SourceOptions {
@@ -19,7 +18,7 @@ public class CSVSourceOptions implements SourceOptions {
   private String[] paths;
   private String pathGlobFilter;
   private boolean recursiveFileLookup;
-  private int repartition;
+  private Integer repartition;
 
   private boolean header;
   private String encoding;
@@ -31,18 +30,18 @@ public class CSVSourceOptions implements SourceOptions {
   private boolean inferSchema;
 
   private List<ColumnDesc> columns;
-  private List<TableDesc> outputs;
+  private String output;
 
   private CSVSourceOptions() {}
 
   @Override
-  public int getRePartitions() {
+  public Integer getRePartition() {
     return repartition;
   }
 
   @Override
-  public List<TableDesc> getOutputs() {
-    return outputs;
+  public String output() {
+    return output;
   }
 
   public String[] getPaths() {
@@ -118,8 +117,8 @@ public class CSVSourceOptions implements SourceOptions {
     private boolean recursiveFileLookup = true;
     private String[] paths;
     private List<ColumnDesc> schemas;
-    private List<TableDesc> outputs;
-    private int repartition = 0;
+    private String output;
+    private Integer repartition;
 
     private boolean header = true;
     private String encoding = "UTF-8";
@@ -145,7 +144,7 @@ public class CSVSourceOptions implements SourceOptions {
       return this;
     }
 
-    public CSVSourceOptionsBuilder repartition(int repartition) {
+    public CSVSourceOptionsBuilder repartition(Integer repartition) {
       this.repartition = repartition;
       return this;
     }
@@ -155,8 +154,8 @@ public class CSVSourceOptions implements SourceOptions {
       return this;
     }
 
-    public CSVSourceOptionsBuilder outputs(List<TableDesc> outputs) {
-      this.outputs = outputs;
+    public CSVSourceOptionsBuilder output(String output) {
+      this.output = output;
       return this;
     }
 
@@ -215,7 +214,7 @@ public class CSVSourceOptions implements SourceOptions {
       csvFileSourceConfig.dateTimeFormat = this.dateTimeFormat;
       csvFileSourceConfig.parseErrorPolicy = this.parseErrorPolicy;
       csvFileSourceConfig.inferSchema = this.inferSchema;
-      csvFileSourceConfig.outputs = outputs;
+      csvFileSourceConfig.output = output;
       csvFileSourceConfig.columns = schemas;
       return csvFileSourceConfig;
     }
@@ -224,10 +223,10 @@ public class CSVSourceOptions implements SourceOptions {
       if (ArrayUtils.isEmpty(paths)) {
         throw new IllegalArgumentException("paths can not be empty or null");
       }
-      if (CollectionUtils.isEmpty(outputs)) {
+      if (StringUtils.isEmpty(output)) {
         throw new IllegalArgumentException("outputs can not be empty or null");
       }
-      if (repartition < 0) {
+      if (Objects.nonNull(repartition) && repartition < 0) {
         throw new IllegalArgumentException("repartition can not be less than 0");
       }
     }

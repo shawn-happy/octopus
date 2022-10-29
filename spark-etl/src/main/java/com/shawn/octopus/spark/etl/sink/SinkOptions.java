@@ -1,3 +1,10 @@
 package com.shawn.octopus.spark.etl.sink;
 
-public class SinkOptions {}
+import com.shawn.octopus.spark.etl.core.api.StepConfiguration;
+import com.shawn.octopus.spark.etl.core.enums.WriteMode;
+
+public interface SinkOptions extends StepConfiguration {
+  String input();
+
+  WriteMode getWriteMode();
+}

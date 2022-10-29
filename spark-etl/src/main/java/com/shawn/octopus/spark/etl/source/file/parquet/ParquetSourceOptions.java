@@ -1,35 +1,34 @@
 package com.shawn.octopus.spark.etl.source.file.parquet;
 
 import com.shawn.octopus.spark.etl.core.common.ColumnDesc;
-import com.shawn.octopus.spark.etl.core.common.TableDesc;
 import com.shawn.octopus.spark.etl.source.SourceOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ParquetSourceOptions implements SourceOptions {
 
   private String[] paths;
   private String pathGlobFilter;
   private Boolean recursiveFileLookup = Boolean.TRUE;
-  private int repartition;
+  private Integer repartition;
 
   private List<ColumnDesc> columns;
-  private List<TableDesc> outputs;
+  private String output;
 
   private ParquetSourceOptions() {}
 
   @Override
-  public int getRePartitions() {
+  public Integer getRePartition() {
     return repartition;
   }
 
   @Override
-  public List<TableDesc> getOutputs() {
-    return outputs;
+  public String output() {
+    return output;
   }
 
   public String[] getPaths() {
@@ -60,15 +59,15 @@ public class ParquetSourceOptions implements SourceOptions {
     private boolean recursiveFileLookup = true;
     private String[] paths;
     private List<ColumnDesc> schemas;
-    private List<TableDesc> outputs;
-    private int repartition;
+    private String output;
+    private Integer repartition;
 
     public ParquetSourceOptionsBuilder pathGlobFilter(String pathGlobFilter) {
       this.pathGlobFilter = pathGlobFilter;
       return this;
     }
 
-    public ParquetSourceOptionsBuilder repartition(int repartition) {
+    public ParquetSourceOptionsBuilder repartition(Integer repartition) {
       this.repartition = repartition;
       return this;
     }
@@ -88,8 +87,8 @@ public class ParquetSourceOptions implements SourceOptions {
       return this;
     }
 
-    public ParquetSourceOptionsBuilder outputs(List<TableDesc> outputs) {
-      this.outputs = outputs;
+    public ParquetSourceOptionsBuilder output(String output) {
+      this.output = output;
       return this;
     }
 
@@ -100,7 +99,7 @@ public class ParquetSourceOptions implements SourceOptions {
       parquetSourceOptions.repartition = repartition;
       parquetSourceOptions.pathGlobFilter = pathGlobFilter;
       parquetSourceOptions.recursiveFileLookup = recursiveFileLookup;
-      parquetSourceOptions.outputs = outputs;
+      parquetSourceOptions.output = output;
       parquetSourceOptions.columns = schemas;
       return parquetSourceOptions;
     }
@@ -109,10 +108,10 @@ public class ParquetSourceOptions implements SourceOptions {
       if (ArrayUtils.isEmpty(paths)) {
         throw new IllegalArgumentException("paths can not be empty or null");
       }
-      if (CollectionUtils.isEmpty(outputs)) {
+      if (StringUtils.isEmpty(output)) {
         throw new IllegalArgumentException("outputs can not be empty or null");
       }
-      if (repartition < 0) {
+      if (Objects.nonNull(repartition) && repartition < 0) {
         throw new IllegalArgumentException("repartition can not be less than 0");
       }
     }

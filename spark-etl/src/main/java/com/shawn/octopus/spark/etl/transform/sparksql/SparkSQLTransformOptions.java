@@ -1,19 +1,16 @@
 package com.shawn.octopus.spark.etl.transform.sparksql;
 
-import com.shawn.octopus.spark.etl.core.common.TableDesc;
 import com.shawn.octopus.spark.etl.transform.TransformOptions;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public class SparkSQLTransformOptions implements TransformOptions {
 
-  private List<TableDesc> outputs;
-  private List<TableDesc> inputs;
+  private String output;
   private String sql;
-  private int repartition;
+  private Integer repartition;
 
   private SparkSQLTransformOptions() {}
 
@@ -22,18 +19,13 @@ public class SparkSQLTransformOptions implements TransformOptions {
   }
 
   @Override
-  public int getRePartitions() {
+  public Integer getRePartition() {
     return repartition;
   }
 
   @Override
-  public List<TableDesc> getInputs() {
-    return inputs;
-  }
-
-  @Override
-  public List<TableDesc> getOutputs() {
-    return inputs;
+  public String output() {
+    return output;
   }
 
   @Override
@@ -49,18 +41,12 @@ public class SparkSQLTransformOptions implements TransformOptions {
   }
 
   public static class SparkSQLTransformOptionsBuilder {
-    private List<TableDesc> outputs;
-    private List<TableDesc> inputs;
+    private String output;
     private String sql;
-    private int repartition;
+    private Integer repartition;
 
-    public SparkSQLTransformOptionsBuilder outputs(List<TableDesc> outputs) {
-      this.outputs = outputs;
-      return this;
-    }
-
-    public SparkSQLTransformOptionsBuilder inputs(List<TableDesc> inputs) {
-      this.inputs = inputs;
+    public SparkSQLTransformOptionsBuilder output(String output) {
+      this.output = output;
       return this;
     }
 
@@ -69,7 +55,7 @@ public class SparkSQLTransformOptions implements TransformOptions {
       return this;
     }
 
-    public SparkSQLTransformOptionsBuilder repartition(int repartition) {
+    public SparkSQLTransformOptionsBuilder repartition(Integer repartition) {
       this.repartition = repartition;
       return this;
     }
@@ -77,24 +63,20 @@ public class SparkSQLTransformOptions implements TransformOptions {
     public SparkSQLTransformOptions build() {
       valid();
       SparkSQLTransformOptions options = new SparkSQLTransformOptions();
-      options.inputs = this.inputs;
-      options.outputs = this.outputs;
+      options.output = this.output;
       options.sql = this.sql;
       options.repartition = this.repartition;
       return options;
     }
 
     private void valid() {
-      if (CollectionUtils.isEmpty(inputs)) {
-        throw new IllegalArgumentException("transform must have input data");
-      }
-      if (CollectionUtils.isEmpty(outputs)) {
+      if (StringUtils.isEmpty(output)) {
         throw new IllegalArgumentException("transform must have output data");
       }
       if (StringUtils.isBlank(sql)) {
         throw new IllegalArgumentException("transform must have sql");
       }
-      if (repartition < 0) {
+      if (Objects.nonNull(repartition) && repartition < 0) {
         throw new IllegalArgumentException("repartition can not be less than 0");
       }
     }

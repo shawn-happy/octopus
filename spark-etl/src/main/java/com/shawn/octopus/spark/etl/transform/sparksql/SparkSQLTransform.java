@@ -1,41 +1,27 @@
 package com.shawn.octopus.spark.etl.transform.sparksql;
 
-import com.shawn.octopus.spark.etl.core.step.StepContext;
-import com.shawn.octopus.spark.etl.transform.Transform;
+import com.shawn.octopus.spark.etl.core.enums.TransformType;
+import com.shawn.octopus.spark.etl.core.model.ETLContext;
+import com.shawn.octopus.spark.etl.transform.BaseTransform;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-public class SparkSQLTransform implements Transform {
-
-  private final String name;
-  private final SparkSQLTransformOptions options;
+public class SparkSQLTransform extends BaseTransform {
 
   public SparkSQLTransform(String name, SparkSQLTransformOptions options) {
-    this.name = name;
-    this.options = options;
+    super(name, options);
   }
 
   @Override
-  public String getName() {
-    return name;
+  public TransformType getTransformType() {
+    return TransformType.SPARK_SQL;
   }
 
   @Override
-  public void process(StepContext context) {
+  public Dataset<Row> trans(ETLContext context) {
     SparkSession sparkSession = context.getSparkSession();
-    SparkSQLTransformOptions config = getConfig();
-    Dataset<Row> sql = sparkSession.sql(config.getSql());
-    context.setDataFrame("", sql);
-  }
-
-  @Override
-  public SparkSQLTransformOptions getConfig() {
-    return options;
-  }
-
-  @Override
-  public Dataset<Row> processRow() {
-    return null;
+    SparkSQLTransformOptions config = (SparkSQLTransformOptions) getConfig();
+    return sparkSession.sql(config.getSql());
   }
 }

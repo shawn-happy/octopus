@@ -1,4 +1,4 @@
-package com.shawn.octopus.spark.etl.core.step;
+package com.shawn.octopus.spark.etl.core.common;
 
 public enum StepType {
   Source,

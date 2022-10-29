@@ -2,8 +2,8 @@ package com.shawn.octopus.spark.etl.source.file.csv;
 
 import static com.shawn.octopus.spark.etl.core.util.ETLUtils.columnDescToSchema;
 
-import com.shawn.octopus.spark.etl.core.enums.Format;
-import com.shawn.octopus.spark.etl.core.step.StepContext;
+import com.shawn.octopus.spark.etl.core.enums.SourceType;
+import com.shawn.octopus.spark.etl.core.model.ETLContext;
 import com.shawn.octopus.spark.etl.source.BaseSource;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
@@ -18,17 +18,12 @@ public class CSVSource extends BaseSource {
   }
 
   @Override
-  public Format getFormat() {
-    return Format.csv;
+  public SourceType getFormat() {
+    return SourceType.csv;
   }
 
   @Override
-  public String getName() {
-    return null;
-  }
-
-  @Override
-  public Dataset<Row> read(StepContext context) {
+  public Dataset<Row> read(ETLContext context) {
     SparkSession spark = context.getSparkSession();
     CSVSourceOptions config = (CSVSourceOptions) getConfig();
     StructType schema = columnDescToSchema(config.getColumns());

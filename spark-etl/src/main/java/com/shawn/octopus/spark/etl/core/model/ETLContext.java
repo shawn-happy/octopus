@@ -1,4 +1,4 @@
-package com.shawn.octopus.spark.etl.core.step;
+package com.shawn.octopus.spark.etl.core.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,13 +8,13 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-public class StepContext {
+public class ETLContext {
 
   private final SparkSession session;
   private final List<String> dfNames;
   private final Map<String, Dataset<Row>> dfs;
 
-  public StepContext(SparkSession session) {
+  public ETLContext(SparkSession session) {
     this.session = session;
     this.dfNames = new ArrayList<>();
     this.dfs = new HashMap<>();
@@ -32,6 +32,7 @@ public class StepContext {
     dfs.put(name, df);
     if (!dfNames.contains(name)) {
       dfNames.add(name);
+      df.createOrReplaceTempView(name);
     }
   }
 }

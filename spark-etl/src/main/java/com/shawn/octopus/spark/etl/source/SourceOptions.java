@@ -1,14 +1,9 @@
 package com.shawn.octopus.spark.etl.source;
 
-import com.shawn.octopus.spark.etl.core.common.TableDesc;
-import com.shawn.octopus.spark.etl.core.step.StepConfiguration;
-import java.util.List;
+import com.shawn.octopus.spark.etl.core.api.StepConfiguration;
 
 public interface SourceOptions extends StepConfiguration {
+  Integer getRePartition();
 
-  /** Source的输入为空 */
-  @Override
-  default List<TableDesc> getInputs() {
-    return null;
-  }
+  String output();
 }
