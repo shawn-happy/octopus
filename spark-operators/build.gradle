@@ -1,0 +1,108 @@
+buildscript {
+    dependencies {
+        classpath('com.google.cloud.tools:jib-layer-filter-extension-gradle:0.1.0')
+    }
+}
+
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'maven-publish'
+    id 'base'
+    id 'net.nemerosa.versioning'
+    id 'com.diffplug.spotless'
+    id 'com.google.cloud.tools.jib'
+}
+
+ext {
+    mysqlConnectorVersion = '8.0.21'
+    lombokVersion = '1.18.10'
+    junitVersion = '5.7.0'
+    jacksonVersion = '2.12.5'
+    icebergVersion = '0.14.1'
+    sparkVersion = '3.2.2'
+    aviatorVersion = '5.3.2'
+    commonCollections4Version = '4.4'
+    commonLang3Version = '3.12.0'
+
+    libs_commonCollections4 = [group: 'org.apache.commons', name: 'commons-collections4', version: commonCollections4Version]
+    libs_commonLang3 = [group: 'org.apache.commons', name: 'commons-lang3', version: commonLang3Version]
+
+    libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
+    libs_junitJupiterApi = [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion]
+    libs_junitJupiterEngine = [group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion]
+
+    libs_mysqlConnector = [group: 'mysql', name: 'mysql-connector-java', version: mysqlConnectorVersion]
+    libs_jacksonDataformatYaml = [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion]
+    libs_aviator = [group: 'com.googlecode.aviator', name: 'aviator', version: aviatorVersion]
+
+    libs_icebergSparkRuntime = [group: 'org.apache.iceberg', name: 'iceberg-spark-runtime-3.2_2.12', version: icebergVersion]
+    libs_sparkSql = [group: 'org.apache.spark', name: 'spark-sql_2.12', version: sparkVersion]
+    libs_sparkGraphx = [group: 'org.apache.spark', name: 'spark-graphx_2.12', version: sparkVersion]
+
+    coverageExclusions = [
+            '**/Proto*.java',
+            '**/**Proto.java',
+            '**/**VM.java',
+            '**/dto/**.java',
+            '**/domain/**.java',
+            '**/enums/**.java',
+            '**/**Controller.java',
+            '**/**Repository.java'
+    ]
+}
+
+allprojects {
+    group 'com.shawn.octopus.spark.operators'
+
+    versioning {
+        branchEnv = ['CI_COMMIT_REF_NAME', 'GIT_BRANCH', 'BRANCH_NAME']
+    }
+    version = versioning.info.full
+}
+
+subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'java-library'
+    apply plugin: 'com.diffplug.spotless'
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    java {
+        withSourcesJar()
+    }
+
+    repositories {
+        maven {
+            name 'jitpack.io'
+            url 'https://jitpack.io'
+        }
+        mavenCentral()
+        mavenLocal()
+    }
+
+//    def publishingFile = rootProject.projectDir.path + '/publish.gradle'
+//    apply from: publishingFile
+
+    test {
+        useJUnitPlatform()
+    }
+
+    spotless {
+        java {
+            importOrder()
+            removeUnusedImports()
+            toggleOffOn("@formatter:off", "@formatter:on")
+            googleJavaFormat('1.7')
+            target '**/*.java'
+        }
+    }
+
+}
+
+wrapper {
+    gradleVersion = '7.5'
+}
+
+tasks.jib.enabled = false

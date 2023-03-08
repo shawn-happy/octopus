@@ -1,0 +1,13 @@
+pluginManagement {
+    plugins {
+        id 'net.nemerosa.versioning' version '2.15.0'
+        id 'com.diffplug.spotless' version '5.6.1'
+        id 'com.google.cloud.tools.jib' version '3.1.4'
+    }
+
+}
+
+rootProject.name = 'spark-operators'
+include 'common'
+include 'etl'
+

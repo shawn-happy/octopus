@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group 'com.shawn.octopus.spark.operators'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs_jacksonDataformatYaml
+    implementation libs_commonCollections4
+    implementation libs_commonLang3
+
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
+
+    testImplementation libs_junitJupiterApi
+    testRuntimeOnly libs_junitJupiterEngine
+}
+
+test {
+    useJUnitPlatform()
+}

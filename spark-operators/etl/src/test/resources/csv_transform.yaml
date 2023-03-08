@@ -1,0 +1,7 @@
+type: sparkSQL
+options:
+  output: transform-output
+  input:
+    input_1: input_1
+    input_2: input_2
+  sql: select * from input_2

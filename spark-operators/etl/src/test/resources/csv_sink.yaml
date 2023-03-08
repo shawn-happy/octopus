@@ -1,0 +1,4 @@
+type: csv
+options:
+  path: path
+  input: csv-input
