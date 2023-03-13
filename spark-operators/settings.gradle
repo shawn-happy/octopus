@@ -10,4 +10,6 @@ pluginManagement {
 rootProject.name = 'spark-operators'
 include 'common'
 include 'etl'
+include 'data-quality'
+include 'report'
 

@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group 'com.shawn.octopus.spark.operators'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':etl')
+
+    compileOnly libs_icebergSparkRuntime
+    compileOnly libs_sparkSql
+    implementation libs_jacksonDataformatYaml
+    implementation libs_aviator
+    implementation(libs_sparkGraphx) {
+        exclude group: 'org.apache.spark', module: 'spark-core_2.12'
+        exclude group: 'org.apache.spark', module: 'spark-tags_2.12'
+        exclude group: 'org.spark-project.spark', module: 'unused'
+        exclude group: 'org.apache.xbean', module: 'xbean-asm9-shaded'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
+
+    testImplementation libs_icebergSparkRuntime
+    testImplementation libs_sparkSql
+    testImplementation libs_junitJupiterApi
+    testRuntimeOnly libs_junitJupiterEngine
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -50,6 +50,16 @@ public class Executor {
             .master("local[2]")
             .getOrCreate()) {
       ETLDeclare config = ETLUtils.getConfig(configPath, ETLDeclare.class);
+      if (config.getSparkConf() != null) {
+        for (Map.Entry<String, String> kv : config.getSparkConf().entrySet()) {
+          if (spark.conf().isModifiable(kv.getKey())) {
+            spark.conf().set(kv.getKey(), kv.getValue());
+          } else {
+            log.warn("spark conf [{}] can not set runtime.", kv.getKey());
+          }
+        }
+      }
+
       if (config.getParams() != null) {
         for (Map.Entry<String, String> kv : config.getParams().entrySet()) {
           spark.sql("set " + kv.getKey() + "=" + kv.getValue());

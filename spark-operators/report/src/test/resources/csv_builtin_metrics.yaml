@@ -1,0 +1,34 @@
+sources:
+  - type: csv
+    options:
+      paths:
+        - /Users/shaoshuai/dev/workspace/my-project/octopus/spark-operators/report/src/test/resources/user.csv
+      schemas:
+        - name: id
+          alias: id
+          type: Integer
+          nullable: false
+          primaryKey: true
+        - name: name
+          alias: name
+          type: String
+          nullable: true
+          primaryKey: false
+        - name: createTime
+          alias: create_time
+          type: Timestamp
+          nullable: false
+          primaryKey: false
+      header: true
+      output: user
+
+transforms:
+  - type: metrics
+    metricsType: builtin
+    name: max_id
+    options:
+      output: max_user_id
+      input:
+        user: user_1
+      columns: ["id"]
+      opType: max
