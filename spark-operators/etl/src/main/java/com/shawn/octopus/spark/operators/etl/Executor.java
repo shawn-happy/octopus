@@ -13,6 +13,7 @@ import com.shawn.octopus.spark.operators.common.declare.source.SourceOptions;
 import com.shawn.octopus.spark.operators.common.declare.transform.SparkSQLTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.TransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.TransformOptions;
+import com.shawn.octopus.spark.operators.common.exception.SparkRuntimeException;
 import com.shawn.octopus.spark.operators.etl.sink.CSVSink;
 import com.shawn.octopus.spark.operators.etl.sink.Sink;
 import com.shawn.octopus.spark.operators.etl.source.CSVSource;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.Dataset;
@@ -37,19 +39,23 @@ public class Executor {
   public static void main(String[] args) throws Exception {
     Executor executor = new Executor();
     Logger.getLogger("org.apache.iceberg.hadoop").setLevel(Level.ERROR);
-    executor.run(args[0]);
+    if (ArrayUtils.isEmpty(args)) {
+      throw new SparkRuntimeException("spark runtime args must not be empty or null");
+    }
+    boolean enableLocal = true;
+    boolean enableHive = false;
+    if (args.length == 2) {
+      enableLocal = Boolean.parseBoolean(args[1]);
+    } else if (args.length > 2) {
+      enableLocal = Boolean.parseBoolean(args[1]);
+      enableHive = Boolean.parseBoolean(args[2]);
+    }
+    executor.run(args[0], enableLocal, enableHive);
   }
 
-  public void run(String configPath) throws Exception {
-    try (SparkSession spark =
-        SparkSession.builder()
-            //            .enableHiveSupport()
-            //            .config("hive.exec.dynamic.partition", "true")
-            //            .config("hive.exec.dynamic.partition.mode", "nonstrict")
-            .appName("local-test")
-            .master("local[2]")
-            .getOrCreate()) {
-      ETLDeclare config = ETLUtils.getConfig(configPath, ETLDeclare.class);
+  public void run(String configPath, boolean enableLocal, boolean enableHive) throws Exception {
+    try (SparkSession spark = SparkOperatorUtils.createSparkSession(enableLocal, enableHive)) {
+      ETLDeclare config = SparkOperatorUtils.getConfig(configPath, ETLDeclare.class);
       if (config.getSparkConf() != null) {
         for (Map.Entry<String, String> kv : config.getSparkConf().entrySet()) {
           if (spark.conf().isModifiable(kv.getKey())) {

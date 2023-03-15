@@ -2,15 +2,13 @@ package com.shawn.octopus.spark.operators.common.declare.transform.metrics;
 
 import com.shawn.octopus.spark.operators.common.SupportedTransformType;
 import com.shawn.octopus.spark.operators.common.declare.transform.TransformOptions;
-import com.shawn.octopus.spark.operators.common.declare.transform.metrics.BuiltinMetricsTransformDeclare.BuiltinMetricsTransformOptions;
-import java.util.List;
+import com.shawn.octopus.spark.operators.common.declare.transform.metrics.CustomMetricsTransformDeclare.CustomMetricsTransformOptions;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,24 +16,23 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BuiltinMetricsTransformDeclare
-    implements MetricsTransformDeclare<BuiltinMetricsTransformOptions> {
+public class CustomMetricsTransformDeclare
+    implements MetricsTransformDeclare<CustomMetricsTransformOptions> {
 
-  @Default private final MetricsType metricsType = MetricsType.builtin;
+  @Default private final MetricsType metricsType = MetricsType.custom;
   @Default private final SupportedTransformType type = SupportedTransformType.metrics;
-  private BuiltinMetricsTransformOptions options;
+  private CustomMetricsTransformOptions options;
   private String name;
 
   @Builder
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class BuiltinMetricsTransformOptions implements TransformOptions {
+  public static class CustomMetricsTransformOptions implements TransformOptions {
     private Map<String, String> input;
     private String output;
     private Integer repartition;
-    private List<String> columns;
-    private BuiltinMetricsOpType opType;
+    private String sql;
 
     @Override
     public Map<String, String> getOptions() {
@@ -51,9 +48,9 @@ public class BuiltinMetricsTransformDeclare
         throw new IllegalArgumentException(
             "output can not be empty or null in transform operators");
       }
-      if (CollectionUtils.isEmpty(columns)) {
+      if (StringUtils.isEmpty(sql)) {
         throw new IllegalArgumentException(
-            "columns can not be empty or null in builtin metrics operators");
+            "sql can not be empty or null in custom metrics operators");
       }
     }
   }

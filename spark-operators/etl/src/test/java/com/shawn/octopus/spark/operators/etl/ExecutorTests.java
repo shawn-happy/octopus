@@ -9,6 +9,6 @@ public class ExecutorTests {
     String path =
         Thread.currentThread().getContextClassLoader().getResource("csv_executor.yaml").getPath();
     Executor executor = new Executor();
-    executor.run(path);
+    executor.run(path, true, false);
   }
 }

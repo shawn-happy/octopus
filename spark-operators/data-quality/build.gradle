@@ -9,7 +9,9 @@ repositories {
 }
 
 dependencies {
+    implementation project(':common')
     implementation project(':etl')
+    implementation project(':report')
 
     compileOnly libs_icebergSparkRuntime
     compileOnly libs_sparkSql

@@ -4,5 +4,7 @@ public enum SupportedTransformType {
   sparkSQL,
   pySpark,
   metrics,
+  check,
+  postProcess,
   ;
 }

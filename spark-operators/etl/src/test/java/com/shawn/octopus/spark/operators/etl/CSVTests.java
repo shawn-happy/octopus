@@ -18,7 +18,7 @@ public class CSVTests {
   public void testCSVSource() {
     String path =
         Thread.currentThread().getContextClassLoader().getResource("csv_source.yaml").getPath();
-    CSVSourceDeclare config = ETLUtils.getConfig(path, CSVSourceDeclare.class);
+    CSVSourceDeclare config = SparkOperatorUtils.getConfig(path, CSVSourceDeclare.class);
     Assertions.assertNotNull(config);
     CSVSourceOptions sourceOptions = config.getOptions();
     Assertions.assertNotNull(sourceOptions);
@@ -33,7 +33,7 @@ public class CSVTests {
   public void testCSVSink() {
     String path =
         Thread.currentThread().getContextClassLoader().getResource("csv_sink.yaml").getPath();
-    CSVSinkDeclare config = ETLUtils.getConfig(path, CSVSinkDeclare.class);
+    CSVSinkDeclare config = SparkOperatorUtils.getConfig(path, CSVSinkDeclare.class);
     Assertions.assertNotNull(config);
     CSVSinkOptions csvSinkOptions = config.getOptions();
     Assertions.assertNotNull(csvSinkOptions);
@@ -45,7 +45,8 @@ public class CSVTests {
   public void testCSVTransform() {
     String path =
         Thread.currentThread().getContextClassLoader().getResource("csv_transform.yaml").getPath();
-    SparkSQLTransformDeclare config = ETLUtils.getConfig(path, SparkSQLTransformDeclare.class);
+    SparkSQLTransformDeclare config =
+        SparkOperatorUtils.getConfig(path, SparkSQLTransformDeclare.class);
     Assertions.assertNotNull(config);
     SparkSQLTransformOptions options = config.getOptions();
     Assertions.assertNotNull(options);

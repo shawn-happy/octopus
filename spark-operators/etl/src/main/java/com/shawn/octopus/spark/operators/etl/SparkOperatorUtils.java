@@ -12,11 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;
 
 @Slf4j
-public class ETLUtils {
+public class SparkOperatorUtils {
 
   private static final Map<String, DataType> JDBC_DATA_TYPES = new HashMap<>();
   private static final ObjectMapper objectMapperYaml =
@@ -58,5 +59,30 @@ public class ETLUtils {
       log.error("load config yaml error", e);
       throw new RuntimeException("load config yaml error", e);
     }
+  }
+
+  public static SparkSession createSparkSession(boolean enableLocal, boolean enableHive) {
+    SparkSession session = SparkSession.builder().getOrCreate();
+    if (enableLocal && enableHive) {
+      if (enableHive) {
+        session =
+            SparkSession.builder()
+                .master("local")
+                .enableHiveSupport()
+                .config("hive.exec.dynamic.partition", "true")
+                .config("hive.exec.dynamic.partition.mode", "nonstrict")
+                .getOrCreate();
+      } else {
+        session = SparkSession.builder().master("local").getOrCreate();
+      }
+    } else if (enableHive) {
+      session =
+          SparkSession.builder()
+              .enableHiveSupport()
+              .config("hive.exec.dynamic.partition", "true")
+              .config("hive.exec.dynamic.partition.mode", "nonstrict")
+              .getOrCreate();
+    }
+    return session;
   }
 }

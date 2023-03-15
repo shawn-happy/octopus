@@ -1,17 +1,26 @@
-package com.shawn.octopus.spark.operators.report;
+package com.shawn.octopus.spark.operators.data.quality;
 
 import com.shawn.octopus.spark.operators.common.SupportedSourceType;
-import com.shawn.octopus.spark.operators.common.declare.ReportDeclare;
+import com.shawn.octopus.spark.operators.common.declare.DataQualityDeclare;
 import com.shawn.octopus.spark.operators.common.declare.source.CSVSourceDeclare;
 import com.shawn.octopus.spark.operators.common.declare.source.SourceDeclare;
 import com.shawn.octopus.spark.operators.common.declare.source.SourceOptions;
 import com.shawn.octopus.spark.operators.common.declare.transform.TransformOptions;
+import com.shawn.octopus.spark.operators.common.declare.transform.check.CheckTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.BuiltinMetricsTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.CustomMetricsTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.ExpressionMetricsTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.MetricsTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.MetricsType;
+import com.shawn.octopus.spark.operators.common.declare.transform.postprocess.CorrectionPostProcessDeclare;
+import com.shawn.octopus.spark.operators.common.declare.transform.postprocess.PostProcessTransformDeclare;
+import com.shawn.octopus.spark.operators.common.declare.transform.postprocess.PostProcessType;
 import com.shawn.octopus.spark.operators.common.exception.SparkRuntimeException;
+import com.shawn.octopus.spark.operators.data.quality.check.Check;
+import com.shawn.octopus.spark.operators.data.quality.check.CheckResult;
+import com.shawn.octopus.spark.operators.data.quality.check.ExpressionCheck;
+import com.shawn.octopus.spark.operators.data.quality.postProcess.CorrectionPostProcess;
+import com.shawn.octopus.spark.operators.data.quality.postProcess.PostProcess;
 import com.shawn.octopus.spark.operators.etl.SparkOperatorUtils;
 import com.shawn.octopus.spark.operators.etl.source.CSVSource;
 import com.shawn.octopus.spark.operators.etl.source.Source;
@@ -28,9 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -40,29 +47,16 @@ public class Executor {
 
   private final transient Map<String, Dataset<Row>> dataframes = new HashMap<>();
   private final transient Map<String, Object> metricsResults = new HashMap<>();
+  private final transient Map<String, CheckResult> checkResults = new HashMap<>();
+  private final transient Map<String, String> sources = new HashMap<>();
 
-  public static void main(String[] args) throws Exception {
-    Executor executor = new Executor();
-    Logger.getLogger("org.apache.iceberg.hadoop").setLevel(Level.ERROR);
-    if (ArrayUtils.isEmpty(args)) {
-      throw new SparkRuntimeException("spark runtime args must not be empty or null");
-    }
-    boolean enableLocal = true;
-    boolean enableHive = false;
-    if (args.length == 2) {
-      enableLocal = Boolean.parseBoolean(args[1]);
-    } else if (args.length > 2) {
-      enableLocal = Boolean.parseBoolean(args[1]);
-      enableHive = Boolean.parseBoolean(args[2]);
-    }
-    executor.run(args[0], enableLocal, enableHive);
-  }
+  public static void main(String[] args) {}
 
   public void run(String path, boolean enableLocal, boolean enableHive) throws Exception {
     Loader loader = new DefaultLoader(OpRegistry.OP_REGISTRY);
     loader.init();
     try (SparkSession spark = SparkOperatorUtils.createSparkSession(enableLocal, enableHive)) {
-      ReportDeclare config = SparkOperatorUtils.getConfig(path, ReportDeclare.class);
+      DataQualityDeclare config = SparkOperatorUtils.getConfig(path, DataQualityDeclare.class);
       if (config.getSparkConf() != null) {
         for (Map.Entry<String, String> kv : config.getSparkConf().entrySet()) {
           if (spark.conf().isModifiable(kv.getKey())) {
@@ -98,7 +92,10 @@ public class Executor {
           df = df.repartition(repartition);
         }
         dataframes.put(sourceOptions.getOutput(), df);
+        // TODO: FOR TEST
+        sources.put(sourceOptions.getOutput(), sourceOptions.getOutput());
       }
+
       List<MetricsTransformDeclare<?>> metricsList = config.getMetrics();
       for (MetricsTransformDeclare<? extends TransformOptions> metricDeclare : metricsList) {
         MetricsType metricsType = metricDeclare.getMetricsType();
@@ -171,6 +168,47 @@ public class Executor {
         }
       }
       log.info("metrics results: {}", metricsResults);
+
+      List<CheckTransformDeclare> checkDeclares = config.getChecks();
+      for (CheckTransformDeclare checkDeclare : checkDeclares) {
+        Check<CheckTransformDeclare> check = new ExpressionCheck(checkDeclare);
+        Map<String, Object> inputMetrics = new LinkedHashMap<>();
+        checkDeclare
+            .getOptions()
+            .getInput()
+            .forEach(
+                (k, v) -> {
+                  if (!metricsResults.containsKey(k)) {
+                    log.error("input metric [{}] not found.", k);
+                    throw new RuntimeException("input metric not found.");
+                  }
+                  inputMetrics.put(k, metricsResults.get(k));
+                });
+        checkResults.put(
+            checkDeclare.getName(),
+            CheckResult.builder()
+                .pass(check.check(spark, inputMetrics))
+                .level(checkDeclare.getOptions().getLevel())
+                .build());
+      }
+
+      List<PostProcessTransformDeclare<?>> postProcesses = config.getPostProcesses();
+      if (CollectionUtils.isNotEmpty(postProcesses)) {
+        for (PostProcessTransformDeclare<?> postProcessDeclare : postProcesses) {
+          PostProcessType postProcessType = postProcessDeclare.getPostProcessType();
+          PostProcess<?> postProcess = null;
+          switch (postProcessType) {
+            case correction:
+              CorrectionPostProcessDeclare correctionPostProcessDeclare =
+                  (CorrectionPostProcessDeclare) postProcessDeclare;
+              postProcess = new CorrectionPostProcess(correctionPostProcessDeclare, sources);
+              break;
+            default:
+              throw new SparkRuntimeException("unsupported post process type: " + postProcessType);
+          }
+          postProcess.process(spark, checkResults);
+        }
+      }
     }
   }
 }

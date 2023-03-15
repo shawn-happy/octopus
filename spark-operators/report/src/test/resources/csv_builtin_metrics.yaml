@@ -22,7 +22,7 @@ sources:
       header: true
       output: user
 
-transforms:
+metrics:
   - type: metrics
     metricsType: builtin
     name: max_id

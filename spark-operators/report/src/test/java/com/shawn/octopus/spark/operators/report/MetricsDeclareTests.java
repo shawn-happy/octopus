@@ -3,7 +3,7 @@ package com.shawn.octopus.spark.operators.report;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.BuiltinMetricsOpType;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.BuiltinMetricsTransformDeclare;
 import com.shawn.octopus.spark.operators.common.declare.transform.metrics.BuiltinMetricsTransformDeclare.BuiltinMetricsTransformOptions;
-import com.shawn.octopus.spark.operators.etl.ETLUtils;
+import com.shawn.octopus.spark.operators.etl.SparkOperatorUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ public class MetricsDeclareTests {
             .getResource("builtin_metrics.yaml")
             .getPath();
     BuiltinMetricsTransformDeclare config =
-        ETLUtils.getConfig(path, BuiltinMetricsTransformDeclare.class);
+        SparkOperatorUtils.getConfig(path, BuiltinMetricsTransformDeclare.class);
     Assertions.assertNotNull(config);
     BuiltinMetricsTransformOptions options = config.getOptions();
     Assertions.assertNotNull(options);

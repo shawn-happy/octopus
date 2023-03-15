@@ -12,6 +12,6 @@ public class ExecutorTests {
             .getResource("csv_builtin_metrics.yaml")
             .getPath();
     Executor executor = new Executor();
-    executor.run(path);
+    executor.run(path, true, false);
   }
 }

@@ -3,7 +3,7 @@ package com.shawn.octopus.spark.operators.etl.source;
 import com.shawn.octopus.spark.operators.common.ColumnDesc;
 import com.shawn.octopus.spark.operators.common.declare.source.CSVSourceDeclare;
 import com.shawn.octopus.spark.operators.common.declare.source.CSVSourceDeclare.CSVSourceOptions;
-import com.shawn.octopus.spark.operators.etl.ETLUtils;
+import com.shawn.octopus.spark.operators.etl.SparkOperatorUtils;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,7 +51,7 @@ public class CSVSource extends BaseSource<CSVSourceDeclare> {
       structFields[i] =
           new StructField(
               schemaTerm.getName(),
-              ETLUtils.toDataTypes(schemaTerm.getType().name()),
+              SparkOperatorUtils.toDataTypes(schemaTerm.getType().name()),
               schemaTerm.isNullable(),
               Metadata.empty());
     }

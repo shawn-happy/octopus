@@ -8,6 +8,8 @@ import com.shawn.octopus.spark.operators.common.declare.transform.TransformOptio
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "metricsType")
 @JsonSubTypes({
   @JsonSubTypes.Type(value = BuiltinMetricsTransformDeclare.class, name = "builtin"),
+  @JsonSubTypes.Type(value = ExpressionMetricsTransformDeclare.class, name = "expression"),
+  @JsonSubTypes.Type(value = CustomMetricsTransformDeclare.class, name = "custom"),
 })
 public interface MetricsTransformDeclare<TO extends TransformOptions> extends TransformDeclare<TO> {
 

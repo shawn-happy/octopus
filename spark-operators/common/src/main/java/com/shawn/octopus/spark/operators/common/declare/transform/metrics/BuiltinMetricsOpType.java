@@ -11,11 +11,11 @@ public enum BuiltinMetricsOpType {
   variance,
   stddev,
   median,
-  mode,
+  //  mode,
   distinct,
   distribution,
   approxMedian,
-  approxDistinctCount,
+  approxCountDistinct,
   uniqueRatio,
   nullRatio,
   joinRatio,
@@ -23,6 +23,6 @@ public enum BuiltinMetricsOpType {
   approxQuantiles,
   summary,
   psi,
-  cyclic,
-  ;
+//  cyclic,
+;
 }
