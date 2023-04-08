@@ -1,9 +1,0 @@
-type: metrics
-metricsType: builtin
-name: max_id
-options:
-  output: max_user_id
-  input:
-    user: user_1
-  columns: [ "id" ]
-  opType: max

@@ -1,17 +1,9 @@
-buildscript {
-    dependencies {
-        classpath('com.google.cloud.tools:jib-layer-filter-extension-gradle:0.1.0')
-    }
-}
-
 plugins {
     id 'java'
     id 'groovy'
     id 'maven-publish'
     id 'base'
-    id 'net.nemerosa.versioning'
     id 'com.diffplug.spotless'
-    id 'com.google.cloud.tools.jib'
 }
 
 ext {
@@ -52,57 +44,67 @@ ext {
     ]
 }
 
-allprojects {
-    group 'com.shawn.octopus.spark.operators'
-
-    versioning {
-        branchEnv = ['CI_COMMIT_REF_NAME', 'GIT_BRANCH', 'BRANCH_NAME']
+dependencies {
+    compileOnly libs_icebergSparkRuntime
+    compileOnly libs_sparkSql
+    implementation libs_jacksonDataformatYaml
+    implementation libs_commonCollections4
+    implementation libs_commonLang3
+    implementation libs_aviator
+    implementation(libs_sparkGraphx) {
+        exclude group: 'org.apache.spark', module: 'spark-core_2.12'
+        exclude group: 'org.apache.spark', module: 'spark-tags_2.12'
+        exclude group: 'org.spark-project.spark', module: 'unused'
+        exclude group: 'org.apache.xbean', module: 'xbean-asm9-shaded'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
     }
-    version = versioning.info.full
+
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
+
+    testImplementation libs_icebergSparkRuntime
+    testImplementation libs_sparkSql
+    testImplementation libs_junitJupiterApi
+    testRuntimeOnly libs_junitJupiterEngine
 }
 
-subprojects {
-    apply plugin: 'groovy'
-    apply plugin: 'java-library'
-    apply plugin: 'com.diffplug.spotless'
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+group 'com.octopus.spark.operators'
 
+apply plugin: 'groovy'
+apply plugin: 'java-library'
+apply plugin: 'com.diffplug.spotless'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+java {
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+spotless {
     java {
-        withSourcesJar()
+        importOrder()
+        removeUnusedImports()
+        toggleOffOn("@formatter:off", "@formatter:on")
+        googleJavaFormat('1.8')
+        formatAnnotations()
+        target '**/*.java'
     }
-
-    repositories {
-        maven {
-            name 'jitpack.io'
-            url 'https://jitpack.io'
-        }
-        mavenCentral()
-        mavenLocal()
-    }
-
-//    def publishingFile = rootProject.projectDir.path + '/publish.gradle'
-//    apply from: publishingFile
-
-    test {
-        useJUnitPlatform()
-    }
-
-    spotless {
-        java {
-            importOrder()
-            removeUnusedImports()
-            toggleOffOn("@formatter:off", "@formatter:on")
-            googleJavaFormat('1.7')
-            target '**/*.java'
-        }
-    }
-
 }
 
 wrapper {
     gradleVersion = '7.5'
 }
 
-tasks.jib.enabled = false
