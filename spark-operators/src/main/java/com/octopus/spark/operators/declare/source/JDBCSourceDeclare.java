@@ -1,7 +1,7 @@
 package com.octopus.spark.operators.declare.source;
 
 import com.octopus.spark.operators.declare.common.FieldType;
-import com.octopus.spark.operators.declare.common.SupportedSourceType;
+import com.octopus.spark.operators.declare.common.SourceType;
 import com.octopus.spark.operators.declare.source.JDBCSourceDeclare.JDBCSourceOptions;
 import java.sql.Driver;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @AllArgsConstructor
 public class JDBCSourceDeclare implements SourceDeclare<JDBCSourceOptions> {
 
-  @Default private final SupportedSourceType type = SupportedSourceType.jdbc;
+  @Default private final SourceType type = SourceType.jdbc;
   private JDBCSourceOptions options;
   private String name;
   private String output;

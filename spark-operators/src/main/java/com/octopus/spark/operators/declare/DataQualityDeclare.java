@@ -1,6 +1,6 @@
 package com.octopus.spark.operators.declare;
 
-import com.octopus.spark.operators.declare.check.CheckTransformDeclare;
+import com.octopus.spark.operators.declare.check.CheckDeclare;
 import com.octopus.spark.operators.declare.postprocess.PostProcessDeclare;
 import com.octopus.spark.operators.declare.transform.MetricsDeclare;
 import java.util.List;
@@ -16,6 +16,6 @@ import lombok.ToString;
 public class DataQualityDeclare extends CommonDeclare {
 
   private List<MetricsDeclare<?>> metrics;
-  private List<CheckTransformDeclare> checks;
+  private List<CheckDeclare<?>> checks;
   private List<PostProcessDeclare<?>> postProcesses;
 }

@@ -1,6 +1,6 @@
 package com.octopus.spark.operators.declare.sink;
 
-import com.octopus.spark.operators.declare.common.SupportedSinkType;
+import com.octopus.spark.operators.declare.common.SinkType;
 import com.octopus.spark.operators.declare.common.WriteMode;
 import com.octopus.spark.operators.declare.sink.CSVSinkDeclare.CSVSinkOptions;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @AllArgsConstructor
 public class CSVSinkDeclare implements SinkDeclare<CSVSinkOptions> {
 
-  @Default private final SupportedSinkType type = SupportedSinkType.csv;
+  @Default private final SinkType type = SinkType.csv;
   private CSVSinkOptions options;
   private String name;
   private String input;

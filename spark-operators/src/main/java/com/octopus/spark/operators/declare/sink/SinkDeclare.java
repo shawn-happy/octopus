@@ -2,7 +2,7 @@ package com.octopus.spark.operators.declare.sink;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.octopus.spark.operators.declare.common.SupportedSinkType;
+import com.octopus.spark.operators.declare.common.SinkType;
 import com.octopus.spark.operators.declare.common.Verifiable;
 import com.octopus.spark.operators.declare.common.WriteMode;
 import org.apache.commons.lang3.ObjectUtils;
@@ -16,7 +16,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
   @JsonSubTypes.Type(value = JDBCSinkDeclare.class, name = "jdbc"),
 })
 public interface SinkDeclare<P extends SinkOptions> extends Verifiable {
-  SupportedSinkType getType();
+  SinkType getType();
 
   P getOptions();
 

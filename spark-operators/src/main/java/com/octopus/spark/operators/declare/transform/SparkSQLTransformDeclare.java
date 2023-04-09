@@ -1,6 +1,6 @@
 package com.octopus.spark.operators.declare.transform;
 
-import com.octopus.spark.operators.declare.common.SupportedTransformType;
+import com.octopus.spark.operators.declare.common.TransformType;
 import com.octopus.spark.operators.declare.transform.SparkSQLTransformDeclare.SparkSQLTransformOptions;
 import java.util.Collections;
 import java.util.Map;
@@ -19,7 +19,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @AllArgsConstructor
 public class SparkSQLTransformDeclare implements TransformDeclare<SparkSQLTransformOptions> {
 
-  @Default private SupportedTransformType type = SupportedTransformType.sparkSQL;
+  @Default private TransformType type = TransformType.sparkSQL;
   private SparkSQLTransformOptions options;
   private String name;
   @Setter private Map<String, String> input;

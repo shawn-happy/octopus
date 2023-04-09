@@ -1,10 +1,7 @@
 package com.octopus.spark.operators.runtime.executor;
 
 import com.octopus.spark.operators.declare.CommonDeclare;
-import com.octopus.spark.operators.declare.sink.SinkDeclare;
-import com.octopus.spark.operators.declare.source.SourceDeclare;
 import com.octopus.spark.operators.utils.SparkOperatorUtils;
-import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.SparkSession;
@@ -22,16 +19,16 @@ public abstract class BaseExecutor implements Executor {
 
   @Override
   public void run() throws Exception {
-    processSources(declare.getSources());
+    processSources();
     processTransforms();
-    processSinks(declare.getSinks());
+    processSinks();
   }
 
-  protected abstract void processSources(List<SourceDeclare<?>> sourceDeclares) throws Exception;
+  protected abstract void processSources() throws Exception;
 
   protected abstract void processTransforms() throws Exception;
 
-  protected abstract void processSinks(List<SinkDeclare<?>> sinkDeclares) throws Exception;
+  protected abstract void processSinks() throws Exception;
 
   private CommonDeclare getConfig(String configPath) {
     CommonDeclare declare = SparkOperatorUtils.getConfig(configPath, CommonDeclare.class);

@@ -1,7 +1,7 @@
 package com.octopus.spark.operators.declare.sink;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.octopus.spark.operators.declare.common.SupportedSinkType;
+import com.octopus.spark.operators.declare.common.SinkType;
 import com.octopus.spark.operators.declare.common.WriteMode;
 import com.octopus.spark.operators.declare.sink.IcebergSinkDeclare.IcebergSinkOptions;
 import java.util.List;
@@ -21,7 +21,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @AllArgsConstructor
 public class IcebergSinkDeclare implements SinkDeclare<IcebergSinkOptions> {
 
-  @Default private final SupportedSinkType type = SupportedSinkType.iceberg;
+  @Default private final SinkType type = SinkType.iceberg;
   private IcebergSinkOptions options;
   private WriteMode writeMode;
   private String input;

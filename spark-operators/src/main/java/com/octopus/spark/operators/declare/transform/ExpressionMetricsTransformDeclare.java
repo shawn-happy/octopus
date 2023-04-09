@@ -1,6 +1,6 @@
 package com.octopus.spark.operators.declare.transform;
 
-import com.octopus.spark.operators.declare.common.SupportedTransformType;
+import com.octopus.spark.operators.declare.common.TransformType;
 import com.octopus.spark.operators.declare.transform.ExpressionMetricsTransformDeclare.ExpressionMetricsTransformOptions;
 import java.util.Collections;
 import java.util.Map;
@@ -19,7 +19,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 public class ExpressionMetricsTransformDeclare
     implements MetricsDeclare<ExpressionMetricsTransformOptions> {
 
-  @Default private final SupportedTransformType type = SupportedTransformType.expression;
+  @Default private final TransformType type = TransformType.expression;
   private ExpressionMetricsTransformOptions options;
   private String name;
   private Map<String, String> input;

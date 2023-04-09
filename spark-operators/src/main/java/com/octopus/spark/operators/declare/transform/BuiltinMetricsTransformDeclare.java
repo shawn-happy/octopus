@@ -1,6 +1,6 @@
 package com.octopus.spark.operators.declare.transform;
 
-import com.octopus.spark.operators.declare.common.SupportedTransformType;
+import com.octopus.spark.operators.declare.common.TransformType;
 import com.octopus.spark.operators.declare.transform.BuiltinMetricsTransformDeclare.BuiltinMetricsTransformOptions;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 public class BuiltinMetricsTransformDeclare
     implements MetricsDeclare<BuiltinMetricsTransformOptions> {
 
-  @Default private final SupportedTransformType type = SupportedTransformType.metrics;
+  @Default private final TransformType type = TransformType.metrics;
   private BuiltinMetricsTransformOptions options;
   private String name;
   private Map<String, String> input;

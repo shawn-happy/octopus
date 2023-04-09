@@ -1,15 +1,15 @@
 package com.octopus.spark.operators.runtime.step.transform.check;
 
 import com.googlecode.aviator.AviatorEvaluator;
-import com.octopus.spark.operators.declare.check.CheckTransformDeclare;
+import com.octopus.spark.operators.declare.check.ExpressionCheckDeclare;
 import java.util.Map;
 import org.apache.spark.sql.SparkSession;
 
-public class ExpressionCheck implements Check<CheckTransformDeclare> {
+public class ExpressionCheck implements Check<ExpressionCheckDeclare> {
 
-  private final CheckTransformDeclare declare;
+  private final ExpressionCheckDeclare declare;
 
-  public ExpressionCheck(CheckTransformDeclare declare) {
+  public ExpressionCheck(ExpressionCheckDeclare declare) {
     this.declare = declare;
   }
 

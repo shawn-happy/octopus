@@ -1,7 +1,7 @@
 package com.octopus.spark.operators.declare.source;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.octopus.spark.operators.declare.common.SupportedSourceType;
+import com.octopus.spark.operators.declare.common.SourceType;
 import com.octopus.spark.operators.declare.source.IcebergSourceDeclare.IcebergSourceOptions;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @AllArgsConstructor
 public class IcebergSourceDeclare implements SourceDeclare<IcebergSourceOptions> {
 
-  @Default private final SupportedSourceType type = SupportedSourceType.iceberg;
+  @Default private final SourceType type = SourceType.iceberg;
   private IcebergSourceOptions options;
   private String name;
   private String output;

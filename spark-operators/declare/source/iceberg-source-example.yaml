@@ -1,0 +1,10 @@
+type: iceberg                                    # SourceType: [csv, parquet, json, orc, jdbc, iceberg, hive]
+name: iceberg-source-example                     # name: unique source name
+output: iceberg-source-output                    # output: unique output
+repartition: 2                                   # repartition
+options:
+  catalog: iceberg-catalog
+  namespace: prod.db
+  table: source_table
+  startSnapshotId: 1000
+  endSnapshotId: 10010

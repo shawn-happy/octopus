@@ -1,0 +1,32 @@
+type: csv                                     # SourceType: [csv, parquet, json, orc, jdbc, iceberg, hive]
+name: csv-source-example                      # name: unique source name
+output: csv-source-output                     # output: unique output
+repartition: 2                                # repartition
+options:                                      # CSVSource Options
+  pathGlobFilter:                             # e.g: *.parquet, default null
+  recursiveFileLookup: true                   # recursive look up file in dictionary
+  paths: ['','']                              # file paths, array type
+  schemas:                                    # source schema
+    - name: id
+      alias: user_id
+      type: Integer
+      nullable: false
+      primaryKey: true
+    - name: name
+      alias: username
+      type: String
+      nullable: false
+      primaryKey: false
+    - name: updateTime
+      alias: update_time
+      type: Date
+      nullable: true
+      primaryKey: false
+  header: true                                 # first line of csv file is header?. default true
+  encoding: UTF-8                              # csv file encoding. default utf-8
+  nullValue: null                              # replace null value. default null
+  nanValue: NaN                                # replace nan value. default NaN
+  dateFormat: yyyy-MM-dd                       # date format. default yyyy-MM-dd. e.g 2020-05-22
+  dateTimeFormat: yyyy-MM-dd HH:mm:ss.SSS      # dateTime format. default yyyy-MM-dd HH:mm:ss.SSS. e.g 2020-05-22 13:44:23.000
+  parseErrorPolicy: PERMISSIVE                 # parse error policy.   [PERMISSIVE,DROPMALFORMED, FAILFAST]
+  inferSchema: false                           # auto infer schema. default false

@@ -1,29 +1,32 @@
-package com.octopus.spark.operators.declare.source;
+package com.octopus.spark.operators.declare.check;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.octopus.spark.operators.declare.common.SourceType;
+import com.octopus.spark.operators.declare.common.CheckType;
 import com.octopus.spark.operators.declare.common.Verifiable;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.shaded.com.google.common.base.Verify;
-import org.jetbrains.annotations.NotNull;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = CSVSourceDeclare.class, name = "csv"),
-  @JsonSubTypes.Type(value = IcebergSourceDeclare.class, name = "iceberg"),
-  @JsonSubTypes.Type(value = JDBCSourceDeclare.class, name = "jdbc"),
+  @JsonSubTypes.Type(value = ExpressionCheckDeclare.class, name = "expression"),
 })
-public interface SourceDeclare<P extends SourceOptions> extends Verifiable {
+public interface CheckDeclare<P extends CheckOptions> extends Verifiable {
 
-  @NotNull SourceType getType();
+  CheckType getType();
+
+  String getName();
+
+  List<String> getMetrics();
+
+  String getOutput();
 
   Integer getRepartition();
 
-  @NotNull String getOutput();
-
-  @NotNull String getName();
+  CheckLevel getCheckLevel();
 
   P getOptions();
 
@@ -31,9 +34,11 @@ public interface SourceDeclare<P extends SourceOptions> extends Verifiable {
   default void verify() {
     Verify.verify(ObjectUtils.isEmpty(getType()), "type can not be null");
     Verify.verify(StringUtils.isNotBlank(getName()), "name can not be empty or null");
+    Verify.verify(CollectionUtils.isNotEmpty(getMetrics()), "metrics can not be empty or null");
     Verify.verify(StringUtils.isNotBlank(getOutput()), "output can not be empty or null");
     Verify.verify(
         getRepartition() != null && getRepartition() < 1,
         "if repartition is not null, must more than or equals 1");
+    Verify.verify(ObjectUtils.isEmpty(getCheckLevel()), "check level can not be empty or null");
   }
 }

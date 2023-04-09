@@ -1,6 +1,7 @@
 package com.octopus.spark.operators.declare.postprocess;
 
 import com.octopus.spark.operators.declare.postprocess.CorrectionPostProcessDeclare.CorrectionPostProcessOptions;
+import java.util.Collections;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.shaded.com.google.common.base.Verify;
 
 @Builder
 @Getter
@@ -16,10 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 public class CorrectionPostProcessDeclare
     implements PostProcessDeclare<CorrectionPostProcessOptions> {
 
-  @Default private final PostProcessType postProcessType = PostProcessType.correction;
+  @Default private final PostProcessType type = PostProcessType.correction;
   private String name;
   private CorrectionPostProcessOptions options;
-  private Alarm alarm;
 
   @Builder
   @Getter
@@ -32,20 +33,16 @@ public class CorrectionPostProcessDeclare
 
     @Override
     public Map<String, String> getOptions() {
-      return null;
+      return Collections.emptyMap();
     }
 
     @Override
     public void verify() {
-      if (StringUtils.isEmpty(source)) {
-        throw new IllegalArgumentException(
-            "source can not be empty or null in correction post process transform com.octopus.spark.operators");
-      }
-
-      if (StringUtils.isEmpty(sql)) {
-        throw new IllegalArgumentException(
-            "sql can not be empty or null in correction post process transform com.octopus.spark.operators");
-      }
+      Verify.verify(
+          StringUtils.isNotBlank(source),
+          "source can not be empty or null in correction post process");
+      Verify.verify(
+          StringUtils.isNotBlank(sql), "sql can not be empty or null in correction post process");
     }
   }
 }

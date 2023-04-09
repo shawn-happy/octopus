@@ -2,7 +2,7 @@ package com.octopus.spark.operators.declare.transform;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.octopus.spark.operators.declare.common.SupportedTransformType;
+import com.octopus.spark.operators.declare.common.TransformType;
 import com.octopus.spark.operators.declare.common.Verifiable;
 import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
@@ -18,7 +18,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 })
 public interface TransformDeclare<P extends TransformOptions> extends Verifiable {
 
-  SupportedTransformType getType();
+  TransformType getType();
 
   String getName();
 

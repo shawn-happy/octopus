@@ -8,7 +8,7 @@ import static java.sql.Connection.TRANSACTION_REPEATABLE_READ;
 import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
 import com.octopus.spark.operators.declare.common.ColumnDesc;
-import com.octopus.spark.operators.declare.common.SupportedSinkType;
+import com.octopus.spark.operators.declare.common.SinkType;
 import com.octopus.spark.operators.declare.common.WriteMode;
 import com.octopus.spark.operators.declare.sink.JDBCSinkDeclare.JDBCSinkOptions;
 import java.sql.Driver;
@@ -32,7 +32,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @AllArgsConstructor
 public class JDBCSinkDeclare implements SinkDeclare<JDBCSinkOptions> {
 
-  @Default private final SupportedSinkType type = SupportedSinkType.jdbc;
+  @Default private final SinkType type = SinkType.jdbc;
   private JDBCSinkOptions options;
   private WriteMode writeMode;
   private String input;

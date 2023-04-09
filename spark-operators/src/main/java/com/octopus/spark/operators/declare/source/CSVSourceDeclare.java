@@ -1,7 +1,7 @@
 package com.octopus.spark.operators.declare.source;
 
 import com.octopus.spark.operators.declare.common.ColumnDesc;
-import com.octopus.spark.operators.declare.common.SupportedSourceType;
+import com.octopus.spark.operators.declare.common.SourceType;
 import com.octopus.spark.operators.declare.source.CSVSourceDeclare.CSVSourceOptions;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public class CSVSourceDeclare implements SourceDeclare<CSVSourceOptions> {
 
-  @Default private SupportedSourceType type = SupportedSourceType.csv;
+  @Default private SourceType type = SourceType.csv;
   private CSVSourceOptions options;
   @NotNull private String name;
   @NotNull private String output;
