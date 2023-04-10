@@ -43,7 +43,6 @@ public class JDBCSinkDeclare implements SinkDeclare<JDBCSinkOptions> {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class JDBCSinkOptions implements SinkOptions {
-    private String jdbcType;
     private String url;
     private String username;
     private String password;

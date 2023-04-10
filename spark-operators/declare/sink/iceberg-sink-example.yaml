@@ -1,0 +1,15 @@
+type: jdbc                                         # sink type: [parquet, csv, json, jdbc, iceberg, hive]
+name: jdbc-sink                                    # unique sink name
+input: jdbc-input                                  # dataframe name
+writeMode: append                                  # write mode: [append, replace, create_or_replace, replace_by_time, overwrite_partitions]
+options:
+  catalog: iceberg-catalog
+  namespace: prod.db
+  table: sink_table
+  partitionBy: create_date
+  dateField: create_date
+  replaceRangeStart: 2021-12-25
+  replaceRangeEnd: 2021-12-31
+  partitionExpressions: []
+  tableProperties:                                  # iceberg table properties
+    k1: v1
