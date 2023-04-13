@@ -37,7 +37,7 @@ public class DataQualityExecutor extends BaseExecutor {
   private final transient Map<String, Object> metrics = new HashMap<>();
   private final transient Map<String, CheckResult> checkResults = new HashMap<>();
 
-  protected DataQualityExecutor(SparkSession spark, String configPath) {
+  public DataQualityExecutor(SparkSession spark, String configPath) {
     super(spark, configPath);
   }
 

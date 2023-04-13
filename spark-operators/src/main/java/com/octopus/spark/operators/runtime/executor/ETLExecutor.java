@@ -22,7 +22,7 @@ public class ETLExecutor extends BaseExecutor {
 
   private final transient Map<String, Dataset<Row>> dataframes = new HashMap<>();
 
-  protected ETLExecutor(SparkSession spark, String configPath) {
+  public ETLExecutor(SparkSession spark, String configPath) {
     super(spark, configPath);
   }
 

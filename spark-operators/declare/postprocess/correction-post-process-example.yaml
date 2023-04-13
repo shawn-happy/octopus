@@ -1,0 +1,6 @@
+type: correction
+name: correction
+options:
+  mode: replace  #[replace, modify]
+  source: user
+  sql: delete from user where age < 0;

@@ -1,7 +1,7 @@
 sources:
   - type: csv                                     # SourceType: [csv, parquet, json, orc, jdbc, iceberg, hive]
-    name: csv-source-example                      # name: unique source name
-    output: csv-source-output                     # output: unique output
+    name: user                                    # name: unique source name
+    output: user                                  # output: unique output
     repartition: 2                                # repartition
     options: # CSVSource Options
       pathGlobFilter:                             # e.g: *.parquet, default null
@@ -18,8 +18,8 @@ sources:
           type: String
           nullable: false
           primaryKey: false
-        - name: updateTime
-          alias: update_time
+        - name: createTime
+          alias: create_time
           type: Date
           nullable: true
           primaryKey: false
@@ -32,39 +32,20 @@ sources:
       parseErrorPolicy: PERMISSIVE                 # parse error policy.   [PERMISSIVE,DROPMALFORMED, FAILFAST]
       inferSchema: false                           # auto infer schema. default false
 
-metircs:
-  - type: metrics
-    name: metrics-trans
+transforms:
+  - type: sparkSQL
+    name: user-trans
     input:
-      input_name: input_name_alias
-    output: metrics_trans_output
+      user: user_temp
+    output: user-trans-output
     repartition: 2
     options:
-      opType: count # [count,distinctCount,nullCount,nullOrEmptyCount,min,max,mean,variance,stddev,median,distinct,distribution,approxMedian,approxCountDistinct,uniqueRatio,nullRatio,joinRatio,storageSize,approxQuantiles,summary,psi]
-      columns: [ "col1" ]
-
-checks:
-  - type: expression
-    name: expression-check
-    metrics: [ "age_lt_0_count" ]
-    output: expression-check-output
-    repartition: 2
-    checkLevel: warning
-    options:
-      expression: age_lt_0_count  <= 0
-
-postProcesses:
-  - type: correction
-    name: correction
-    options:
-      mode: replace  #[replace, modify]
-      source: user
-      sql: delete from user where age < 0;
+      sql: select *, (FLOOR(RAND() * 100) - 10) as age from user
 
 sinks:
   - type: csv                                         # sink type: [parquet, csv, json, jdbc, iceberg, hive]
-    name: csv-sink                                    # unique sink name
-    input: csv-input                                  # dataframe name
+    name: user-sink                                   # unique sink name
+    input: user-trans-output                                 # dataframe name
     writeMode: append                                 # write mode: [append, replace, create_or_replace, replace_by_time, overwrite_partitions]
     options:
       path: /path                                     # sink path

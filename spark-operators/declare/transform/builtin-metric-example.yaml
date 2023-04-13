@@ -1,0 +1,9 @@
+type: metrics
+name: metrics-trans
+input:
+  input_name: input_name_alias
+output: metrics_trans_output
+repartition: 2
+options:
+  opType: count # [count,distinctCount,nullCount,nullOrEmptyCount,min,max,mean,variance,stddev,median,distinct,distribution,approxMedian,approxCountDistinct,uniqueRatio,nullRatio,joinRatio,storageSize,approxQuantiles,summary,psi]
+  columns: [ "col1" ]

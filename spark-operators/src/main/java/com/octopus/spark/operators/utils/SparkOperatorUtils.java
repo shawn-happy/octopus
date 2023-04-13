@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.google.common.collect.Maps;
+import com.octopus.spark.operators.exception.SparkRuntimeException;
+import com.octopus.spark.operators.runtime.SparkRuntimeConfig;
+import com.octopus.spark.operators.runtime.SparkRuntimeMode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
@@ -52,7 +55,7 @@ public class SparkOperatorUtils {
       fileSystem = FileSystem.get(new Configuration());
     } catch (IOException e) {
       log.error("load file system error", e);
-      throw new RuntimeException(e);
+      throw new SparkRuntimeException(e);
     }
   }
 
@@ -111,43 +114,57 @@ public class SparkOperatorUtils {
     String key = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
     DataType dataType = JDBC_DATA_TYPES.get(key);
     if (Objects.isNull(dataType)) {
-      throw new IllegalArgumentException("No Such Data Type: [" + type + "]");
+      throw new SparkRuntimeException("No Such Data Type: [" + type + "]");
     }
     return dataType;
   }
 
   public static <T> T getConfig(String path, Class<T> tClass) {
     try {
-      return objectMapperYaml.readValue((InputStream) fileSystem.open(new Path(path)), tClass);
+      T value = objectMapperYaml.readValue((InputStream) fileSystem.open(new Path(path)), tClass);
+      printYAML(value);
+      return value;
     } catch (Exception e) {
       log.error("load config yaml error", e);
-      throw new RuntimeException("load config yaml error", e);
+      throw new SparkRuntimeException("load config yaml error", e);
     }
   }
 
-  public static SparkSession createSparkSession(boolean enableLocal, boolean enableHive) {
-    SparkSession session = SparkSession.builder().getOrCreate();
-    if (enableLocal && enableHive) {
-      if (enableHive) {
-        session =
-            SparkSession.builder()
-                .master("local")
-                .enableHiveSupport()
-                .config("hive.exec.dynamic.partition", "true")
-                .config("hive.exec.dynamic.partition.mode", "nonstrict")
-                .getOrCreate();
-      } else {
-        session = SparkSession.builder().master("local").getOrCreate();
-      }
-    } else if (enableHive) {
-      session =
-          SparkSession.builder()
-              .enableHiveSupport()
-              .config("hive.exec.dynamic.partition", "true")
-              .config("hive.exec.dynamic.partition.mode", "nonstrict")
-              .getOrCreate();
+  public static <T> T getConfig(byte[] byteArray, Class<T> tClass) {
+    try {
+      T value = objectMapperYaml.readValue(byteArray, tClass);
+      printYAML(value);
+      return value;
+    } catch (Exception e) {
+      log.error("load config yaml error", e);
+      throw new SparkRuntimeException("load config yaml error", e);
     }
-    return session;
+  }
+
+  public static <T> void printYAML(T t) {
+    try {
+      log.info("config yaml: {}", objectMapperYaml.writeValueAsString(t));
+    } catch (Exception e) {
+      log.error("write config yaml error", e);
+      throw new SparkRuntimeException("write config yaml error", e);
+    }
+  }
+
+  public static SparkSession createSparkSession(SparkRuntimeConfig config) {
+    String runtimeMode = config.getRuntimeMode();
+    String appName = config.getAppName();
+    SparkRuntimeMode mode = SparkRuntimeMode.of(runtimeMode);
+    if (mode == SparkRuntimeMode.LOCAL) {
+      return SparkSession.builder().appName(appName).master(config.getMasterUrl()).getOrCreate();
+    }
+    if (config.isEnableHive()) {
+      return SparkSession.builder()
+          .enableHiveSupport()
+          .config("hive.exec.dynamic.partition", "true")
+          .config("hive.exec.dynamic.partition.mode", "nonstrict")
+          .getOrCreate();
+    }
+    return SparkSession.builder().getOrCreate();
   }
 
   public static Column[] validateSchema(StructType sourceSchema, StructType targetSchema) {

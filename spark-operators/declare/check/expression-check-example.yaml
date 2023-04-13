@@ -1,0 +1,8 @@
+type: expression
+name: expression-check
+metrics: ["age_lt_0_count"]
+output: expression-check-output
+repartition: 2
+checkLevel: warning
+options:
+  expression: age_lt_0_count  <= 0
