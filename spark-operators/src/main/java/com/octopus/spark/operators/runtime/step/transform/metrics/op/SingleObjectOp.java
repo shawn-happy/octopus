@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.spark.sql.Dataset;
@@ -30,8 +28,13 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT max(%2$s) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_max_%s", columns.get(0));
     }
   },
 
@@ -42,8 +45,13 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT min(%2$s) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_min_%s", columns.get(0));
     }
   },
 
@@ -55,9 +63,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT approx_count_distinct(%2$s) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_approx_count_distinct_%s", columns.get(0));
     }
   },
 
@@ -68,9 +81,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT approx_percentile(%2$s, 0.5, 100) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_approx_percentile_%s", columns.get(0));
     }
   },
 
@@ -81,7 +99,7 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT count(%2$s) FROM %1$s", tableName, columns.get(0));
     }
 
@@ -93,6 +111,11 @@ public enum SingleObjectOp implements Op<Object> {
       }
       return super.process(spark, dfs, columns);
     }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_count_%s", columns.get(0));
+    }
   },
 
   AVG_OP {
@@ -102,8 +125,13 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT avg(%2$s) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_avg_%s", columns.get(0));
     }
   },
 
@@ -114,8 +142,13 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT percentile(%2$s, 0.5) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_percentile_%s", columns.get(0));
     }
   },
 
@@ -126,9 +159,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT count(*) FROM %1$s WHERE %2$s is null", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_null_count_%s", columns.get(0));
     }
   },
 
@@ -139,9 +177,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT count(distinct %2$s) FROM %1$s", tableName, String.join(",", columns));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_distinct_count_%s", String.join("_", columns));
     }
   },
 
@@ -152,9 +195,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT count(*) FROM %1$s WHERE %2$s is null OR %2$s=''", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_null_or_empty_count_%s", columns.get(0));
     }
   },
 
@@ -165,9 +213,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT sum(nvl2(%2$s,0,1))/count(*) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_null_ratio_%s", columns.get(0));
     }
   },
 
@@ -178,9 +231,14 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format(
           "SELECT count(distinct %2$s)/count(*) FROM %1$s", tableName, String.join(",", columns));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_unique_ratio_%s", String.join(",", columns));
     }
   },
 
@@ -191,8 +249,13 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT stddev(%2$s) FROM %1$s", tableName, columns.get(0));
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_stddev_%s", columns.get(0));
     }
   },
 
@@ -203,61 +266,27 @@ public enum SingleObjectOp implements Op<Object> {
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
       return String.format("SELECT variance(%2$s) FROM %1$s", tableName, columns.get(0));
     }
-  },
-
-  JOIN_RATIO_OP {
-    @Override
-    public BuiltinMetricsOpType getOpType() {
-      return BuiltinMetricsOpType.joinRatio;
-    }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
-      return "SELECT count(b.%3$s)/count(*) FROM %1$s a LEFT JOIN (SELECT distinct %4$s FROM %2$s) b ON (%5$s)";
-    }
-
-    @Override
-    public Object process(SparkSession spark, Map<String, Dataset<Row>> dfs, List<String> columns)
-        throws Exception {
-      Iterator<Entry<String, Dataset<Row>>> iterator = dfs.entrySet().iterator();
-      Map.Entry<String, Dataset<Row>> df1 = iterator.next();
-      Map.Entry<String, Dataset<Row>> df2 = iterator.next();
-      df1.getValue().createOrReplaceTempView(df1.getKey());
-      df2.getValue().createOrReplaceTempView(df2.getKey());
-      List<String> columns1 = new ArrayList<>();
-      List<String> columns2 = new ArrayList<>();
-      List<String> joinCondition = new ArrayList<>();
-      for (int i = 0; i < columns.size(); i++) {
-        if (i % 2 == 0) {
-          columns1.add(columns.get(i));
-        } else {
-          columns2.add(columns.get(i));
-          joinCondition.add("a." + columns.get(i - 1) + "=b." + columns.get(i));
-        }
-      }
-      String sql =
-          String.format(
-              sql(null, null),
-              df1.getKey(),
-              df2.getKey(),
-              columns2.get(0),
-              String.join(",", columns2),
-              String.join(" AND ", joinCondition));
-      return converter.convert(spark.sql(sql));
+    protected String rename(List<String> columns) {
+      return String.format("_variance_%s", columns.get(0));
     }
   },
 
   STORAGE_SIZE_OP {
+    private String tableName;
+
     @Override
     public BuiltinMetricsOpType getOpType() {
       return BuiltinMetricsOpType.storageSize;
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
+      this.tableName = tableName;
       return null;
     }
 
@@ -267,17 +296,31 @@ public enum SingleObjectOp implements Op<Object> {
       Dataset<Row> df = dfs.entrySet().iterator().next().getValue();
       return df.queryExecution().logical().stats().sizeInBytes().longValue();
     }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_storage_size_%s", tableName);
+    }
   },
 
   SUMMARY_OP {
+
+    private String tableName;
+
     @Override
     public BuiltinMetricsOpType getOpType() {
       return BuiltinMetricsOpType.summary;
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
+      this.tableName = tableName;
       return null;
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_summary_%s", tableName);
     }
 
     @Override
@@ -391,14 +434,22 @@ public enum SingleObjectOp implements Op<Object> {
   },
 
   PSI_OP {
+    private String tableName;
+
     @Override
     public BuiltinMetricsOpType getOpType() {
       return BuiltinMetricsOpType.psi;
     }
 
     @Override
-    public String sql(String tableName, List<String> columns) {
+    protected String sql(String tableName, List<String> columns) {
+      this.tableName = tableName;
       return null;
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_psi_%s", tableName);
     }
 
     @Override
@@ -518,6 +569,9 @@ public enum SingleObjectOp implements Op<Object> {
   },
 
   APPROX_QUANTILES_OP {
+
+    private String tableName;
+
     @Override
     public BuiltinMetricsOpType getOpType() {
       return BuiltinMetricsOpType.approxQuantiles;
@@ -525,7 +579,13 @@ public enum SingleObjectOp implements Op<Object> {
 
     @Override
     public String sql(String tableName, List<String> columns) {
+      this.tableName = tableName;
       return null;
+    }
+
+    @Override
+    protected String rename(List<String> columns) {
+      return String.format("_approx_quantiles_%s", tableName);
     }
 
     @Override
@@ -548,8 +608,10 @@ public enum SingleObjectOp implements Op<Object> {
     Map.Entry<String, Dataset<Row>> df = dfs.entrySet().iterator().next();
     df.getValue().createOrReplaceTempView(df.getKey());
     String sql = sql(df.getKey(), columns);
-    return converter.convert(spark.sql(sql));
+    return converter.convert(spark.sql(sql).toDF(rename(columns)));
   }
 
-  public abstract String sql(String tableName, List<String> columns);
+  protected abstract String sql(String tableName, List<String> columns);
+
+  protected abstract String rename(List<String> columns);
 }

@@ -17,7 +17,6 @@ public enum BuiltinMetricsOpType {
   approxCountDistinct,
   uniqueRatio,
   nullRatio,
-  joinRatio,
   storageSize,
   approxQuantiles,
   summary,

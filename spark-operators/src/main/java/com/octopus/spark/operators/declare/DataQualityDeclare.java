@@ -18,4 +18,5 @@ public class DataQualityDeclare extends CommonDeclare {
   private List<MetricsDeclare<?>> metrics;
   private List<CheckDeclare<?>> checks;
   private List<PostProcessDeclare<?>> postProcesses;
+  private String filePath;
 }

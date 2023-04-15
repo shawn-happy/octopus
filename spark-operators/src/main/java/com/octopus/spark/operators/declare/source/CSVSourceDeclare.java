@@ -74,7 +74,7 @@ public class CSVSourceDeclare implements SourceDeclare<CSVSourceOptions> {
 
     @Override
     public void verify() {
-      Verify.verify(ArrayUtils.isEmpty(paths), "paths can not be empty or null");
+      Verify.verify(ArrayUtils.isNotEmpty(paths), "paths can not be empty or null");
     }
   }
 }

@@ -11,6 +11,7 @@ import com.octopus.spark.operators.runtime.step.transform.custom.SparkSQLTransfo
 import com.octopus.spark.operators.runtime.step.transform.metrics.BuiltinMetrics;
 import com.octopus.spark.operators.runtime.step.transform.metrics.ExpressionMetrics;
 import com.octopus.spark.operators.runtime.step.transform.metrics.Metrics;
+import com.octopus.spark.operators.runtime.step.transform.metrics.SparkSQLMetric;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,9 @@ public class TransformFactory {
                 });
         metrics =
             new ExpressionMetrics((ExpressionMetricsTransformDeclare) metricsDeclare, inputMetrics);
+        break;
+      case sparkSQL:
+        metrics = new SparkSQLMetric((SparkSQLTransformDeclare) metricsDeclare);
         break;
       default:
         throw new IllegalArgumentException("unsupported transform type: " + type);

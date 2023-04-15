@@ -1,6 +1,9 @@
 package com.octopus.spark.operators.runtime;
 
 import com.octopus.spark.operators.exception.SparkRuntimeException;
+import com.octopus.spark.operators.registry.DefaultLoader;
+import com.octopus.spark.operators.registry.Loader;
+import com.octopus.spark.operators.registry.OpRegistry;
 import com.octopus.spark.operators.runtime.executor.DataQualityExecutor;
 import com.octopus.spark.operators.runtime.executor.ETLExecutor;
 import com.octopus.spark.operators.runtime.executor.Executor;
@@ -26,6 +29,8 @@ public class SparkOperatorExecutor {
     String type = config.getExecutorType();
     ExecutorType executorType = ExecutorType.of(type);
     String configPath = config.getConfigPath();
+    Loader loader = new DefaultLoader(OpRegistry.OP_REGISTRY);
+    loader.init();
     try (SparkSession spark = SparkOperatorUtils.createSparkSession(config)) {
       Executor executor = null;
       switch (executorType) {

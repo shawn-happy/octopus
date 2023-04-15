@@ -32,12 +32,12 @@ public interface CheckDeclare<P extends CheckOptions> extends Verifiable {
 
   @Override
   default void verify() {
-    Verify.verify(ObjectUtils.isEmpty(getType()), "type can not be null");
+    Verify.verify(ObjectUtils.isNotEmpty(getType()), "type can not be null");
     Verify.verify(StringUtils.isNotBlank(getName()), "name can not be empty or null");
     Verify.verify(CollectionUtils.isNotEmpty(getMetrics()), "metrics can not be empty or null");
     Verify.verify(StringUtils.isNotBlank(getOutput()), "output can not be empty or null");
     Verify.verify(
-        getRepartition() != null && getRepartition() < 1,
+        getRepartition() == null || (getRepartition() != null && getRepartition() >= 1),
         "if repartition is not null, must more than or equals 1");
     Verify.verify(ObjectUtils.isEmpty(getCheckLevel()), "check level can not be empty or null");
   }

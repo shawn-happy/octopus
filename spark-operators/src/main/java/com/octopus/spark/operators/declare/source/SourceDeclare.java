@@ -29,11 +29,11 @@ public interface SourceDeclare<P extends SourceOptions> extends Verifiable {
 
   @Override
   default void verify() {
-    Verify.verify(ObjectUtils.isEmpty(getType()), "type can not be null");
+    Verify.verify(ObjectUtils.isNotEmpty(getType()), "type can not be null");
     Verify.verify(StringUtils.isNotBlank(getName()), "name can not be empty or null");
     Verify.verify(StringUtils.isNotBlank(getOutput()), "output can not be empty or null");
     Verify.verify(
-        getRepartition() != null && getRepartition() < 1,
+        getRepartition() == null || (getRepartition() != null && getRepartition() >= 1),
         "if repartition is not null, must more than or equals 1");
   }
 }

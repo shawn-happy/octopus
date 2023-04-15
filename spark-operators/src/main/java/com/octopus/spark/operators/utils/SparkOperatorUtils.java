@@ -143,7 +143,7 @@ public class SparkOperatorUtils {
 
   public static <T> void printYAML(T t) {
     try {
-      log.info("config yaml: {}", objectMapperYaml.writeValueAsString(t));
+      log.info("config yaml: \n{}", objectMapperYaml.writeValueAsString(t));
     } catch (Exception e) {
       log.error("write config yaml error", e);
       throw new SparkRuntimeException("write config yaml error", e);

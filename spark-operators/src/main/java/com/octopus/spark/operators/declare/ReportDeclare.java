@@ -13,4 +13,5 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class ReportDeclare extends CommonDeclare {
   private List<MetricsDeclare<?>> metrics;
+  private String filePath;
 }

@@ -41,7 +41,7 @@ public class ExpressionMetricsTransformDeclare
     @Override
     public void verify() {
       Verify.verify(
-          StringUtils.isEmpty(expression),
+          StringUtils.isNotBlank(expression),
           "expression can not be empty or null in expression metrics");
     }
   }

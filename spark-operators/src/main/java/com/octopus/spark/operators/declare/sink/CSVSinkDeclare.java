@@ -49,7 +49,7 @@ public class CSVSinkDeclare implements SinkDeclare<CSVSinkOptions> {
 
     @Override
     public void verify() {
-      Verify.verify(StringUtils.isBlank(path), "csv sink operator must have file path");
+      Verify.verify(StringUtils.isNotBlank(path), "csv sink operator must have file path");
     }
   }
 }

@@ -22,3 +22,5 @@ out/
 .DS_Store
 
 *.log
+output/
+spark-warehouse/

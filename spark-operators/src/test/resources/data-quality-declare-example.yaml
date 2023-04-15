@@ -6,7 +6,7 @@ sources:
     options: # CSVSource Options
       pathGlobFilter:                             # e.g: *.parquet, default null
       recursiveFileLookup: true                   # recursive look up file in dictionary
-      paths: [ "src/test/resources/user.csv" ]                              # file paths, array type
+      paths: [ "src/test/resources/user-report.csv" ]                              # file paths, array type
       schemas: # source schema
         - name: id
           alias: user_id
@@ -23,7 +23,12 @@ sources:
           type: Date
           nullable: true
           primaryKey: false
-#      header: true                                 # first line of csv file is header?. default true
+        - name: age
+          alias:
+          type: Integer
+          nullable: true
+          primaryKey: false
+      header: true                                 # first line of csv file is header?. default true
 #      encoding: UTF-8                              # csv file encoding. default utf-8
 #      nullValue: null                              # replace null value. default null
 #      nanValue: NaN                                # replace nan value. default NaN
@@ -32,24 +37,39 @@ sources:
 #      parseErrorPolicy: PERMISSIVE                 # parse error policy.   [PERMISSIVE,DROPMALFORMED, FAILFAST]
 #      inferSchema: false                           # auto infer schema. default false
 
-transforms:
-  - type: sparkSQL
-    name: user-trans
+metrics:
+  - type: metrics
+    name: user-metrics
     input:
       user: user_temp
-    output: user-trans-output
-    repartition: 2
+    output: user-age-avg
     options:
-      sql: select *, (FLOOR(RAND() * 100) - 10) as age from user_temp
+      columns: [ "age" ]
+      opType: mean
+  - type: sparkSQL
+    name: user-age-lt-zero-count
+    input:
+      user: user_temp
+    output: age_lt_0_count
+    options:
+      sql: select count(*) as age_lt_0_count from user_temp where age < 0;
 
-sinks:
-  - type: csv                                         # sink type: [parquet, csv, json, jdbc, iceberg, hive]
-    name: user-sink                                   # unique sink name
-    input: user-trans-output                                 # dataframe name
-    writeMode: append                                 # write mode: [append, replace, create_or_replace, replace_by_time, overwrite_partitions]
+checks:
+  - type: expression
+    name: user-age-check
+    metrics: [ "age_lt_0_count" ]
+    output: age-lt-0-count-check
+    repartition: 2
+    checkLevel: warning
     options:
-      path: "output/user-sink.csv"                                    # sink path
-#      hasHeader: false                                # first line is header. default false
-#      encoding: "UTF-8"                               # default utf-8
-#      dateFormat: "yyyy-MM-dd"                        # default yyyy-MM-dd
-#      dateTimeFormat: "yyyy-MM-dd HH:mm:ss.SSS"       # default yyyy-MM-dd HH:mm:ss.SSS
+      expression: "age_lt_0_count<=0"
+
+postProcesses:
+  - type: correction
+    name: user-age-correction
+    options:
+      mode: modify  #[replace, modify]
+      source: user
+      sql: select * from user where age >= 0
+
+filePath: output/user-avg-dq-result.json

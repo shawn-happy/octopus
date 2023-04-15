@@ -17,7 +17,9 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SparkSQLTransformDeclare implements TransformDeclare<SparkSQLTransformOptions> {
+public class SparkSQLTransformDeclare
+    implements TransformDeclare<SparkSQLTransformOptions>,
+        MetricsDeclare<SparkSQLTransformOptions> {
 
   @Default private TransformType type = TransformType.sparkSQL;
   private SparkSQLTransformOptions options;
@@ -30,7 +32,7 @@ public class SparkSQLTransformDeclare implements TransformDeclare<SparkSQLTransf
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class SparkSQLTransformOptions implements TransformOptions {
+  public static class SparkSQLTransformOptions implements TransformOptions, MetricsOptions {
     private String sql;
 
     @Override
@@ -40,7 +42,8 @@ public class SparkSQLTransformDeclare implements TransformDeclare<SparkSQLTransf
 
     @Override
     public void verify() {
-      Verify.verify(StringUtils.isEmpty(sql), "sql can not be empty or null in sparkSQL transform");
+      Verify.verify(
+          StringUtils.isNotEmpty(sql), "sql can not be empty or null in sparkSQL transform");
     }
   }
 }

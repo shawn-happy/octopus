@@ -37,7 +37,7 @@ public class CorrectionPostProcess implements PostProcess<CorrectionPostProcessD
       case replace:
         Dataset<Row> df = spark.read().table(sources.get(source));
         df.createOrReplaceTempView(source);
-        df.writeTo(source + CORRECTED_TABLE_SUFFIX).createOrReplace();
+        spark.sql(options.getSql()).writeTo(source + CORRECTED_TABLE_SUFFIX).createOrReplace();
         break;
       default:
         throw new IllegalArgumentException("unsupported post-process correction mode: " + mode);

@@ -1,13 +1,13 @@
 package com.octopus.spark.operators.runtime.step.transform.metrics;
 
-import com.octopus.spark.operators.declare.transform.MetricsDeclare;
-import com.octopus.spark.operators.declare.transform.MetricsOptions;
+import com.octopus.spark.operators.declare.transform.TransformDeclare;
+import com.octopus.spark.operators.declare.transform.TransformOptions;
 import java.util.Map;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-public abstract class BaseMetrics<MD extends MetricsDeclare<? extends MetricsOptions>>
+public abstract class BaseMetrics<MD extends TransformDeclare<? extends TransformOptions>>
     implements Metrics<MD> {
 
   protected final MD declare;

@@ -28,11 +28,11 @@ public interface SinkDeclare<P extends SinkOptions> extends Verifiable {
 
   @Override
   default void verify() {
-    Verify.verify(ObjectUtils.isEmpty(getType()), "type can not be null in sink step");
+    Verify.verify(ObjectUtils.isNotEmpty(getType()), "type can not be null");
     Verify.verify(StringUtils.isNotBlank(getName()), "name can not be empty or null in sink step");
     Verify.verify(
         StringUtils.isNotBlank(getInput()), "input can not be empty or null in sink step");
     Verify.verify(
-        ObjectUtils.isEmpty(getWriteMode()), "writeMode can not be empty or null in sink step");
+        ObjectUtils.isNotEmpty(getWriteMode()), "writeMode can not be empty or null in sink step");
   }
 }

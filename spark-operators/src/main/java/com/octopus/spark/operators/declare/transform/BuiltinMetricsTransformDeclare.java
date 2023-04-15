@@ -44,9 +44,10 @@ public class BuiltinMetricsTransformDeclare
     @Override
     public void verify() {
       Verify.verify(
-          CollectionUtils.isEmpty(columns), "columns can not be empty or null in builtin metrics");
+          CollectionUtils.isNotEmpty(columns),
+          "columns can not be empty or null in builtin metrics");
       Verify.verify(
-          ObjectUtils.isEmpty(opType), "opType can not be empty or null in builtin metrics");
+          ObjectUtils.isNotEmpty(opType), "opType can not be empty or null in builtin metrics");
     }
   }
 }
