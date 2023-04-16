@@ -19,7 +19,6 @@ public class SourceFactory {
     if (type == SourceType.csv) {
       CSVSourceDeclare csvSourceDeclare = (CSVSourceDeclare) sourceDeclare;
       source = new CSVSource(csvSourceDeclare);
-
     } else if (type == SourceType.jdbc) {
       JDBCSourceDeclare jdbcSourceDeclare = (JDBCSourceDeclare) sourceDeclare;
       source = new JDBCSource(jdbcSourceDeclare);

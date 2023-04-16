@@ -53,3 +53,7 @@ sinks:
 #      encoding: "UTF-8"                               # default utf-8
 #      dateFormat: "yyyy-MM-dd"                        # default yyyy-MM-dd
 #      dateTimeFormat: "yyyy-MM-dd HH:mm:ss.SSS"       # default yyyy-MM-dd HH:mm:ss.SSS
+
+sparkConf:
+  spark.driver.cores: 1
+  spark.driver.memory: 1g

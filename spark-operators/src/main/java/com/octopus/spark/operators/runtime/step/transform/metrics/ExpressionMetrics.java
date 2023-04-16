@@ -18,6 +18,8 @@ public class ExpressionMetrics extends BaseMetrics<ExpressionMetricsTransformDec
 
   @Override
   protected Object doMetrics(SparkSession spark, Map<String, Dataset<Row>> dfs) throws Exception {
+    // expression: "avg_age>=20", metrics: Map.of("avg_age", 19)
+    // expression: "avg_age+min_age", metrics: Map.of("avg_age", 19, "min_age", 8)
     return AviatorEvaluator.execute(declare.getOptions().getExpression(), metrics);
   }
 }
