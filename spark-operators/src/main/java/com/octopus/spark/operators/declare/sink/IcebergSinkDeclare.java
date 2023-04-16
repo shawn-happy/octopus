@@ -61,10 +61,11 @@ public class IcebergSinkDeclare implements SinkDeclare<IcebergSinkOptions> {
     @Override
     public void verify() {
       Verify.verify(
-          StringUtils.isEmpty(catalog), "catalog can not be empty or null in iceberg sink");
+          StringUtils.isNotBlank(catalog), "catalog can not be empty or null in iceberg sink");
       Verify.verify(
-          StringUtils.isEmpty(namespace), "namespace can not be empty or null in iceberg sink");
-      Verify.verify(StringUtils.isEmpty(table), "table can not be empty or null in iceberg sink");
+          StringUtils.isNotBlank(namespace), "namespace can not be empty or null in iceberg sink");
+      Verify.verify(
+          StringUtils.isNotBlank(table), "table can not be empty or null in iceberg sink");
     }
   }
 }

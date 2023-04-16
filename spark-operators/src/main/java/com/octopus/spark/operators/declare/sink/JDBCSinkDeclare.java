@@ -83,9 +83,9 @@ public class JDBCSinkDeclare implements SinkDeclare<JDBCSinkOptions> {
 
     @Override
     public void verify() {
-      Verify.verify(StringUtils.isBlank(url), "url can not be empty or null in jdbc sink");
+      Verify.verify(StringUtils.isNotBlank(url), "url can not be empty or null in jdbc sink");
       Verify.verify(
-          StringUtils.isBlank(getDriverClassName()),
+          StringUtils.isNotBlank(getDriverClassName()),
           "driver class can not be empty or null in jdbc sink");
     }
   }

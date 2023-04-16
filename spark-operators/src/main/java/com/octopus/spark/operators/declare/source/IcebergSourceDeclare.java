@@ -57,10 +57,12 @@ public class IcebergSourceDeclare implements SourceDeclare<IcebergSourceOptions>
     @Override
     public void verify() {
       Verify.verify(
-          StringUtils.isEmpty(catalog), "catalog can not be empty or null in iceberg source");
+          StringUtils.isNotBlank(catalog), "catalog can not be empty or null in iceberg source");
       Verify.verify(
-          StringUtils.isEmpty(namespace), "namespace can not be empty or null in iceberg source");
-      Verify.verify(StringUtils.isEmpty(table), "table can not be empty or null in iceberg source");
+          StringUtils.isNotBlank(namespace),
+          "namespace can not be empty or null in iceberg source");
+      Verify.verify(
+          StringUtils.isNotBlank(table), "table can not be empty or null in iceberg source");
     }
 
     @JsonIgnore

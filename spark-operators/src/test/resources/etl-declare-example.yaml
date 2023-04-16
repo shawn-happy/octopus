@@ -37,7 +37,7 @@ transforms:
     name: user-trans
     input:
       user: user_temp
-    output: user-trans-output
+    output: user_trans_output
     repartition: 2
     options:
       sql: select *, (FLOOR(RAND() * 100) - 10) as age from user_temp
@@ -45,7 +45,7 @@ transforms:
 sinks:
   - type: csv                                         # sink type: [parquet, csv, json, jdbc, iceberg, hive]
     name: user-sink                                   # unique sink name
-    input: user-trans-output                                 # dataframe name
+    input: user_trans_output                                 # dataframe name
     writeMode: append                                 # write mode: [append, replace, create_or_replace, replace_by_time, overwrite_partitions]
     options:
       path: "output/user-sink.csv"                                    # sink path

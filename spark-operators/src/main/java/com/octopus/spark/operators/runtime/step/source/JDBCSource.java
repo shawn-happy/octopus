@@ -49,7 +49,7 @@ public class JDBCSource extends BaseSource<JDBCSourceDeclare> {
   }
 
   private String preparedSQL(JDBCSourceOptions options) {
-    String sql = options.getQuery();
+    String sql = parser.parse(options.getQuery());
     List<ParamValue> params = options.getParams();
     if (CollectionUtils.isEmpty(params)) {
       return sql;

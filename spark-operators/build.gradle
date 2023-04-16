@@ -58,6 +58,7 @@ dependencies {
         exclude group: 'org.apache.xbean', module: 'xbean-asm9-shaded'
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
+    implementation libs_mysqlConnector
 
     annotationProcessor libs_lombok
     compileOnly libs_lombok

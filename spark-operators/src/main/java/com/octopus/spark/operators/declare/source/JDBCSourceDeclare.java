@@ -79,19 +79,21 @@ public class JDBCSourceDeclare implements SourceDeclare<JDBCSourceOptions> {
 
     @Override
     public void verify() {
-      Verify.verify(StringUtils.isBlank(url), "url can not be empty or null in jdbc source");
+      Verify.verify(StringUtils.isNotBlank(url), "url can not be empty or null in jdbc source");
       Verify.verify(
-          StringUtils.isNotBlank(partitionColumn)
-              && (StringUtils.isBlank(lowerBound)
-                  || StringUtils.isBlank(upperBound)
-                  || ObjectUtils.isEmpty(numPartitions)
-                  || numPartitions < 1),
-          "if partitionColumn is null, lowerBound,upperBound and numPartitions can not be null or empty in jdbc source. [lowerBound: %s, upperBound: %s, numPartitions: %d]",
+          (StringUtils.isBlank(partitionColumn)
+                  && StringUtils.isBlank(lowerBound)
+                  && StringUtils.isBlank(upperBound))
+              || (StringUtils.isNotBlank(partitionColumn)
+                  && (StringUtils.isNotBlank(lowerBound)
+                      || StringUtils.isNotBlank(upperBound)
+                      || (ObjectUtils.isNotEmpty(numPartitions) && numPartitions >= 1))),
+          "if partitionColumn is not null, lowerBound,upperBound and numPartitions can not be null or empty in jdbc source. [lowerBound: %s, upperBound: %s, numPartitions: %d]",
           lowerBound,
           upperBound,
           numPartitions);
       Verify.verify(
-          StringUtils.isBlank(getDriverClassName()),
+          StringUtils.isNotBlank(getDriverClassName()),
           "driver class can not be empty or null in jdbc source");
     }
 

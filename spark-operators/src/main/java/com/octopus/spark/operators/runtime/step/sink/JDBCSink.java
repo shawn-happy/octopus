@@ -5,6 +5,7 @@ import com.octopus.spark.operators.declare.common.WriteMode;
 import com.octopus.spark.operators.declare.sink.JDBCSinkDeclare;
 import com.octopus.spark.operators.declare.sink.JDBCSinkDeclare.IsolationLevel;
 import com.octopus.spark.operators.declare.sink.JDBCSinkDeclare.JDBCSinkOptions;
+import com.octopus.spark.operators.exception.SparkRuntimeException;
 import com.octopus.spark.operators.runtime.sql.MySQLSQLBuilder;
 import com.octopus.spark.operators.runtime.sql.SQLBuilder;
 import com.octopus.spark.operators.utils.SparkOperatorUtils;
@@ -86,6 +87,7 @@ public class JDBCSink extends BaseSink<JDBCSinkDeclare> {
             if (connection != null) {
               connection.rollback();
             }
+            throw new SparkRuntimeException(e);
           } finally {
             if (ps != null) {
               ps.close();

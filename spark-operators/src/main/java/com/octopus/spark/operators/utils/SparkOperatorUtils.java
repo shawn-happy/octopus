@@ -83,29 +83,21 @@ public class SparkOperatorUtils {
       PreparedStatement ps, int index, Object value, DataType dataType) throws SQLException {
     if (Objects.isNull(value)) {
       ps.setObject(index, null);
-    }
-    if (DataTypes.StringType.equals(dataType)) {
+    } else if (DataTypes.StringType.equals(dataType)) {
       ps.setString(index, value.toString());
-    }
-    if (DataTypes.BooleanType.equals(dataType)) {
+    } else if (DataTypes.BooleanType.equals(dataType)) {
       ps.setBoolean(index, Boolean.parseBoolean(value.toString()));
-    }
-    if (DataTypes.IntegerType.equals(dataType)) {
+    } else if (DataTypes.IntegerType.equals(dataType)) {
       ps.setInt(index, Integer.parseInt(value.toString()));
-    }
-    if (DataTypes.LongType.equals(dataType)) {
+    } else if (DataTypes.LongType.equals(dataType)) {
       ps.setLong(index, Long.parseLong(value.toString()));
-    }
-    if (DataTypes.FloatType.equals(dataType)) {
+    } else if (DataTypes.FloatType.equals(dataType)) {
       ps.setFloat(index, Float.parseFloat(value.toString()));
-    }
-    if (DataTypes.DoubleType.equals(dataType)) {
+    } else if (DataTypes.DoubleType.equals(dataType)) {
       ps.setDouble(index, Double.parseDouble(value.toString()));
-    }
-    if (DataTypes.DateType.equals(dataType)) {
+    } else if (DataTypes.DateType.equals(dataType)) {
       ps.setDate(index, Date.valueOf(value.toString()));
-    }
-    if (DataTypes.TimestampType.equals(dataType)) {
+    } else if (DataTypes.TimestampType.equals(dataType)) {
       ps.setTimestamp(index, Timestamp.valueOf(value.toString()));
     }
   }
