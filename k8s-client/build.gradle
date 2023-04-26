@@ -5,11 +5,10 @@ plugins {
     id 'com.diffplug.spotless'
     id "net.nemerosa.versioning"
     id 'org.springframework.boot' apply false
-    id 'org.sonarqube'
     id 'io.spring.dependency-management'
 }
 
-group 'com.shawn.octopus'
+group 'com.octopus'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -19,10 +18,13 @@ repositories {
 ext {
     k8sClientVersion = '10.0.1'
     fabric8Version = '6.2.0'
+    lombokVersion = '1.18.10'
 
     libs_k8sClient = [group: 'io.kubernetes', name: 'client-java', version: k8sClientVersion]
     libs_k8sClientExtended = [group: 'io.kubernetes', name: 'client-java-extended', version: k8sClientVersion]
     libs_fabricK8sClient = [group: 'io.fabric8', name: 'kubernetes-client', version: fabric8Version]
+    libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
+
 }
 
 allprojects {
@@ -35,21 +37,6 @@ allprojects {
         branchEnv = ['CI_COMMIT_REF_NAME', 'GIT_BRANCH', 'BRANCH_NAME']
     }
     version = versioning.info.full
-
-    sonarqube {
-        properties {
-            property 'sonar.branch.name', "${versioning.info.branch}"
-            property 'sonar.gitlab.commit_sha', "${versioning.info.commit}"
-            property 'sonar.gitlab.ref_name', "${versioning.info.branch}"
-            property 'sonar.host.url', "https://sonar.4pd.io"
-            property 'sonar.login', "4cc7e47e6156837659cb82f0ff061e3144cf692c"
-            property 'sonar.sources', "src"
-            property 'sonar.test.inclusions', "src/test/groovy,src/test/java"
-            property 'sonar.java.test.binaries', "${project.buildDir}/classes/**/test"
-            property 'sonar.exclusions', coverageExclusions.join(',')
-            property 'sonar.coverage.exclusions', coverageExclusions.join(',')
-        }
-    }
 }
 
 subprojects {
@@ -102,6 +89,11 @@ dependencies {
     implementation libs_k8sClient
     implementation libs_k8sClientExtended
     implementation libs_fabricK8sClient
+
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
