@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PodSpec {
+public class CronJobDefinition implements KubernetesResourceDefinition{
 
-  private PodTemplate template;
-  
+  private String apiVersion;
+  private KubernetesResourceKind kind;
+  private KubernetesMetaData metadata;
+  private CronJobSpec spec;
+
 }

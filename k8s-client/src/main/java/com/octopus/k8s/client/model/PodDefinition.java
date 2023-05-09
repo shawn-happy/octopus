@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PodSpec {
+public class PodDefinition implements KubernetesResourceDefinition {
 
-  private PodTemplate template;
-  
+  private String apiVersion;
+  private KubernetesResourceKind kind;
+  private KubernetesMetaData metadata;
+  private PodSpec spec;
 }

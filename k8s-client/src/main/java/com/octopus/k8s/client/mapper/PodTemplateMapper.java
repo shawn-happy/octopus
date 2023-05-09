@@ -5,7 +5,7 @@ import com.octopus.k8s.client.model.ContainerEnv;
 import com.octopus.k8s.client.model.ContainerEnvValueSource;
 import com.octopus.k8s.client.model.ContainerPort;
 import com.octopus.k8s.client.model.HttpRequest;
-import com.octopus.k8s.client.model.PodSpec;
+import com.octopus.k8s.client.model.PodTemplateSpec;
 import com.octopus.k8s.client.model.PodTemplate;
 import com.octopus.k8s.client.model.Probe;
 import io.kubernetes.client.custom.IntOrString;
@@ -52,7 +52,7 @@ public class PodTemplateMapper {
         .build();
   }
 
-  private static V1PodSpec map(@Nonnull PodSpec spec) {
+  private static V1PodSpec map(@Nonnull PodTemplateSpec spec) {
     return new V1PodSpecBuilder()
         .withContainers(toV1Container(spec.getContainers()))
         .withNodeName(spec.getNodeName())

@@ -24,6 +24,7 @@ public class DefaultDeploymentMapper implements DeploymentMapper<V1Deployment> {
     return new V1DeploymentBuilder()
         .withApiVersion(deploymentDefinition.getApiVersion())
         .withKind(deploymentDefinition.getKind().name())
+        .withMetadata(KubernetesMetaDataMapper.map(deploymentDefinition.getMetadata()))
         .withSpec(map(deploymentDefinition.getSpec()))
         .build();
   }

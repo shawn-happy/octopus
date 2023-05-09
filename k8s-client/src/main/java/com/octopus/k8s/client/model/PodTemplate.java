@@ -14,5 +14,5 @@ import lombok.Setter;
 public class PodTemplate {
 
   private KubernetesMetaData metaData;
-  private PodSpec spec;
+  private PodTemplateSpec spec;
 }
