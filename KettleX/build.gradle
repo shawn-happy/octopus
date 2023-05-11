@@ -1,0 +1,85 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'base'
+    id 'com.diffplug.spotless'
+}
+
+group 'com.octopus'
+version '1.0-SNAPSHOT'
+
+repositories {
+    maven {
+        name 'aliyun-public'
+        url "https://maven.aliyun.com/repository/public"
+    }
+    maven {
+        name 'aliyun-spring'
+        url 'https://maven.aliyun.com/repository/spring'
+    }
+    maven {
+        name 'aliyun-plugin'
+        url 'https://maven.aliyun.com/repository/gradle-plugin'
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+allprojects{
+    group 'com.octopus'
+    repositories {
+        maven {
+            name 'aliyun-public'
+            url "https://maven.aliyun.com/repository/public"
+        }
+        maven {
+            name 'aliyun-spring'
+            url 'https://maven.aliyun.com/repository/spring'
+        }
+        maven {
+            name 'aliyun-plugin'
+            url 'https://maven.aliyun.com/repository/gradle-plugin'
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+apply plugin: "java"
+apply plugin: 'groovy'
+apply plugin: 'com.diffplug.spotless'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        toggleOffOn("@formatter:off", "@formatter:on")
+        googleJavaFormat('1.8')
+        formatAnnotations()
+        target '**/*.java'
+    }
+}
+
+ext{
+    jacksonVersion = '2.12.5'
+
+    libs_jacksonDatabind = [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion]
+    libs_jacksonCore = [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion]
+    libs_jacksonAnnotations = [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion]
+    libs_jacksonDatatypeJsr310 = [group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion]
+}
+
+dependencies {
+    implementation libs_jacksonCore
+    implementation libs_jacksonDatabind
+    implementation libs_jacksonAnnotations
+    implementation libs_jacksonDatatypeJsr310
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
