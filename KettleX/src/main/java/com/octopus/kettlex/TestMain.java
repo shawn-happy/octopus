@@ -1,5 +1,3 @@
 package com.octopus.kettlex;
 
-public class TestMain {
-
-}
+public class TestMain {}

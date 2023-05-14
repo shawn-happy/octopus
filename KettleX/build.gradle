@@ -62,8 +62,16 @@ spotless {
 }
 
 ext{
+    lombokVersion = '1.18.10'
     jacksonVersion = '2.12.5'
+    slf4jVersion = '1.7.30'
+    commonCollections4Version = '4.4'
+    commonsLang3Version = '3.4'
 
+    libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
+    libs_slf4jApi = [group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion]
+    libs_commonsCollections4 = [group: 'org.apache.commons', name: 'commons-collections4', version: commonCollections4Version]
+    libs_commonsLang3 = [group: 'org.apache.commons', name: 'commons-lang3', version: commonsLang3Version]
     libs_jacksonDatabind = [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion]
     libs_jacksonCore = [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion]
     libs_jacksonAnnotations = [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion]
@@ -71,11 +79,18 @@ ext{
 }
 
 dependencies {
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    implementation libs_slf4jApi
     implementation libs_jacksonCore
     implementation libs_jacksonDatabind
     implementation libs_jacksonAnnotations
     implementation libs_jacksonDatatypeJsr310
+    implementation libs_commonsCollections4
+    implementation libs_commonsLang3
 
+    testCompileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }

@@ -1,8 +1,22 @@
 package com.octopus.kettlex.core.steps;
 
 import com.octopus.kettlex.core.exception.KettleXException;
+import com.octopus.kettlex.core.row.RowMeta;
+import com.octopus.kettlex.core.statistics.ExecutionState;
 
-public interface Step<SM extends StepMeta, SC extends StepContext> {
+public interface Step {
+
+  StepMeta getStepMeta();
+
+  StepContext getStepContext();
+
+  /**
+   * Initialize and do work where other steps need to wait for...
+   *
+   * @param sm The metadata to work with
+   * @param sc The data to initialize
+   */
+  boolean init();
 
   /**
    * Perform the equivalent of processing one row. Typically this means reading a row from input
@@ -14,15 +28,7 @@ public interface Step<SM extends StepMeta, SC extends StepContext> {
    * @return false if no more rows can be processed or an error occurred.
    * @throws KettleXException
    */
-  boolean processRow(SM sm, SC sc) throws KettleXException;
-
-  /**
-   * Initialize and do work where other steps need to wait for...
-   *
-   * @param sm The metadata to work with
-   * @param sc The data to initialize
-   */
-  boolean init(SM sm, SC sc);
+  boolean processRow() throws KettleXException;
 
   /**
    * Dispose of this step: close files, empty logs, etc.
@@ -30,66 +36,42 @@ public interface Step<SM extends StepMeta, SC extends StepContext> {
    * @param smi The metadata to work with
    * @param sc The data to dispose of
    */
-  void dispose(SM smi, SC sc);
+  void dispose();
 
-  /** Mark the start time of the step. */
-  void markStart();
-
-  /** Mark the end time of the step. */
-  void markSuccess();
-
-  void markFailed();
+  Integer getLevelSeq();
 
   /**
-   * Stop running operations...
+   * Put a row on the destination rowsets.
    *
-   * @param sm The metadata that might be needed by the step to stop running.
-   * @param sc The interface to the step data containing the connections, resultsets, open files,
-   *     etc.
+   * @param row The row to send to the destinations steps
    * @throws KettleXException
    */
-  void stopRunning(SM sm, SC sc) throws KettleXException;
+  public void putRow(RowMeta row, Object[] data) throws KettleXException;
 
   /**
-   * @return true if the step is running after having been initialized
+   * @return a row from the source step(s).
+   * @throws KettleXException
    */
-  boolean isRunning();
+  public Object[] getRow() throws KettleXException;
 
-  /**
-   * Flag the step as running or not
-   *
-   * @param running the running flag to set
-   */
-  void setRunning(boolean running);
+  /** Signal output done to destination steps */
+  public void setOutputDone();
 
-  /**
-   * @return True if the step is marked as stopped. Execution should stop immediate.
-   */
-  boolean isStopped();
-
-  /**
-   * @param stopped true if the step needs to be stopped
-   */
-  void setStopped(boolean stopped);
-
-  /**
-   * @return True if the step is paused
-   */
-  boolean isPaused();
+  void markStatus(ExecutionState status);
 
   /** Flags all rowsets as stopped/completed/finished. */
   void stopAll();
 
-  /** Pause a running step */
-  void pauseRunning();
+  /** @return true if the step is running after having been initialized */
+  boolean isRunning();
 
-  /** Resume a running step */
-  void resumeRunning();
+  /** @return True if the step is marked as stopped. Execution should stop immediate. */
+  boolean isStopped();
 
   /**
-   * Get the name of the step.
+   * Sets the number of errors
    *
-   * @return the name of the step
+   * @param errors the number of errors to set
    */
-  String getStepName();
+  void setErrors(long errors);
 }
