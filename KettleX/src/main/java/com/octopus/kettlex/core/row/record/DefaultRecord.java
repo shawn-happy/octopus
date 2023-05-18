@@ -1,0 +1,70 @@
+package com.octopus.kettlex.core.row.record;
+
+import com.octopus.kettlex.core.exception.KettleXException;
+import com.octopus.kettlex.core.row.Record;
+import com.octopus.kettlex.core.row.column.Column;
+import com.octopus.kettlex.core.utils.JsonUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class DefaultRecord implements Record {
+
+  private List<Column> columns;
+
+  private int byteSize;
+
+  public DefaultRecord() {
+    this.columns = new ArrayList<>(16);
+  }
+
+  @Override
+  public void addColumn(Column column) {
+    columns.add(column);
+  }
+
+  @Override
+  public Column getColumn(int i) {
+    if (i < 0 || i >= columns.size()) {
+      return null;
+    }
+    return columns.get(i);
+  }
+
+  @Override
+  public void setColumn(int i, final Column column) {
+    if (i < 0) {
+      throw new KettleXException("");
+    }
+
+    if (i >= columns.size()) {
+      expandCapacity(i + 1);
+    }
+    this.columns.set(i, column);
+  }
+
+  @Override
+  public String toString() {
+    Map<String, Object> json = new HashMap<String, Object>();
+    json.put("size", this.getColumnNumber());
+    json.put("data", this.columns);
+    return JsonUtil.toJson(json).orElse(null);
+  }
+
+  @Override
+  public int getColumnNumber() {
+    return this.columns.size();
+  }
+
+  private void expandCapacity(int totalSize) {
+    if (totalSize <= 0) {
+      return;
+    }
+
+    int needToExpand = totalSize - columns.size();
+    while (needToExpand-- > 0) {
+      this.columns.add(null);
+    }
+  }
+}

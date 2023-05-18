@@ -67,9 +67,13 @@ ext{
     slf4jVersion = '1.7.30'
     commonCollections4Version = '4.4'
     commonsLang3Version = '3.4'
+    commonsIOVersion = '2.11.0'
+    guavaVersion = '31.1-jre'
 
+    libs_guava = [group: 'com.google.guava', name: 'guava', version: guavaVersion]
     libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
     libs_slf4jApi = [group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion]
+    libs_commonsIO = [group: 'commons-io', name: 'commons-io', version: commonsIOVersion]
     libs_commonsCollections4 = [group: 'org.apache.commons', name: 'commons-collections4', version: commonCollections4Version]
     libs_commonsLang3 = [group: 'org.apache.commons', name: 'commons-lang3', version: commonsLang3Version]
     libs_jacksonDatabind = [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion]
@@ -88,6 +92,8 @@ dependencies {
     implementation libs_jacksonDatatypeJsr310
     implementation libs_commonsCollections4
     implementation libs_commonsLang3
+    implementation libs_commonsIO
+    implementation libs_guava
 
     testCompileOnly libs_lombok
     testAnnotationProcessor libs_lombok

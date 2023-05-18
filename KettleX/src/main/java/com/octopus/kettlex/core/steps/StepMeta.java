@@ -1,17 +1,17 @@
 package com.octopus.kettlex.core.steps;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.octopus.kettlex.core.exception.KettleXException;
-import com.octopus.kettlex.core.exception.KettleXJSONException;
+import com.octopus.kettlex.core.steps.read.rowgenerator.RowGeneratorMeta;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "stepType")
+@JsonSubTypes({@JsonSubTypes.Type(value = RowGeneratorMeta.class, name = "ROW_GENERATOR_INPUT")})
 public interface StepMeta {
 
   public StepType getStepType();
 
   public String getStepName();
-
-  /** Set default values */
-  void setDefault();
 
   /**
    * Get the JSON that represents the values in this step
@@ -20,12 +20,4 @@ public interface StepMeta {
    * @throws KettleXException in case there is a conversion or JSON encoding error
    */
   String getJSON() throws KettleXException;
-
-  /**
-   * Load the values for this step from an XML Node
-   *
-   * @param stepNode the Node to get the info from
-   * @throws KettleXJSONException When an unexpected XML error occurred. (malformed etc.)
-   */
-  void loadJson(JsonNode stepNode) throws KettleXJSONException;
 }

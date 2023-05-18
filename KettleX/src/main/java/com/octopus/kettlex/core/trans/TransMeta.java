@@ -94,7 +94,9 @@ public class TransMeta {
         this.steps = new ArrayList<>(stepArrayNode.size());
         for (int i = 0; i < stepArrayNode.size(); i++) {
           JsonNode stepNode = stepArrayNode.get(i);
-          this.steps.add(new TransStepMeta(stepNode));
+          this.steps.add(
+              JsonUtil.fromJson(stepNode.asText(), new TypeReference<TransStepMeta>() {})
+                  .orElseThrow(() -> new KettleXJSONException("parse trans meta json error")));
         }
       }
     } else {

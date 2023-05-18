@@ -1,7 +1,9 @@
 package com.octopus.kettlex.core.steps;
 
 public enum StepType {
-  RDBMS_INPUT(PrimaryCategory.SOURCE, "TableInput");
+  RDBMS_INPUT(PrimaryCategory.SOURCE, "TableInput"),
+  ROW_GENERATOR_INPUT(PrimaryCategory.SOURCE, "RowGenerator"),
+  ;
 
   private final PrimaryCategory primaryCategory;
   private final String secondaryCategory;

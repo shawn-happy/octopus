@@ -1,0 +1,18 @@
+{
+  "stepName": "rowGeneratorTest",
+  "stepType": "ROW_GENERATOR_INPUT",
+  "fields": [
+    {
+      "name": "id",
+      "type": "String",
+      "value": "1"
+    },
+    {
+      "name": "date",
+      "type": "Date",
+      "value": "2023-05-18 13:14:15",
+      "format": "yyyy-MM-dd HH:mm:ss",
+      "length": 13
+    }
+  ]
+}

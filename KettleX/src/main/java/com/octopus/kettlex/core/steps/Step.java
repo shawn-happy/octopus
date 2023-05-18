@@ -1,7 +1,7 @@
 package com.octopus.kettlex.core.steps;
 
 import com.octopus.kettlex.core.exception.KettleXException;
-import com.octopus.kettlex.core.row.RowMeta;
+import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.statistics.ExecutionState;
 
 public interface Step {
@@ -46,7 +46,7 @@ public interface Step {
    * @param row The row to send to the destinations steps
    * @throws KettleXException
    */
-  public void putRow(RowMeta row, Object[] data) throws KettleXException;
+  public void putRow(Record row, Object[] data) throws KettleXException;
 
   /**
    * @return a row from the source step(s).
