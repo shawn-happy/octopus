@@ -1,5 +1,6 @@
 package com.octopus.kettlex.core.exception;
 
+/** load json config exception */
 public class KettleXJSONException extends KettleXException {
 
   public KettleXJSONException() {

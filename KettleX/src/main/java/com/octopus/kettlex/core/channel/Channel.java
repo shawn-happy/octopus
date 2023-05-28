@@ -1,25 +1,22 @@
 package com.octopus.kettlex.core.channel;
 
 import com.octopus.kettlex.core.row.Record;
-import com.octopus.kettlex.core.statistics.Communication;
+import com.octopus.kettlex.core.row.record.TerminateRecord;
 import java.util.Collection;
-import java.util.List;
 
 public interface Channel {
 
-  Communication getCommunication();
+  void push(final Record r);
 
-  boolean put(Record record);
+  void pushAll(final Collection<Record> rs);
 
-  boolean putAll(Collection<Record> records);
+  void pushTerminate(TerminateRecord tr);
 
   Record pull();
 
-  List<Record> pullAll();
+  int size();
 
   boolean isEmpty();
-
-  int size();
 
   void clear();
 }

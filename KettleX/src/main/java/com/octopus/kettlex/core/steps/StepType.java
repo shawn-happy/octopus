@@ -1,23 +1,34 @@
 package com.octopus.kettlex.core.steps;
 
+import static com.octopus.kettlex.core.steps.StepType.PrimaryCategory.SINK;
+import static com.octopus.kettlex.core.steps.StepType.PrimaryCategory.SOURCE;
+import static com.octopus.kettlex.core.steps.StepType.PrimaryCategory.TRANSFORMATION;
+
 public enum StepType {
-  RDBMS_INPUT(PrimaryCategory.SOURCE, "TableInput"),
-  ROW_GENERATOR_INPUT(PrimaryCategory.SOURCE, "RowGenerator"),
+  // source step
+  ROW_GENERATOR(SOURCE),
+
+  // transform step
+  VALUE_MAPPER(TRANSFORMATION),
+
+  // sink step
+  LOG_MESSAGE(SINK),
   ;
 
   private final PrimaryCategory primaryCategory;
-  private final String secondaryCategory;
 
-  StepType(PrimaryCategory primaryCategory, String secondaryCategory) {
+  StepType(PrimaryCategory primaryCategory) {
     this.primaryCategory = primaryCategory;
-    this.secondaryCategory = secondaryCategory;
   }
 
   public PrimaryCategory getPrimaryCategory() {
     return primaryCategory;
   }
 
-  public String getSecondaryCategory() {
-    return secondaryCategory;
+  public static enum PrimaryCategory {
+    SOURCE,
+    TRANSFORMATION,
+    SINK,
+    ;
   }
 }

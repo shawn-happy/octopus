@@ -2,9 +2,7 @@ package com.octopus.kettlex.core.exception;
 
 public class KettleXTransException extends KettleXException {
 
-  public KettleXTransException() {
-    super();
-  }
+  public KettleXTransException() {}
 
   public KettleXTransException(String message) {
     super(message);

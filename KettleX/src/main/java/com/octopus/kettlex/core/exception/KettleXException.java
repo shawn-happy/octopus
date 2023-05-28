@@ -3,6 +3,7 @@ package com.octopus.kettlex.core.exception;
 public class KettleXException extends RuntimeException {
 
   private static final String CR = System.getProperty("line.separator");
+
   /** Constructs a new throwable with null as its detail message. */
   public KettleXException() {
     super();
@@ -44,34 +45,34 @@ public class KettleXException extends RuntimeException {
   /** get the messages back to it's origin cause. */
   @Override
   public String getMessage() {
-    StringBuilder retval = new StringBuilder(CR);
-    retval.append(super.getMessage()).append(CR);
+    String retval = CR;
+    retval += super.getMessage() + CR;
 
     Throwable cause = getCause();
     if (cause != null) {
       String message = cause.getMessage();
       if (message != null) {
-        retval.append(message).append(CR);
+        retval += message + CR;
       } else {
         // Add with stack trace elements of cause...
         StackTraceElement[] ste = cause.getStackTrace();
         for (int i = ste.length - 1; i >= 0; i--) {
-          retval
-              .append(" at ")
-              .append(ste[i].getClassName())
-              .append(".")
-              .append(ste[i].getMethodName())
-              .append(" (")
-              .append(ste[i].getFileName())
-              .append(":")
-              .append(ste[i].getLineNumber())
-              .append(")")
-              .append(CR);
+          retval +=
+              " at "
+                  + ste[i].getClassName()
+                  + "."
+                  + ste[i].getMethodName()
+                  + " ("
+                  + ste[i].getFileName()
+                  + ":"
+                  + ste[i].getLineNumber()
+                  + ")"
+                  + CR;
         }
       }
     }
 
-    return retval.toString();
+    return retval;
   }
 
   public String getSuperMessage() {

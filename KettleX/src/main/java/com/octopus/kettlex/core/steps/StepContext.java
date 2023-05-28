@@ -1,16 +1,13 @@
 package com.octopus.kettlex.core.steps;
 
-import com.octopus.kettlex.core.statistics.ExecutionState;
+import com.octopus.kettlex.core.monitor.ExecutionStatus;
 
+/**
+ * step context
+ *
+ * @author shawn
+ */
 public interface StepContext {
 
-  void init();
-
-  void setStatus(ExecutionState status);
-
-  void initCommunication();
-
-  void reportStepCommunication();
-
-  void updateRowStatistics();
+  void markStatus(ExecutionStatus status);
 }

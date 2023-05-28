@@ -10,18 +10,28 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultRecord implements Record {
-
   private List<Column> columns;
 
-  private int byteSize;
-
   public DefaultRecord() {
-    this.columns = new ArrayList<>(16);
+    columns = new ArrayList<>(2 << 4);
   }
 
   @Override
   public void addColumn(Column column) {
     columns.add(column);
+  }
+
+  @Override
+  public void setColumn(int i, Column column) {
+    if (i < 0) {
+      throw new KettleXException("index cannot be less than 0");
+    }
+
+    if (i >= columns.size()) {
+      expandCapacity(i + 1);
+    }
+
+    this.columns.set(i, column);
   }
 
   @Override
@@ -33,15 +43,8 @@ public class DefaultRecord implements Record {
   }
 
   @Override
-  public void setColumn(int i, final Column column) {
-    if (i < 0) {
-      throw new KettleXException("");
-    }
-
-    if (i >= columns.size()) {
-      expandCapacity(i + 1);
-    }
-    this.columns.set(i, column);
+  public int getColumnNumber() {
+    return this.columns.size();
   }
 
   @Override
@@ -50,11 +53,6 @@ public class DefaultRecord implements Record {
     json.put("size", this.getColumnNumber());
     json.put("data", this.columns);
     return JsonUtil.toJson(json).orElse(null);
-  }
-
-  @Override
-  public int getColumnNumber() {
-    return this.columns.size();
   }
 
   private void expandCapacity(int totalSize) {
