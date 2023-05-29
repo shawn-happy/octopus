@@ -14,15 +14,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ValueMapper implements Transform<ValueMapperConfig, ValueMapperContext> {
+public class ValueMapper implements Transform<ValueMapperMeta> {
 
-  private final ValueMapperConfig stepConfig;
-  private final ValueMapperContext stepContext;
-
-  @Override
-  public int order() {
-    return 0;
-  }
+  private final ValueMapperMeta stepConfig;
 
   @Override
   public boolean init() throws KettleXException {

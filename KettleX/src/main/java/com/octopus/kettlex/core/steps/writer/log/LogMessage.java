@@ -13,17 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @AllArgsConstructor
-public class LogMessage implements Writer<LogMessageConfig, LogMessageContext> {
+public class LogMessage implements Writer<LogMessageMeta> {
 
-  private final LogMessageConfig stepConfig;
-  private final LogMessageContext stepContext;
+  private final LogMessageMeta stepConfig;
 
   private static final String CR = System.getProperty("line.separator");
-
-  @Override
-  public int order() {
-    return 0;
-  }
 
   @Override
   public boolean init() throws KettleXException {
@@ -37,7 +31,9 @@ public class LogMessage implements Writer<LogMessageConfig, LogMessageContext> {
   public void writer(RecordExchanger recordExchanger) throws KettleXStepExecuteException {
     Record record = recordExchanger.fetch();
     StringBuilder builder = new StringBuilder();
+    builder.append(CR);
     builder.append("------------------------------>");
+    builder.append(CR);
     for (int i = 0; i < record.getColumnNumber(); i++) {
       Column column = record.getColumn(i);
       Object rawData = column.getRawData();

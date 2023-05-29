@@ -1,6 +1,6 @@
 package com.octopus.kettlex.core.steps.writer.log;
 
-import com.octopus.kettlex.core.steps.StepConfig;
+import com.octopus.kettlex.core.steps.StepMeta;
 import com.octopus.kettlex.core.steps.StepType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LogMessageConfig implements StepConfig {
+public class LogMessageMeta implements StepMeta {
 
   private String id;
   private String name;

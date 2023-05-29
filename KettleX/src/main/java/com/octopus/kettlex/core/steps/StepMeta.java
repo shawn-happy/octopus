@@ -3,9 +3,9 @@ package com.octopus.kettlex.core.steps;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
-import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGeneratorConfig;
-import com.octopus.kettlex.core.steps.transform.valueMapper.ValueMapperConfig;
-import com.octopus.kettlex.core.steps.writer.log.LogMessageConfig;
+import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGeneratorMeta;
+import com.octopus.kettlex.core.steps.transform.valueMapper.ValueMapperMeta;
+import com.octopus.kettlex.core.steps.writer.log.LogMessageMeta;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,11 +16,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "stepType")
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = RowGeneratorConfig.class, name = "ROW_GENERATOR"),
-  @JsonSubTypes.Type(value = ValueMapperConfig.class, name = "VALUE_MAPPER"),
-  @JsonSubTypes.Type(value = LogMessageConfig.class, name = "LOG_MESSAGE"),
+  @JsonSubTypes.Type(value = RowGeneratorMeta.class, name = "ROW_GENERATOR"),
+  @JsonSubTypes.Type(value = ValueMapperMeta.class, name = "VALUE_MAPPER"),
+  @JsonSubTypes.Type(value = LogMessageMeta.class, name = "LOG_MESSAGE"),
 })
-public interface StepConfig extends Verifyable {
+public interface StepMeta extends Verifyable {
 
   String getId();
 

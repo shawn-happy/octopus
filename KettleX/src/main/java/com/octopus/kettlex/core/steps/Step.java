@@ -7,13 +7,9 @@ import com.octopus.kettlex.core.exception.KettleXException;
  * @param <CONFIG>
  * @param <CONTEXT>
  */
-public interface Step<CONFIG extends StepConfig, CONTEXT extends StepContext> {
+public interface Step<CONFIG extends StepMeta> {
 
   CONFIG getStepConfig();
-
-  CONTEXT getStepContext();
-
-  int order();
 
   /**
    * Initialize and do work where other steps need to wait for...

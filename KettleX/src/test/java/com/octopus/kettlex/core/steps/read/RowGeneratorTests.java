@@ -16,7 +16,7 @@ import com.octopus.kettlex.core.row.column.FieldType;
 import com.octopus.kettlex.core.row.record.DefaultRecordExchanger;
 import com.octopus.kettlex.core.steps.common.StepFactory;
 import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGenerator;
-import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGeneratorConfig;
+import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGeneratorMeta;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
@@ -26,11 +26,11 @@ public class RowGeneratorTests {
 
   @Test
   public void createRowGeneratorMeta() throws Exception {
-    RowGeneratorConfig meta =
+    RowGeneratorMeta meta =
         JsonUtil.fromJson(
                 IOUtils.toString(
                     Resources.getResource("steps/read/rowGenerator.json"), StandardCharsets.UTF_8),
-                new TypeReference<RowGeneratorConfig>() {})
+                new TypeReference<RowGeneratorMeta>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
     assertNotNull(meta);
     assertEquals(ROW_GENERATOR, meta.getStepType());
@@ -53,11 +53,11 @@ public class RowGeneratorTests {
 
   @Test
   public void read() throws Exception {
-    RowGeneratorConfig meta =
+    RowGeneratorMeta meta =
         JsonUtil.fromJson(
                 IOUtils.toString(
                     Resources.getResource("steps/read/rowGenerator.json"), StandardCharsets.UTF_8),
-                new TypeReference<RowGeneratorConfig>() {})
+                new TypeReference<RowGeneratorMeta>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
     RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta);
     RecordExchanger recordExchanger = new DefaultRecordExchanger(new DefaultChannel());

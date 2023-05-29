@@ -65,6 +65,7 @@ ext{
     lombokVersion = '1.18.10'
     jacksonVersion = '2.12.5'
     slf4jVersion = '1.7.30'
+    log4jVersion = '2.17.1'
     commonCollections4Version = '4.4'
     commonsLang3Version = '3.4'
     commonsIOVersion = '2.11.0'
@@ -73,6 +74,7 @@ ext{
     libs_guava = [group: 'com.google.guava', name: 'guava', version: guavaVersion]
     libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
     libs_slf4jApi = [group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion]
+    libs_log4jSlf4jImpl = [group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: log4jVersion]
     libs_commonsIO = [group: 'commons-io', name: 'commons-io', version: commonsIOVersion]
     libs_commonsCollections4 = [group: 'org.apache.commons', name: 'commons-collections4', version: commonCollections4Version]
     libs_commonsLang3 = [group: 'org.apache.commons', name: 'commons-lang3', version: commonsLang3Version]
@@ -86,6 +88,7 @@ dependencies {
     annotationProcessor libs_lombok
     compileOnly libs_lombok
     implementation libs_slf4jApi
+    implementation libs_log4jSlf4jImpl
     implementation libs_jacksonCore
     implementation libs_jacksonDatabind
     implementation libs_jacksonAnnotations

@@ -11,14 +11,12 @@ import com.octopus.kettlex.core.steps.common.Field;
 import lombok.Getter;
 
 @Getter
-public class RowGenerator implements Reader<RowGeneratorConfig, RowGeneratorContext> {
+public class RowGenerator implements Reader<RowGeneratorMeta> {
 
-  private final RowGeneratorConfig stepConfig;
-  private final RowGeneratorContext stepContext;
+  private final RowGeneratorMeta stepConfig;
 
-  public RowGenerator(RowGeneratorConfig stepConfig, RowGeneratorContext stepContext) {
+  public RowGenerator(RowGeneratorMeta stepConfig) {
     this.stepConfig = stepConfig;
-    this.stepContext = stepContext;
   }
 
   @Override
@@ -46,11 +44,6 @@ public class RowGenerator implements Reader<RowGeneratorConfig, RowGeneratorCont
               .build());
     }
     recordExchanger.send(record);
-  }
-
-  @Override
-  public int order() {
-    return 0;
   }
 
   @Override
