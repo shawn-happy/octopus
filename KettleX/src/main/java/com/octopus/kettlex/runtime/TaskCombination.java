@@ -33,8 +33,8 @@ public class TaskCombination {
     List<TransformationConfig<?>> transformations = configuration.getTransformations();
     if (CollectionUtils.isNotEmpty(transformations)) {
       for (TransformationConfig<?> transformation : transformations) {
-        Set<String> inputs = transformation.getInputs();
-        outputs.containsAll(inputs);
+        String input = transformation.getInput();
+        outputs.contains(input);
         String output = transformation.getOutput();
         outputs.add(output);
       }
