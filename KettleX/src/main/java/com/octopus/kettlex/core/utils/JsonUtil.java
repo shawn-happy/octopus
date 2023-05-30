@@ -33,7 +33,7 @@ public class JsonUtil {
       return Optional.of(OM.writeValueAsString(object));
     } catch (JsonProcessingException e) {
       log.error("error on serialize", e);
-      return Optional.empty();
+      throw new RuntimeException(e);
     }
   }
   /**
@@ -68,12 +68,8 @@ public class JsonUtil {
       return Optional.of(OM.readValue(json, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
-      return Optional.empty();
+      throw new RuntimeException(e);
     }
-  }
-
-  public static <T> T readValue(String json, Class<T> type) throws IOException {
-    return OM.readValue(json, type);
   }
 
   /**
@@ -105,7 +101,7 @@ public class JsonUtil {
       return Optional.of(OM.readValue(json, type));
     } catch (IOException e) {
       log.error("error on deserialize for json {}", json, e);
-      return Optional.empty();
+      throw new RuntimeException(e);
     }
   }
 
@@ -136,7 +132,7 @@ public class JsonUtil {
       return Optional.of(OM.readValue(json, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
-      return null;
+      throw new RuntimeException(e);
     }
   }
 
@@ -145,7 +141,7 @@ public class JsonUtil {
       return Optional.of(OM.readValue(json, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
-      return Optional.empty();
+      throw new RuntimeException(e);
     }
   }
 
@@ -164,7 +160,7 @@ public class JsonUtil {
       return Optional.of(OM.readTree(json));
     } catch (IOException e) {
       log.error("error on deserialize", e);
-      return Optional.empty();
+      throw new RuntimeException(e);
     }
   }
 
@@ -181,7 +177,7 @@ public class JsonUtil {
       return Optional.ofNullable(OM.readTree(json));
     } catch (IOException e) {
       log.error("error on deserialize", e);
-      return Optional.empty();
+      throw new RuntimeException(e);
     }
   }
 }

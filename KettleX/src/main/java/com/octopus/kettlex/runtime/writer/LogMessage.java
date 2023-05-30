@@ -1,31 +1,27 @@
-package com.octopus.kettlex.core.steps.writer.log;
+package com.octopus.kettlex.runtime.writer;
 
-import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.RecordExchanger;
 import com.octopus.kettlex.core.row.column.Column;
+import com.octopus.kettlex.core.steps.BaseStep;
 import com.octopus.kettlex.core.steps.Writer;
-import lombok.AllArgsConstructor;
+import com.octopus.kettlex.model.writer.LogMessageConfig;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-@AllArgsConstructor
-public class LogMessage implements Writer<LogMessageMeta> {
+public class LogMessage extends BaseStep<LogMessageConfig> implements Writer<LogMessageConfig> {
 
-  private final LogMessageMeta stepConfig;
+  private final LogMessageConfig stepConfig;
 
   private static final String CR = System.getProperty("line.separator");
 
-  @Override
-  public boolean init() throws KettleXException {
-    return true;
+  public LogMessage(LogMessageConfig stepConfig) {
+    super(stepConfig);
+    this.stepConfig = stepConfig;
   }
-
-  @Override
-  public void destory() throws KettleXException {}
 
   @Override
   public void writer(RecordExchanger recordExchanger) throws KettleXStepExecuteException {

@@ -1,4 +1,4 @@
-package com.octopus.kettlex.core.steps.common;
+package com.octopus.kettlex.model;
 
 import com.octopus.kettlex.core.row.column.FieldType;
 import lombok.AllArgsConstructor;

@@ -1,13 +1,14 @@
 package com.octopus.kettlex.core.steps;
 
 import com.octopus.kettlex.core.exception.KettleXException;
+import com.octopus.kettlex.model.StepConfig;
 
 /**
  * @author shawn
  * @param <CONFIG>
  * @param <CONTEXT>
  */
-public interface Step<CONFIG extends StepMeta> {
+public interface Step<CONFIG extends StepConfig> {
 
   CONFIG getStepConfig();
 

@@ -1,39 +1,38 @@
-package com.octopus.kettlex.core.steps.transform.valueMapper;
+package com.octopus.kettlex.runtime.transformation;
 
-import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.RecordExchanger;
 import com.octopus.kettlex.core.row.column.Column;
 import com.octopus.kettlex.core.row.column.FieldType;
 import com.octopus.kettlex.core.row.record.DefaultRecord;
+import com.octopus.kettlex.core.steps.BaseStep;
 import com.octopus.kettlex.core.steps.Transform;
+import com.octopus.kettlex.model.transformation.ValueMapperConfig;
+import com.octopus.kettlex.model.transformation.ValueMapperConfig.ValueMapperOptions;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class ValueMapper implements Transform<ValueMapperMeta> {
+public class ValueMapper extends BaseStep<ValueMapperConfig>
+    implements Transform<ValueMapperConfig> {
 
-  private final ValueMapperMeta stepConfig;
+  private final ValueMapperConfig stepConfig;
 
-  @Override
-  public boolean init() throws KettleXException {
-    return true;
+  public ValueMapper(ValueMapperConfig stepConfig) {
+    super(stepConfig);
+    this.stepConfig = stepConfig;
   }
-
-  @Override
-  public void destory() throws KettleXException {}
 
   @Override
   public void processRow(RecordExchanger recordExchanger) throws KettleXStepExecuteException {
     Record record = recordExchanger.fetch();
     Record targetRecord = new DefaultRecord();
-    Map<Object, Object> fieldValueMap = stepConfig.getFieldValueMap();
-    String sourceField = stepConfig.getSourceField();
-    String targetField = stepConfig.getTargetField();
-    FieldType targetFieldType = stepConfig.getTargetFieldType();
+    ValueMapperOptions valueMapperOptions = stepConfig.getOptions();
+    Map<Object, Object> fieldValueMap = valueMapperOptions.getFieldValueMap();
+    String sourceField = valueMapperOptions.getSourceField();
+    String targetField = valueMapperOptions.getTargetField();
+    FieldType targetFieldType = valueMapperOptions.getTargetFieldType();
     for (int i = 0; i < record.getColumnNumber(); i++) {
       Column column = record.getColumn(i);
       Object sourceValue = column.getRawData();

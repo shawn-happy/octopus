@@ -16,19 +16,27 @@ public class DefaultChannel implements Channel {
   private int capacity;
   private BlockingQueue<Record> queue;
   private ReentrantReadWriteLock lock;
+  private final String id;
 
-  public DefaultChannel() {
+  public DefaultChannel(String id) {
     this.capacity = DEFAULT_CAPACITY;
     this.queue = new ArrayBlockingQueue<>(capacity);
+    this.id = id;
   }
 
-  public DefaultChannel(int capacity) {
+  public DefaultChannel(int capacity, String id) {
     if (capacity <= 0) {
       throw new IllegalArgumentException(
           String.format("channel capacity [%d] must more than 0.", capacity));
     }
     this.capacity = capacity;
     this.queue = new ArrayBlockingQueue<>(capacity);
+    this.id = id;
+  }
+
+  @Override
+  public String getId() {
+    return id;
   }
 
   @Override

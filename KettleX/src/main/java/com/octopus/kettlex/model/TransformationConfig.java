@@ -1,8 +1,6 @@
 package com.octopus.kettlex.model;
 
-public interface TransformationConfig<P extends TransformationOptions> extends StepConfig {
-
-  P getOptions();
+public interface TransformationConfig<P extends TransformationOptions> extends StepConfig<P> {
 
   String getInput();
 

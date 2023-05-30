@@ -6,6 +6,8 @@ import java.util.Collection;
 
 public interface Channel {
 
+  String getId();
+
   void push(final Record r);
 
   void pushAll(final Collection<Record> rs);

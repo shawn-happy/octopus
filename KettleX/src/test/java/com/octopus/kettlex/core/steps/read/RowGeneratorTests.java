@@ -14,10 +14,11 @@ import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.RecordExchanger;
 import com.octopus.kettlex.core.row.column.FieldType;
 import com.octopus.kettlex.core.row.record.DefaultRecordExchanger;
-import com.octopus.kettlex.core.steps.common.StepFactory;
-import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGenerator;
-import com.octopus.kettlex.core.steps.reader.rowgenerator.RowGeneratorMeta;
+import com.octopus.kettlex.core.steps.StepFactory;
 import com.octopus.kettlex.core.utils.JsonUtil;
+import com.octopus.kettlex.model.reader.RowGeneratorConfig;
+import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
+import com.octopus.kettlex.runtime.reader.RowGenerator;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -26,41 +27,43 @@ public class RowGeneratorTests {
 
   @Test
   public void createRowGeneratorMeta() throws Exception {
-    RowGeneratorMeta meta =
+    RowGeneratorConfig meta =
         JsonUtil.fromJson(
                 IOUtils.toString(
                     Resources.getResource("steps/read/rowGenerator.json"), StandardCharsets.UTF_8),
-                new TypeReference<RowGeneratorMeta>() {})
+                new TypeReference<RowGeneratorConfig>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
     assertNotNull(meta);
-    assertEquals(ROW_GENERATOR, meta.getStepType());
+    assertEquals(ROW_GENERATOR, meta.getType());
     assertEquals("rowGeneratorTest", meta.getName());
-    assertNotNull(meta.getFields());
-    assertTrue(meta.getFields().length == 2);
+    RowGeneratorOptions options = meta.getOptions();
 
-    assertEquals("id", meta.getFields()[0].getName());
-    assertEquals(FieldType.String, meta.getFields()[0].getFieldType());
-    assertEquals("1", meta.getFields()[0].getValue());
-    assertNull(meta.getFields()[0].getFormat());
-    assertNull(meta.getFields()[0].getLength());
+    assertNotNull(options.getFields());
+    assertTrue(options.getFields().length == 2);
 
-    assertEquals("date", meta.getFields()[1].getName());
-    assertEquals(FieldType.Date, meta.getFields()[1].getFieldType());
-    assertEquals("2023-05-18 13:14:15", meta.getFields()[1].getValue());
-    assertEquals("yyyy-MM-dd HH:mm:ss", meta.getFields()[1].getFormat());
-    assertEquals(13, meta.getFields()[1].getLength());
+    assertEquals("id", options.getFields()[0].getName());
+    assertEquals(FieldType.String, options.getFields()[0].getFieldType());
+    assertEquals("1", options.getFields()[0].getValue());
+    assertNull(options.getFields()[0].getFormat());
+    assertNull(options.getFields()[0].getLength());
+
+    assertEquals("date", options.getFields()[1].getName());
+    assertEquals(FieldType.Date, options.getFields()[1].getFieldType());
+    assertEquals("2023-05-18 13:14:15", options.getFields()[1].getValue());
+    assertEquals("yyyy-MM-dd HH:mm:ss", options.getFields()[1].getFormat());
+    assertEquals(13, options.getFields()[1].getLength());
   }
 
   @Test
   public void read() throws Exception {
-    RowGeneratorMeta meta =
+    RowGeneratorConfig meta =
         JsonUtil.fromJson(
                 IOUtils.toString(
                     Resources.getResource("steps/read/rowGenerator.json"), StandardCharsets.UTF_8),
-                new TypeReference<RowGeneratorMeta>() {})
+                new TypeReference<RowGeneratorConfig>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
     RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta);
-    RecordExchanger recordExchanger = new DefaultRecordExchanger(new DefaultChannel());
+    RecordExchanger recordExchanger = new DefaultRecordExchanger(new DefaultChannel("id"));
     rowGenerator.read(recordExchanger);
     Record fetch = recordExchanger.fetch();
     assertNotNull(fetch);
