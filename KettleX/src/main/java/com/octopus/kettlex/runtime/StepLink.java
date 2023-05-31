@@ -1,6 +1,7 @@
 package com.octopus.kettlex.runtime;
 
 import com.octopus.kettlex.core.channel.Channel;
+import com.octopus.kettlex.model.StepConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,8 @@ import lombok.Getter;
 public class StepLink {
 
   private final String from;
+  private final StepConfig<?> fromStepConfig;
   private final String to;
+  private final StepConfig<?> toStepConfig;
   private final Channel channel;
 }

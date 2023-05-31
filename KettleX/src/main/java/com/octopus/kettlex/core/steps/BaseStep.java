@@ -24,12 +24,12 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   }
 
   @Override
-  public void destory() throws KettleXException {
-    log.info("destory step. {}", stepConfig.getName());
-    doDestory();
+  public void destroy() throws KettleXException {
+    log.info("destroy step. {}", stepConfig.getName());
+    doDestroy();
   }
 
-  protected void doDestory() throws KettleXException {}
+  protected void doDestroy() throws KettleXException {}
 
   protected void doInit() throws KettleXException {}
 }
