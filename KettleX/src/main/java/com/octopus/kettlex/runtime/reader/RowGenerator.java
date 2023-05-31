@@ -18,7 +18,7 @@ public class RowGenerator extends BaseStep<RowGeneratorConfig>
   private final RowGeneratorConfig stepConfig;
 
   public RowGenerator(RowGeneratorConfig stepConfig) {
-    super(stepConfig);
+    super(stepConfig, null);
     this.stepConfig = stepConfig;
   }
 

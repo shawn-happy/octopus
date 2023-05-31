@@ -20,7 +20,7 @@ public class ValueMapper extends BaseStep<ValueMapperConfig>
   private final ValueMapperConfig stepConfig;
 
   public ValueMapper(ValueMapperConfig stepConfig) {
-    super(stepConfig);
+    super(stepConfig, null);
     this.stepConfig = stepConfig;
   }
 

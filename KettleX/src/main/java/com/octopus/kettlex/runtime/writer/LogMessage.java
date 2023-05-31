@@ -19,7 +19,7 @@ public class LogMessage extends BaseStep<LogMessageConfig> implements Writer<Log
   private static final String CR = System.getProperty("line.separator");
 
   public LogMessage(LogMessageConfig stepConfig) {
-    super(stepConfig);
+    super(stepConfig, null);
     this.stepConfig = stepConfig;
   }
 
