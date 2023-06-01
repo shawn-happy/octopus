@@ -1,5 +1,7 @@
 {
   "id": "2",
   "name": "logMessage",
-  "stepType": "LOG_MESSAGE"
+  "type": "LOG_MESSAGE",
+  "options": null,
+  "input": "row_generator_output"
 }

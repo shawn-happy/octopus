@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Slf4j
 public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
@@ -33,7 +34,10 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
       log.debug("init step config. {}", JsonUtil.toJson(stepConfig));
     }
     Options options = stepConfig.getOptions();
-    options.verify();
+    // 有些组件没有options，可能会为Null
+    if (options != null) {
+      options.verify();
+    }
     initChannel();
     doInit();
     return true;
@@ -56,14 +60,20 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
     inputChannelLock.writeLock().lock();
     outputChannelLock.writeLock().lock();
     try {
-      inputChannels =
-          taskCombination.getStepLink(parentStep.getName(), stepConfig.getName()).getChannel();
-      outputChannels =
-          childSteps.stream()
-              .map(
-                  sc ->
-                      taskCombination.getStepLink(stepConfig.getName(), sc.getName()).getChannel())
-              .collect(Collectors.toList());
+      if (parentStep != null) {
+        inputChannels =
+            taskCombination.getStepLink(parentStep.getName(), stepConfig.getName()).getChannel();
+      }
+      if (CollectionUtils.isNotEmpty(childSteps)) {
+        outputChannels =
+            childSteps.stream()
+                .map(
+                    sc ->
+                        taskCombination
+                            .getStepLink(stepConfig.getName(), sc.getName())
+                            .getChannel())
+                .collect(Collectors.toList());
+      }
     } finally {
       inputChannelLock.writeLock().unlock();
       outputChannelLock.writeLock().unlock();
@@ -73,10 +83,9 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   protected void putRow(Record record) {
     outputChannelLock.readLock().lock();
     try {
-      for (int i = 1; i < outputChannels.size(); i++) {
-        //
+      for (Channel outputChannel : outputChannels) {
+        outputChannel.push(record);
       }
-
     } finally {
       outputChannelLock.readLock().unlock();
     }

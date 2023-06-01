@@ -1,19 +1,22 @@
 {
   "id": "1",
   "name": "rowGeneratorTest",
-  "stepType": "ROW_GENERATOR",
-  "fields": [
-    {
-      "name": "id",
-      "fieldType": "String",
-      "value": "1"
-    },
-    {
-      "name": "date",
-      "fieldType": "Date",
-      "value": "2023-05-18 13:14:15",
-      "format": "yyyy-MM-dd HH:mm:ss",
-      "length": 13
-    }
-  ]
+  "type": "ROW_GENERATOR",
+  "output": "row_generator_output",
+  "options": {
+    "fields": [
+      {
+        "name": "id",
+        "fieldType": "String",
+        "value": "1"
+      },
+      {
+        "name": "date",
+        "fieldType": "Date",
+        "value": "2023-05-18 13:14:15",
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "length": 13
+      }
+    ]
+  }
 }

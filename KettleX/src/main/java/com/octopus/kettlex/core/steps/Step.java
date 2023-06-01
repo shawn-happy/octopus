@@ -6,9 +6,8 @@ import com.octopus.kettlex.model.StepConfig;
 /**
  * @author shawn
  * @param <CONFIG>
- * @param <CONTEXT>
  */
-public interface Step<CONFIG extends StepConfig> {
+public interface Step<CONFIG extends StepConfig<?>> {
 
   CONFIG getStepConfig();
 

@@ -2,7 +2,6 @@ package com.octopus.kettlex.runtime.transformation;
 
 import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
-import com.octopus.kettlex.core.row.RecordExchanger;
 import com.octopus.kettlex.core.row.column.Column;
 import com.octopus.kettlex.core.row.column.FieldType;
 import com.octopus.kettlex.core.row.record.DefaultRecord;
@@ -10,6 +9,7 @@ import com.octopus.kettlex.core.steps.BaseStep;
 import com.octopus.kettlex.core.steps.Transform;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig.ValueMapperOptions;
+import com.octopus.kettlex.runtime.TaskCombination;
 import java.util.Map;
 import lombok.Getter;
 
@@ -19,14 +19,14 @@ public class ValueMapper extends BaseStep<ValueMapperConfig>
 
   private final ValueMapperConfig stepConfig;
 
-  public ValueMapper(ValueMapperConfig stepConfig) {
-    super(stepConfig, null);
+  public ValueMapper(ValueMapperConfig stepConfig, TaskCombination taskCombination) {
+    super(stepConfig, taskCombination);
     this.stepConfig = stepConfig;
   }
 
   @Override
-  public void processRow(RecordExchanger recordExchanger) throws KettleXStepExecuteException {
-    Record record = recordExchanger.fetch();
+  public void processRow() throws KettleXStepExecuteException {
+    Record record = getRow();
     Record targetRecord = new DefaultRecord();
     ValueMapperOptions valueMapperOptions = stepConfig.getOptions();
     Map<Object, Object> fieldValueMap = valueMapperOptions.getFieldValueMap();
@@ -49,6 +49,6 @@ public class ValueMapper extends BaseStep<ValueMapperConfig>
           Column.builder().name(targetFieldName).rawData(targetValue).type(type).build();
       targetRecord.addColumn(targetColumn);
     }
-    recordExchanger.send(targetRecord);
+    putRow(record);
   }
 }

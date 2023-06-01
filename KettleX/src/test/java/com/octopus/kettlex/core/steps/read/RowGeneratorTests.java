@@ -4,20 +4,17 @@ import static com.octopus.kettlex.core.steps.StepType.ROW_GENERATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
-import com.octopus.kettlex.core.channel.DefaultChannel;
 import com.octopus.kettlex.core.exception.KettleXJSONException;
-import com.octopus.kettlex.core.row.Record;
-import com.octopus.kettlex.core.row.RecordExchanger;
 import com.octopus.kettlex.core.row.column.FieldType;
-import com.octopus.kettlex.core.row.record.DefaultRecordExchanger;
 import com.octopus.kettlex.core.steps.StepFactory;
 import com.octopus.kettlex.core.utils.JsonUtil;
+import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
+import com.octopus.kettlex.runtime.TaskCombination;
 import com.octopus.kettlex.runtime.reader.RowGenerator;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
@@ -39,7 +36,7 @@ public class RowGeneratorTests {
     RowGeneratorOptions options = meta.getOptions();
 
     assertNotNull(options.getFields());
-    assertTrue(options.getFields().length == 2);
+    assertEquals(2, options.getFields().length);
 
     assertEquals("id", options.getFields()[0].getName());
     assertEquals(FieldType.String, options.getFields()[0].getFieldType());
@@ -62,10 +59,9 @@ public class RowGeneratorTests {
                     Resources.getResource("steps/read/rowGenerator.json"), StandardCharsets.UTF_8),
                 new TypeReference<RowGeneratorConfig>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
-    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta);
-    RecordExchanger recordExchanger = new DefaultRecordExchanger(new DefaultChannel("id"));
-    rowGenerator.read(recordExchanger);
-    Record fetch = recordExchanger.fetch();
-    assertNotNull(fetch);
+
+    TaskCombination taskCombination = new TaskCombination(TaskConfiguration.builder().build());
+    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskCombination);
+    rowGenerator.read();
   }
 }

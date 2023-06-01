@@ -40,6 +40,7 @@ public class TaskCombination {
     // 用于记录output step映射
     Map<String, String> outputStepMap = new HashMap<>();
     for (ReaderConfig<?> readerConfig : readers) {
+      readerConfig.verify();
       String id = readerConfig.getId();
       if (ids.contains(id)) {
         throw new KettleXStepConfigException("Duplicate step id. [" + id + "]");
@@ -68,6 +69,7 @@ public class TaskCombination {
       // transformation output也有可能是transformation或者writer的input，
       // 所以先记录transformation的output，避免由于顺序问题，而找不到input
       for (TransformationConfig<?> transformation : transformations) {
+        transformation.verify();
         String id = transformation.getId();
         if (ids.contains(id)) {
           throw new KettleXStepConfigException("Duplicate step id. [" + id + "]");
@@ -120,6 +122,7 @@ public class TaskCombination {
     List<WriterConfig<?>> writers = configuration.getWriters();
     if (CollectionUtils.isNotEmpty(writers)) {
       for (WriterConfig<?> writerConfig : writers) {
+        writerConfig.verify();
         String id = writerConfig.getId();
         if (ids.contains(id)) {
           throw new KettleXStepConfigException("Duplicate step id. [" + id + "]");
@@ -142,17 +145,16 @@ public class TaskCombination {
         stepConfigMap.put(name, writerConfig);
 
         String fromStep = outputStepMap.get(input);
-        String toStep = name;
         StepLink stepLink =
             StepLink.builder()
                 .from(fromStep)
                 .fromStepConfig(stepConfigMap.get(fromStep))
-                .to(toStep)
-                .toStepConfig(stepConfigMap.get(toStep))
+                .to(name)
+                .toStepConfig(stepConfigMap.get(name))
                 .channel(
                     new DefaultChannel(
                         configuration.getRuntimeConfig().getChannelCapcacity(),
-                        getChannelId(fromStep, toStep)))
+                        getChannelId(fromStep, name)))
                 .build();
         stepLinks.add(stepLink);
       }

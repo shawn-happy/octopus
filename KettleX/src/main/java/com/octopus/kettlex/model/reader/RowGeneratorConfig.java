@@ -8,6 +8,7 @@ import com.octopus.kettlex.model.ReaderOptions;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
@@ -20,7 +21,7 @@ public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
 
   private String id;
   private String name;
-  private StepType type;
+  @Default private StepType type = StepType.ROW_GENERATOR;
   private RowGeneratorOptions options;
   private String output;
 
@@ -29,6 +30,7 @@ public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class RowGeneratorOptions implements ReaderOptions {
+    private Integer rowLimit;
     private Field[] fields;
 
     @Override

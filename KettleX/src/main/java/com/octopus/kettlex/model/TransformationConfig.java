@@ -1,5 +1,15 @@
 package com.octopus.kettlex.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.octopus.kettlex.core.exception.KettleXStepConfigException;
+import com.octopus.kettlex.model.transformation.ValueMapperConfig;
+import org.apache.commons.lang3.StringUtils;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = ValueMapperConfig.class, name = "VALUE_MAPPER"),
+})
 public interface TransformationConfig<P extends TransformationOptions> extends StepConfig<P> {
 
   /**
@@ -11,4 +21,17 @@ public interface TransformationConfig<P extends TransformationOptions> extends S
   String getInput();
 
   String getOutput();
+
+  @Override
+  default void verify() {
+    StepConfig.super.verify();
+    if (StringUtils.isBlank(getInput())) {
+      throw new KettleXStepConfigException(
+          String.format("input cannot be null in transformation %s.", getName()));
+    }
+    if (StringUtils.isBlank(getOutput())) {
+      throw new KettleXStepConfigException(
+          String.format("output cannot be null in transformation %s.", getName()));
+    }
+  }
 }
