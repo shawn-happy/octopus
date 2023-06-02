@@ -1,6 +1,6 @@
 package com.octopus.kettlex.model.reader;
 
-import com.octopus.kettlex.core.exception.KettleXException;
+import com.octopus.kettlex.core.exception.KettleXStepConfigException;
 import com.octopus.kettlex.core.steps.StepType;
 import com.octopus.kettlex.model.Field;
 import com.octopus.kettlex.model.ReaderConfig;
@@ -19,7 +19,6 @@ import org.apache.commons.lang3.ArrayUtils;
 @AllArgsConstructor
 public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
 
-  private String id;
   private String name;
   @Default private StepType type = StepType.ROW_GENERATOR;
   private RowGeneratorOptions options;
@@ -36,7 +35,7 @@ public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
     @Override
     public void verify() {
       if (ArrayUtils.isEmpty(fields)) {
-        throw new KettleXException("fields cannot be empty");
+        throw new KettleXStepConfigException("fields cannot be empty");
       }
     }
   }

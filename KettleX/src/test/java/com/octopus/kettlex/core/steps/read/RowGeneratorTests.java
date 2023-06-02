@@ -14,7 +14,7 @@ import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
-import com.octopus.kettlex.runtime.TaskCombination;
+import com.octopus.kettlex.runtime.TaskGroup;
 import com.octopus.kettlex.runtime.reader.RowGenerator;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
@@ -60,8 +60,8 @@ public class RowGeneratorTests {
                 new TypeReference<RowGeneratorConfig>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
 
-    TaskCombination taskCombination = new TaskCombination(TaskConfiguration.builder().build());
-    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskCombination);
+    TaskGroup taskGroup = new TaskGroup(TaskConfiguration.builder().build());
+    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskGroup);
     rowGenerator.read();
   }
 }

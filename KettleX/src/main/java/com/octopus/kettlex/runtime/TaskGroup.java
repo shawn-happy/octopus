@@ -1,30 +1,42 @@
 package com.octopus.kettlex.runtime;
 
+import com.octopus.kettlex.core.channel.Channel;
 import com.octopus.kettlex.core.channel.DefaultChannel;
 import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
+import com.octopus.kettlex.core.steps.StepConfigChannelCombination;
 import com.octopus.kettlex.model.ReaderConfig;
 import com.octopus.kettlex.model.StepConfig;
 import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.TransformationConfig;
 import com.octopus.kettlex.model.WriterConfig;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 
-public class TaskCombination {
+public class TaskGroup {
 
   private final TaskConfiguration configuration;
   private final Map<String, StepConfig<?>> stepConfigMap = new HashMap<>();
-  private final List<StepLink> stepLinks = new ArrayList<>();
-  private Map<String, StepLink> stepLinkMap = new HashMap<>();
+  private final Map<String, StepConfigChannelCombination> stepConfigChannelCombinationMap =
+      new HashMap<>();
+  private final Map<String, StepLink> stepLinkMap = new HashMap<>();
 
-  public TaskCombination(TaskConfiguration configuration) {
+  public TaskGroup(TaskConfiguration configuration) {
     this.configuration = configuration;
     combine();
+    combineStepChannelCombine();
+  }
+
+  public List<StepConfigChannelCombination> getSteps() {
+    return stepConfigChannelCombinationMap.values().stream()
+        .collect(Collectors.toUnmodifiableList());
+  }
+
+  public StepConfigChannelCombination getStepChannel(String name) {
+    return stepConfigChannelCombinationMap.get(name);
   }
 
   private void combine() {
@@ -34,24 +46,14 @@ public class TaskCombination {
       throw new KettleXException("reader config cannot be null");
     }
 
-    // 用于验证id, name的唯一性
-    List<String> ids = new ArrayList<>();
-    List<String> names = new ArrayList<>();
     // 用于记录output step映射
     Map<String, String> outputStepMap = new HashMap<>();
     for (ReaderConfig<?> readerConfig : readers) {
       readerConfig.verify();
-      String id = readerConfig.getId();
-      if (ids.contains(id)) {
-        throw new KettleXStepConfigException("Duplicate step id. [" + id + "]");
-      }
-      ids.add(id);
-
       String name = readerConfig.getName();
-      if (names.contains(name)) {
+      if (stepConfigMap.containsKey(name)) {
         throw new KettleXStepConfigException("Duplicate step name. [" + name + "]");
       }
-      names.add(name);
 
       String output = readerConfig.getOutput();
       if (outputStepMap.containsKey(output)) {
@@ -70,17 +72,10 @@ public class TaskCombination {
       // 所以先记录transformation的output，避免由于顺序问题，而找不到input
       for (TransformationConfig<?> transformation : transformations) {
         transformation.verify();
-        String id = transformation.getId();
-        if (ids.contains(id)) {
-          throw new KettleXStepConfigException("Duplicate step id. [" + id + "]");
-        }
-        ids.add(id);
-
         String name = transformation.getName();
-        if (names.contains(name)) {
+        if (stepConfigMap.containsKey(name)) {
           throw new KettleXStepConfigException("Duplicate step name. [" + name + "]");
         }
-        names.add(name);
 
         String output = transformation.getOutput();
         if (outputStepMap.containsKey(output)) {
@@ -115,7 +110,7 @@ public class TaskCombination {
                         configuration.getRuntimeConfig().getChannelCapcacity(),
                         getChannelId(fromStep, toStep)))
                 .build();
-        stepLinks.add(stepLink);
+        stepLinkMap.put(getChannelId(fromStep, toStep), stepLink);
       }
     }
 
@@ -123,17 +118,11 @@ public class TaskCombination {
     if (CollectionUtils.isNotEmpty(writers)) {
       for (WriterConfig<?> writerConfig : writers) {
         writerConfig.verify();
-        String id = writerConfig.getId();
-        if (ids.contains(id)) {
-          throw new KettleXStepConfigException("Duplicate step id. [" + id + "]");
-        }
-        ids.add(id);
 
         String name = writerConfig.getName();
-        if (names.contains(name)) {
+        if (stepConfigMap.containsKey(name)) {
           throw new KettleXStepConfigException("Duplicate step name. [" + name + "]");
         }
-        names.add(name);
 
         String input = writerConfig.getInput();
         if (!outputStepMap.containsKey(input)) {
@@ -156,21 +145,29 @@ public class TaskCombination {
                         configuration.getRuntimeConfig().getChannelCapcacity(),
                         getChannelId(fromStep, name)))
                 .build();
-        stepLinks.add(stepLink);
+        stepLinkMap.put(getChannelId(fromStep, name), stepLink);
       }
     }
+  }
 
-    stepLinkMap =
-        stepLinks.stream()
-            .collect(
-                Collectors.toMap(
-                    (stepLink -> getChannelId(stepLink.getFrom(), stepLink.getTo())),
-                    stepLink -> stepLink));
-
-    // for gc
-    ids = null;
-    names = null;
-    outputStepMap = null;
+  private void combineStepChannelCombine() {
+    for (String stepName : stepConfigMap.keySet()) {
+      List<StepConfig<?>> childSteps = findChildSteps(stepName);
+      StepConfig<?> parentStep = findParentStep(stepName);
+      StepConfig<?> stepConfig = stepConfigMap.get(stepName);
+      StepConfigChannelCombination combination = new StepConfigChannelCombination();
+      combination.setStepConfig(stepConfig);
+      List<Channel> outputChannels =
+          CollectionUtils.isEmpty(childSteps)
+              ? null
+              : childSteps.stream()
+                  .map(sc -> getStepLink(stepName, sc.getName()).getChannel())
+                  .collect(Collectors.toList());
+      Channel inputChannel = getStepLink(parentStep.getName(), stepName).getChannel();
+      combination.setOutputChannels(outputChannels);
+      combination.setInputChannel(inputChannel);
+      stepConfigChannelCombinationMap.put(stepName, combination);
+    }
   }
 
   private String getChannelId(String from, String to) {
@@ -189,7 +186,7 @@ public class TaskCombination {
       return null;
     }
 
-    return stepLinks.stream()
+    return stepLinkMap.values().stream()
         .filter(stepLink -> stepLink.getFrom().equals(stepName))
         .map(StepLink::getToStepConfig)
         .collect(Collectors.toUnmodifiableList());
@@ -209,7 +206,7 @@ public class TaskCombination {
 
     // combine的时候已经保证了input只有一个，所以只会有1个父节点。
     StepLink link =
-        stepLinks.stream()
+        stepLinkMap.values().stream()
             .filter(stepLink -> stepName.equals(stepLink.getTo()))
             .findFirst()
             .orElse(null);
@@ -217,10 +214,6 @@ public class TaskCombination {
       return null;
     }
     return link.getFromStepConfig();
-  }
-
-  public Map<String, StepLink> getStepLinks() {
-    return stepLinkMap;
   }
 
   public StepLink getStepLink(String from, String to) {

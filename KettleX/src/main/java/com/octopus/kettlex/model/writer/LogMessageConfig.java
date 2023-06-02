@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LogMessageConfig implements WriterConfig<LogMessageOptions> {
 
-  private String id;
   private String name;
   @Default private final StepType type = StepType.LOG_MESSAGE;
   private String input;

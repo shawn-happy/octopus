@@ -2,30 +2,34 @@ package com.octopus.kettlex.core.steps;
 
 import com.octopus.kettlex.core.channel.Channel;
 import com.octopus.kettlex.core.exception.KettleXException;
+import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.model.Options;
 import com.octopus.kettlex.model.StepConfig;
-import com.octopus.kettlex.runtime.TaskCombination;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 
 @Slf4j
 public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
 
   protected final C stepConfig;
-  private final TaskCombination taskCombination;
   private List<Channel> outputChannels;
-  private Channel inputChannels;
+  private Channel inputChannel;
   private final ReentrantReadWriteLock inputChannelLock = new ReentrantReadWriteLock();
   private final ReentrantReadWriteLock outputChannelLock = new ReentrantReadWriteLock();
 
-  protected BaseStep(C stepConfig, TaskCombination taskCombination) {
+  protected BaseStep(C stepConfig) {
     this.stepConfig = stepConfig;
-    this.taskCombination = taskCombination;
+  }
+
+  protected void setOutputChannels(List<Channel> outputChannels) {
+    this.outputChannels = outputChannels;
+  }
+
+  protected void setInputChannel(Channel inputChannel) {
+    this.inputChannel = inputChannel;
   }
 
   @Override
@@ -38,7 +42,6 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
     if (options != null) {
       options.verify();
     }
-    initChannel();
     doInit();
     return true;
   }
@@ -53,34 +56,10 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
 
   protected void doInit() throws KettleXException {}
 
-  private void initChannel() {
-    log.info("step {} start to init data channel.", stepConfig.getName());
-    StepConfig<?> parentStep = taskCombination.findParentStep(stepConfig.getName());
-    List<StepConfig<?>> childSteps = taskCombination.findChildSteps(stepConfig.getName());
-    inputChannelLock.writeLock().lock();
-    outputChannelLock.writeLock().lock();
-    try {
-      if (parentStep != null) {
-        inputChannels =
-            taskCombination.getStepLink(parentStep.getName(), stepConfig.getName()).getChannel();
-      }
-      if (CollectionUtils.isNotEmpty(childSteps)) {
-        outputChannels =
-            childSteps.stream()
-                .map(
-                    sc ->
-                        taskCombination
-                            .getStepLink(stepConfig.getName(), sc.getName())
-                            .getChannel())
-                .collect(Collectors.toList());
-      }
-    } finally {
-      inputChannelLock.writeLock().unlock();
-      outputChannelLock.writeLock().unlock();
-    }
-  }
-
   protected void putRow(Record record) {
+    if (stepConfig.getType().getPrimaryCategory() == StepType.PrimaryCategory.SINK) {
+      throw new KettleXStepExecuteException("sink operator has no output");
+    }
     outputChannelLock.readLock().lock();
     try {
       for (Channel outputChannel : outputChannels) {
@@ -92,9 +71,12 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   }
 
   protected Record getRow() {
+    if (stepConfig.getType().getPrimaryCategory() == StepType.PrimaryCategory.SOURCE) {
+      throw new KettleXStepExecuteException("source operator has no input");
+    }
     inputChannelLock.readLock().lock();
     try {
-      return inputChannels.pull();
+      return inputChannel.pull();
     } finally {
       inputChannelLock.readLock().unlock();
     }

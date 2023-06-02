@@ -10,7 +10,7 @@ import com.octopus.kettlex.model.RuntimeConfig;
 import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.writer.LogMessageConfig;
-import com.octopus.kettlex.runtime.TaskCombination;
+import com.octopus.kettlex.runtime.TaskGroup;
 import com.octopus.kettlex.runtime.reader.RowGenerator;
 import com.octopus.kettlex.runtime.writer.LogMessage;
 import java.nio.charset.StandardCharsets;
@@ -47,10 +47,10 @@ public class ExecuteTests {
             .runtimeConfig(RuntimeConfig.builder().channelCapcacity(10).build())
             .build();
 
-    TaskCombination taskCombination = new TaskCombination(configuration);
+    TaskGroup taskGroup = new TaskGroup(configuration);
 
-    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskCombination);
-    LogMessage logMessage = (LogMessage) StepFactory.createStep(logMessageConfig, taskCombination);
+    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskGroup);
+    LogMessage logMessage = (LogMessage) StepFactory.createStep(logMessageConfig, taskGroup);
     rowGenerator.init();
     logMessage.init();
     rowGenerator.read();

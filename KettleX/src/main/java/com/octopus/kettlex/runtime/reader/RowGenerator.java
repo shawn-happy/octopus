@@ -8,7 +8,6 @@ import com.octopus.kettlex.core.steps.BaseStep;
 import com.octopus.kettlex.core.steps.Reader;
 import com.octopus.kettlex.model.Field;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
-import com.octopus.kettlex.runtime.TaskCombination;
 import lombok.Getter;
 
 @Getter
@@ -17,8 +16,8 @@ public class RowGenerator extends BaseStep<RowGeneratorConfig>
 
   private final RowGeneratorConfig stepConfig;
 
-  public RowGenerator(RowGeneratorConfig stepConfig, TaskCombination taskCombination) {
-    super(stepConfig, taskCombination);
+  public RowGenerator(RowGeneratorConfig stepConfig) {
+    super(stepConfig);
     this.stepConfig = stepConfig;
   }
 

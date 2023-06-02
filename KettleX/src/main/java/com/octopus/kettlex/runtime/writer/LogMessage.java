@@ -6,7 +6,7 @@ import com.octopus.kettlex.core.row.column.Column;
 import com.octopus.kettlex.core.steps.BaseStep;
 import com.octopus.kettlex.core.steps.Writer;
 import com.octopus.kettlex.model.writer.LogMessageConfig;
-import com.octopus.kettlex.runtime.TaskCombination;
+import com.octopus.kettlex.runtime.TaskGroup;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +18,8 @@ public class LogMessage extends BaseStep<LogMessageConfig> implements Writer<Log
 
   private static final String CR = System.getProperty("line.separator");
 
-  public LogMessage(LogMessageConfig stepConfig, TaskCombination taskCombination) {
-    super(stepConfig, taskCombination);
+  public LogMessage(LogMessageConfig stepConfig, TaskGroup taskGroup) {
+    super(stepConfig, taskGroup);
     this.stepConfig = stepConfig;
   }
 
