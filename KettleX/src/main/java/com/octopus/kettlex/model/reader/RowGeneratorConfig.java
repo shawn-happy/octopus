@@ -19,6 +19,7 @@ import org.apache.commons.lang3.ArrayUtils;
 @AllArgsConstructor
 public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
 
+  private String id;
   private String name;
   @Default private StepType type = StepType.ROW_GENERATOR;
   private RowGeneratorOptions options;

@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 public class ValueMapperConfig implements TransformationConfig<ValueMapperOptions> {
 
+  private String id;
   private String name;
   @Default private final StepType type = StepType.VALUE_MAPPER;
   private String input;

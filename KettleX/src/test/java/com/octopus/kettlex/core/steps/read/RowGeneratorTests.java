@@ -61,7 +61,8 @@ public class RowGeneratorTests {
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
 
     TaskGroup taskGroup = new TaskGroup(TaskConfiguration.builder().build());
-    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskGroup);
+    RowGenerator rowGenerator =
+        (RowGenerator) StepFactory.createStep(taskGroup.getStepChannel("rowGeneratorTest"));
     rowGenerator.read();
   }
 }

@@ -9,7 +9,6 @@ import com.octopus.kettlex.core.steps.BaseStep;
 import com.octopus.kettlex.core.steps.Transform;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig.ValueMapperOptions;
-import com.octopus.kettlex.runtime.TaskGroup;
 import java.util.Map;
 import lombok.Getter;
 
@@ -19,8 +18,8 @@ public class ValueMapper extends BaseStep<ValueMapperConfig>
 
   private final ValueMapperConfig stepConfig;
 
-  public ValueMapper(ValueMapperConfig stepConfig, TaskGroup taskGroup) {
-    super(stepConfig, taskGroup);
+  public ValueMapper(ValueMapperConfig stepConfig) {
+    super(stepConfig);
     this.stepConfig = stepConfig;
   }
 

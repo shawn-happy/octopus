@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
 import com.octopus.kettlex.core.exception.KettleXJSONException;
+import com.octopus.kettlex.core.steps.StepConfigChannelCombination;
 import com.octopus.kettlex.core.steps.StepFactory;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.model.RuntimeConfig;
@@ -48,9 +49,12 @@ public class ExecuteTests {
             .build();
 
     TaskGroup taskGroup = new TaskGroup(configuration);
+    StepConfigChannelCombination rowGeneratorCombination =
+        taskGroup.getStepChannel("rowGeneratorTest");
+    StepConfigChannelCombination logMessageCombination = taskGroup.getStepChannel("logMessage");
 
-    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(meta, taskGroup);
-    LogMessage logMessage = (LogMessage) StepFactory.createStep(logMessageConfig, taskGroup);
+    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(rowGeneratorCombination);
+    LogMessage logMessage = (LogMessage) StepFactory.createStep(logMessageCombination);
     rowGenerator.init();
     logMessage.init();
     rowGenerator.read();

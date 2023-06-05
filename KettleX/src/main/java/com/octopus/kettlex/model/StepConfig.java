@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public interface StepConfig<P extends Options> extends Verifyable {
 
+  String getId();
+
   String getName();
 
   StepType getType();

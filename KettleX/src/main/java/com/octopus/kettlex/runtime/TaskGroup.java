@@ -26,7 +26,7 @@ public class TaskGroup {
 
   public TaskGroup(TaskConfiguration configuration) {
     this.configuration = configuration;
-    combine();
+    combineStepLinks();
     combineStepChannelCombine();
   }
 
@@ -39,7 +39,53 @@ public class TaskGroup {
     return stepConfigChannelCombinationMap.get(name);
   }
 
-  private void combine() {
+  public List<StepConfig<?>> findChildSteps(String stepName) {
+    StepConfig<?> stepConfig = stepConfigMap.get(stepName);
+    if (stepConfig == null) {
+      throw new KettleXStepConfigException(
+          String.format("step cannot find by step name. [%s]", stepName));
+    }
+
+    // 输出节点没有子节点
+    if (stepConfig instanceof WriterConfig) {
+      return null;
+    }
+
+    return stepLinkMap.values().stream()
+        .filter(stepLink -> stepLink.getFrom().equals(stepName))
+        .map(StepLink::getToStepConfig)
+        .collect(Collectors.toUnmodifiableList());
+  }
+
+  public StepConfig<?> findParentStep(String stepName) {
+    StepConfig<?> stepConfig = stepConfigMap.get(stepName);
+    if (stepConfig == null) {
+      throw new KettleXStepConfigException(
+          String.format("step cannot find by step name. [%s]", stepName));
+    }
+
+    // 输入节点没有父节点
+    if (stepConfig instanceof ReaderConfig) {
+      return null;
+    }
+
+    // combine的时候已经保证了input只有一个，所以只会有1个父节点。
+    StepLink link =
+        stepLinkMap.values().stream()
+            .filter(stepLink -> stepName.equals(stepLink.getTo()))
+            .findFirst()
+            .orElse(null);
+    if (link == null) {
+      return null;
+    }
+    return link.getFromStepConfig();
+  }
+
+  public StepLink getStepLink(String from, String to) {
+    return stepLinkMap.get(getChannelId(from, to));
+  }
+
+  private void combineStepLinks() {
     String taskId = configuration.getTaskId();
     List<ReaderConfig<?>> readers = configuration.getReaders();
     if (CollectionUtils.isEmpty(readers)) {
@@ -99,18 +145,7 @@ public class TaskGroup {
 
         String fromStep = outputStepMap.get(input);
         String toStep = transformation.getName();
-        StepLink stepLink =
-            StepLink.builder()
-                .from(fromStep)
-                .fromStepConfig(stepConfigMap.get(fromStep))
-                .to(toStep)
-                .toStepConfig(stepConfigMap.get(toStep))
-                .channel(
-                    new DefaultChannel(
-                        configuration.getRuntimeConfig().getChannelCapcacity(),
-                        getChannelId(fromStep, toStep)))
-                .build();
-        stepLinkMap.put(getChannelId(fromStep, toStep), stepLink);
+        createStepLink(fromStep, toStep);
       }
     }
 
@@ -132,22 +167,24 @@ public class TaskGroup {
                   outputStepMap, input));
         }
         stepConfigMap.put(name, writerConfig);
-
         String fromStep = outputStepMap.get(input);
-        StepLink stepLink =
-            StepLink.builder()
-                .from(fromStep)
-                .fromStepConfig(stepConfigMap.get(fromStep))
-                .to(name)
-                .toStepConfig(stepConfigMap.get(name))
-                .channel(
-                    new DefaultChannel(
-                        configuration.getRuntimeConfig().getChannelCapcacity(),
-                        getChannelId(fromStep, name)))
-                .build();
-        stepLinkMap.put(getChannelId(fromStep, name), stepLink);
+        createStepLink(fromStep, name);
       }
     }
+  }
+
+  private void createStepLink(String from, String to) {
+    StepLink stepLink =
+        StepLink.builder()
+            .from(from)
+            .fromStepConfig(stepConfigMap.get(from))
+            .to(to)
+            .toStepConfig(stepConfigMap.get(to))
+            .channel(
+                new DefaultChannel(
+                    configuration.getRuntimeConfig().getChannelCapcacity(), getChannelId(from, to)))
+            .build();
+    stepLinkMap.put(getChannelId(from, to), stepLink);
   }
 
   private void combineStepChannelCombine() {
@@ -172,51 +209,5 @@ public class TaskGroup {
 
   private String getChannelId(String from, String to) {
     return String.format("%s->%s", from, to);
-  }
-
-  public List<StepConfig<?>> findChildSteps(String stepName) {
-    StepConfig<?> stepConfig = stepConfigMap.get(stepName);
-    if (stepConfig == null) {
-      throw new KettleXStepConfigException(
-          String.format("step cannot find by step name. [%s]", stepName));
-    }
-
-    // 输出节点没有子节点
-    if (stepConfig instanceof WriterConfig) {
-      return null;
-    }
-
-    return stepLinkMap.values().stream()
-        .filter(stepLink -> stepLink.getFrom().equals(stepName))
-        .map(StepLink::getToStepConfig)
-        .collect(Collectors.toUnmodifiableList());
-  }
-
-  public StepConfig<?> findParentStep(String stepName) {
-    StepConfig<?> stepConfig = stepConfigMap.get(stepName);
-    if (stepConfig == null) {
-      throw new KettleXStepConfigException(
-          String.format("step cannot find by step name. [%s]", stepName));
-    }
-
-    // 输入节点没有父节点
-    if (stepConfig instanceof ReaderConfig) {
-      return null;
-    }
-
-    // combine的时候已经保证了input只有一个，所以只会有1个父节点。
-    StepLink link =
-        stepLinkMap.values().stream()
-            .filter(stepLink -> stepName.equals(stepLink.getTo()))
-            .findFirst()
-            .orElse(null);
-    if (link == null) {
-      return null;
-    }
-    return link.getFromStepConfig();
-  }
-
-  public StepLink getStepLink(String from, String to) {
-    return stepLinkMap.get(getChannelId(from, to));
   }
 }
