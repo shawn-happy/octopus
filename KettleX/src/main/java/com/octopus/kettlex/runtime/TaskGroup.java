@@ -200,9 +200,13 @@ public class TaskGroup {
               : childSteps.stream()
                   .map(sc -> getStepLink(stepName, sc.getName()).getChannel())
                   .collect(Collectors.toList());
-      Channel inputChannel = getStepLink(parentStep.getName(), stepName).getChannel();
-      combination.setOutputChannels(outputChannels);
-      combination.setInputChannel(inputChannel);
+      if (parentStep != null) {
+        Channel inputChannel = getStepLink(parentStep.getName(), stepName).getChannel();
+        combination.setInputChannel(inputChannel);
+      }
+      if (CollectionUtils.isNotEmpty(outputChannels)) {
+        combination.setOutputChannels(outputChannels);
+      }
       stepConfigChannelCombinationMap.put(stepName, combination);
     }
   }

@@ -35,6 +35,9 @@ public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
 
     @Override
     public void verify() {
+      if (rowLimit != null && rowLimit < 0) {
+        throw new KettleXStepConfigException("row limit cannot be less than 0");
+      }
       if (ArrayUtils.isEmpty(fields)) {
         throw new KettleXStepConfigException("fields cannot be empty");
       }

@@ -12,17 +12,23 @@ import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.writer.LogMessageConfig;
 import com.octopus.kettlex.runtime.TaskGroup;
+import com.octopus.kettlex.runtime.executor.DefaultExecutor;
+import com.octopus.kettlex.runtime.executor.Executor;
 import com.octopus.kettlex.runtime.reader.RowGenerator;
 import com.octopus.kettlex.runtime.writer.LogMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ExecuteTests {
 
-  @Test
-  public void simpleExecute() throws Exception {
+  private static TaskGroup taskGroup;
+
+  @BeforeAll
+  public static void init() throws Exception {
     RowGeneratorConfig meta =
         JsonUtil.fromJson(
                 IOUtils.toString(
@@ -48,7 +54,11 @@ public class ExecuteTests {
             .runtimeConfig(RuntimeConfig.builder().channelCapcacity(10).build())
             .build();
 
-    TaskGroup taskGroup = new TaskGroup(configuration);
+    taskGroup = new TaskGroup(configuration);
+  }
+
+  @Test
+  public void simpleExecute() throws Exception {
     StepConfigChannelCombination rowGeneratorCombination =
         taskGroup.getStepChannel("rowGeneratorTest");
     StepConfigChannelCombination logMessageCombination = taskGroup.getStepChannel("logMessage");
@@ -59,5 +69,12 @@ public class ExecuteTests {
     logMessage.init();
     rowGenerator.read();
     logMessage.writer();
+  }
+
+  @Test
+  public void testThreadExecute() throws Exception {
+    Executor executor = new DefaultExecutor(taskGroup);
+    executor.executor();
+    TimeUnit.SECONDS.sleep(2);
   }
 }
