@@ -1,20 +1,17 @@
 package com.octopus.kettlex.runtime.transformation;
 
-import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.column.Column;
 import com.octopus.kettlex.core.row.column.FieldType;
 import com.octopus.kettlex.core.row.record.DefaultRecord;
-import com.octopus.kettlex.core.steps.BaseStep;
-import com.octopus.kettlex.core.steps.Transform;
+import com.octopus.kettlex.core.steps.BaseTransform;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig.ValueMapperOptions;
 import java.util.Map;
 import lombok.Getter;
 
 @Getter
-public class ValueMapper extends BaseStep<ValueMapperConfig>
-    implements Transform<ValueMapperConfig> {
+public class ValueMapper extends BaseTransform<ValueMapperConfig> {
 
   private final ValueMapperConfig stepConfig;
 
@@ -24,8 +21,7 @@ public class ValueMapper extends BaseStep<ValueMapperConfig>
   }
 
   @Override
-  public void processRow() throws KettleXStepExecuteException {
-    Record record = getRow();
+  protected Record processRecord(Record record) {
     Record targetRecord = new DefaultRecord();
     ValueMapperOptions valueMapperOptions = stepConfig.getOptions();
     Map<Object, Object> fieldValueMap = valueMapperOptions.getFieldValueMap();
@@ -48,6 +44,6 @@ public class ValueMapper extends BaseStep<ValueMapperConfig>
           Column.builder().name(targetFieldName).rawData(targetValue).type(type).build();
       targetRecord.addColumn(targetColumn);
     }
-    putRow(record);
+    return targetRecord;
   }
 }

@@ -82,6 +82,7 @@ ext{
     libs_jacksonCore = [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion]
     libs_jacksonAnnotations = [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion]
     libs_jacksonDatatypeJsr310 = [group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion]
+    libs_jacksonDataformatYaml = [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion]
 }
 
 dependencies {
@@ -93,6 +94,7 @@ dependencies {
     implementation libs_jacksonDatabind
     implementation libs_jacksonAnnotations
     implementation libs_jacksonDatatypeJsr310
+    implementation libs_jacksonDataformatYaml
     implementation libs_commonsCollections4
     implementation libs_commonsLang3
     implementation libs_commonsIO

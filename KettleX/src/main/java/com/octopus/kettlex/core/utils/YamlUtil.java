@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Optional;
@@ -14,21 +16,21 @@ import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class JsonUtil {
+public class YamlUtil {
 
   private static final ObjectMapper OM =
-      new ObjectMapper()
+      new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
           .findAndRegisterModules()
           .enable(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS.mappedFeature())
           .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
   /**
-   * Convert an object to JSON string
+   * Convert an object to Yaml string
    *
    * @param object the object to be converted
-   * @return JSON string, or null if any error happens
+   * @return Yaml string, or null if any error happens
    */
-  public static Optional<String> toJson(Object object) {
+  public static Optional<String> toYaml(Object object) {
     try {
       return Optional.of(OM.writeValueAsString(object));
     } catch (JsonProcessingException e) {
@@ -37,13 +39,13 @@ public class JsonUtil {
     }
   }
   /**
-   * Convert an object to JSON string
+   * Convert an object to Yaml string
    *
    * @param object the object to be converted
    * @param errorMessageConverter error message consumer, if there is error message
-   * @return JSON string
+   * @return Yaml string
    */
-  public static String toJson(
+  public static String toYaml(
       Object object, Function<Throwable, RuntimeException> errorMessageConverter) {
     try {
       return OM.writeValueAsString(object);
@@ -54,18 +56,18 @@ public class JsonUtil {
   }
 
   /**
-   * Convert JSON string to {@code type}
+   * Convert Yaml string to {@code type}
    *
-   * <p>Note that if the type is List or Map, please check {@code fromJson} with TypeReference
+   * <p>Note that if the type is List or Map, please check {@code fromYaml} with TypeReference
    *
-   * @param json json string
-   * @param type the type to convert the json to
-   * @param <T> the type to convert the json to
-   * @return The object converted from json string, or null if any error happens.
+   * @param Yaml Yaml string
+   * @param type the type to convert the Yaml to
+   * @param <T> the type to convert the Yaml to
+   * @return The object converted from Yaml string, or null if any error happens.
    */
-  public static <T> Optional<T> fromJson(String json, Class<T> type) {
+  public static <T> Optional<T> fromYaml(String Yaml, Class<T> type) {
     try {
-      return Optional.of(OM.readValue(json, type));
+      return Optional.of(OM.readValue(Yaml, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
       throw new RuntimeException(e);
@@ -73,81 +75,81 @@ public class JsonUtil {
   }
 
   /**
-   * It would be a bit trivial to convert JSON to List/Map of objects.
+   * It would be a bit trivial to convert Yaml to List/Map of objects.
    *
    * <p>For example:
    *
    * <pre>
-   * List<SimpleClass> = JsonUtil.fromJson(json, List.class);
+   * List<SimpleClass> = YamlUtil.fromYaml(Yaml, List.class);
    * </pre>
    *
    * won't work because Jackson don't know what the exact type to convert to. You should however:
    *
    * <pre>
-   * List<SimpleClass> simpleClass = JsonUtil.fromJson(
-   *         simpleListJSON,
+   * List<SimpleClass> simpleClass = YamlUtil.fromYaml(
+   *         simpleListYaml,
    *         new TypeReference<List<SimpleClass>>() {});
    * </pre>
    *
-   * By giving TypeReference, JsonUtil know how to convert the types.
+   * By giving TypeReference, YamlUtil know how to convert the types.
    *
-   * @param json json string
-   * @param type the type to convert the json to
-   * @param <T> the type to convert the json to
-   * @return The object converted from json string, or null if any error happens.
+   * @param Yaml Yaml string
+   * @param type the type to convert the Yaml to
+   * @param <T> the type to convert the Yaml to
+   * @return The object converted from Yaml string, or null if any error happens.
    */
-  public static <T> Optional<T> fromJson(String json, TypeReference<T> type) {
+  public static <T> Optional<T> fromYaml(String Yaml, TypeReference<T> type) {
     try {
-      return Optional.of(OM.readValue(json, type));
+      return Optional.of(OM.readValue(Yaml, type));
     } catch (IOException e) {
-      log.error("error on deserialize for json {}", json, e);
+      log.error("error on deserialize for Yaml {}", Yaml, e);
       throw new RuntimeException(e);
     }
   }
 
-  public static <T> T fromJson(
-      String json,
+  public static <T> T fromYaml(
+      String Yaml,
       TypeReference<T> type,
       Function<Throwable, RuntimeException> errorMessageConverter) {
     try {
-      return OM.readValue(json, type);
+      return OM.readValue(Yaml, type);
     } catch (IOException e) {
-      log.error("error on deserialize for json {}", json, e);
+      log.error("error on deserialize for Yaml {}", Yaml, e);
       throw errorMessageConverter.apply(e);
     }
   }
 
-  public static <T> T fromJson(
-      String json, TypeReference<T> type, Supplier<RuntimeException> runtimeExceptionSupplier) {
+  public static <T> T fromYaml(
+      String Yaml, TypeReference<T> type, Supplier<RuntimeException> runtimeExceptionSupplier) {
     try {
-      return OM.readValue(json, type);
+      return OM.readValue(Yaml, type);
     } catch (IOException e) {
-      log.error("error on deserialize for json {}", json, e);
+      log.error("error on deserialize for Yaml {}", Yaml, e);
       throw runtimeExceptionSupplier.get();
     }
   }
 
-  public static <T> Optional<T> fromJson(Reader json, Class<T> type) {
+  public static <T> Optional<T> fromYaml(Reader Yaml, Class<T> type) {
     try {
-      return Optional.of(OM.readValue(json, type));
+      return Optional.of(OM.readValue(Yaml, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
       throw new RuntimeException(e);
     }
   }
 
-  public static <T> Optional<T> fromJson(byte[] json, Class<T> type) {
+  public static <T> Optional<T> fromYaml(byte[] Yaml, Class<T> type) {
     try {
-      return Optional.of(OM.readValue(json, type));
+      return Optional.of(OM.readValue(Yaml, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
       throw new RuntimeException(e);
     }
   }
 
-  public static <T> Optional<T> fromJson(Reader json, TypeReference<T> type) {
+  public static <T> Optional<T> fromYaml(Reader Yaml, TypeReference<T> type) {
     try {
-      return Optional.of(OM.readValue(json, type));
+      return Optional.of(OM.readValue(Yaml, type));
     } catch (IOException e) {
       log.error("error on deserialize", e);
       throw new RuntimeException(e);
@@ -159,14 +161,14 @@ public class JsonUtil {
   }
 
   /**
-   * Convert json to Jackson Tree Model
+   * Convert Yaml to Jackson Tree Model
    *
-   * @param json json string
-   * @return the JSON Tree, or null if any error happens
+   * @param Yaml Yaml string
+   * @return the Yaml Tree, or null if any error happens
    */
-  public static Optional<JsonNode> readTree(String json) {
+  public static Optional<JsonNode> readTree(String Yaml) {
     try {
-      return Optional.of(OM.readTree(json));
+      return Optional.of(OM.readTree(Yaml));
     } catch (IOException e) {
       log.error("error on deserialize", e);
       throw new RuntimeException(e);
@@ -181,9 +183,9 @@ public class JsonUtil {
     return Optional.ofNullable(OM.convertValue(fromValue, type));
   }
 
-  public static Optional<JsonNode> toJsonNode(String json) {
+  public static Optional<JsonNode> toYamlNode(String Yaml) {
     try {
-      return Optional.ofNullable(OM.readTree(json));
+      return Optional.ofNullable(OM.readTree(Yaml));
     } catch (IOException e) {
       log.error("error on deserialize", e);
       throw new RuntimeException(e);

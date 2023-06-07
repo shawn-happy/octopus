@@ -1,20 +1,20 @@
 package com.octopus.kettlex.runtime.reader;
 
 import com.octopus.kettlex.core.exception.KettleXException;
-import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.column.Column;
 import com.octopus.kettlex.core.row.record.DefaultRecord;
-import com.octopus.kettlex.core.steps.BaseStep;
-import com.octopus.kettlex.core.steps.Reader;
+import com.octopus.kettlex.core.steps.BaseReader;
 import com.octopus.kettlex.model.Field;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 import lombok.Getter;
 
 @Getter
-public class RowGenerator extends BaseStep<RowGeneratorConfig>
-    implements Reader<RowGeneratorConfig> {
+public class RowGenerator extends BaseReader<RowGeneratorConfig> {
 
   private final RowGeneratorConfig stepConfig;
   private Integer rowLimit;
@@ -38,9 +38,10 @@ public class RowGenerator extends BaseStep<RowGeneratorConfig>
   }
 
   @Override
-  public void read() throws KettleXStepExecuteException {
+  protected Supplier<List<Record>> doReader() {
     Field[] fields = stepConfig.getOptions().getFields();
     int i = 0;
+    List<Record> records = new ArrayList<>(rowLimit);
     while (i < rowLimit) {
       Record record = new DefaultRecord();
       for (Field field : fields) {
@@ -51,8 +52,9 @@ public class RowGenerator extends BaseStep<RowGeneratorConfig>
                 .rawData(field.getValue())
                 .build());
       }
-      putRow(record);
+      records.add(record);
       i++;
     }
+    return () -> records;
   }
 }

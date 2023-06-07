@@ -3,6 +3,7 @@ package com.octopus.kettlex.core.runtime;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
+import com.octopus.kettlex.Engine;
 import com.octopus.kettlex.core.exception.KettleXJSONException;
 import com.octopus.kettlex.core.steps.StepConfigChannelCombination;
 import com.octopus.kettlex.core.steps.StepFactory;
@@ -17,6 +18,7 @@ import com.octopus.kettlex.runtime.executor.Executor;
 import com.octopus.kettlex.runtime.reader.RowGenerator;
 import com.octopus.kettlex.runtime.writer.LogMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
@@ -75,6 +77,18 @@ public class ExecuteTests {
   public void testThreadExecute() throws Exception {
     Executor executor = new DefaultExecutor(taskGroup);
     executor.executor();
+    TimeUnit.SECONDS.sleep(2);
+  }
+
+  @Test
+  public void testEngineStart() throws Exception {
+    String configBase64 =
+        Base64.getEncoder()
+            .encodeToString(
+                IOUtils.toString(Resources.getResource("simple.json"), StandardCharsets.UTF_8)
+                    .getBytes(StandardCharsets.UTF_8));
+    Engine engine = new Engine();
+    engine.start(configBase64);
     TimeUnit.SECONDS.sleep(2);
   }
 }
