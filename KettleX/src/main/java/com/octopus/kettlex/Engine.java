@@ -3,9 +3,7 @@ package com.octopus.kettlex;
 import com.octopus.kettlex.core.exception.KettleXJSONException;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.model.TaskConfiguration;
-import com.octopus.kettlex.runtime.TaskGroup;
-import com.octopus.kettlex.runtime.executor.DefaultExecutor;
-import com.octopus.kettlex.runtime.executor.Executor;
+import com.octopus.kettlex.runtime.executor.Scheduler;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +24,7 @@ public class Engine {
                 Base64.getDecoder().decode(configBase64.getBytes(StandardCharsets.UTF_8)),
                 TaskConfiguration.class)
             .orElseThrow(() -> new KettleXJSONException("parse task config error."));
-    TaskGroup taskGroup = new TaskGroup(taskConfiguration);
-    Executor executor = new DefaultExecutor(taskGroup);
-    executor.executor();
+    Scheduler scheduler = new Scheduler();
+    scheduler.startTaskGroup(taskConfiguration);
   }
 }

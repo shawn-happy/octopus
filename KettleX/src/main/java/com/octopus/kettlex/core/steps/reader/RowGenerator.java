@@ -1,4 +1,4 @@
-package com.octopus.kettlex.runtime.reader;
+package com.octopus.kettlex.core.steps.reader;
 
 import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.row.Record;
@@ -8,6 +8,7 @@ import com.octopus.kettlex.core.steps.BaseReader;
 import com.octopus.kettlex.model.Field;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
+import com.octopus.kettlex.runtime.StepConfigChannelCombination;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -19,9 +20,9 @@ public class RowGenerator extends BaseReader<RowGeneratorConfig> {
   private final RowGeneratorConfig stepConfig;
   private Integer rowLimit;
 
-  public RowGenerator(RowGeneratorConfig stepConfig) {
-    super(stepConfig);
-    this.stepConfig = stepConfig;
+  public RowGenerator(StepConfigChannelCombination combination) {
+    super(combination);
+    this.stepConfig = (RowGeneratorConfig) combination.getStepConfig();
   }
 
   @Override

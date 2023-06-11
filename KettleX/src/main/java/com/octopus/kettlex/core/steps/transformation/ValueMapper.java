@@ -1,4 +1,4 @@
-package com.octopus.kettlex.runtime.transformation;
+package com.octopus.kettlex.core.steps.transformation;
 
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.column.Column;
@@ -7,6 +7,7 @@ import com.octopus.kettlex.core.row.record.DefaultRecord;
 import com.octopus.kettlex.core.steps.BaseTransform;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig;
 import com.octopus.kettlex.model.transformation.ValueMapperConfig.ValueMapperOptions;
+import com.octopus.kettlex.runtime.StepConfigChannelCombination;
 import java.util.Map;
 import lombok.Getter;
 
@@ -15,9 +16,9 @@ public class ValueMapper extends BaseTransform<ValueMapperConfig> {
 
   private final ValueMapperConfig stepConfig;
 
-  public ValueMapper(ValueMapperConfig stepConfig) {
-    super(stepConfig);
-    this.stepConfig = stepConfig;
+  public ValueMapper(StepConfigChannelCombination combination) {
+    super(combination);
+    this.stepConfig = (ValueMapperConfig) combination.getStepConfig();
   }
 
   @Override

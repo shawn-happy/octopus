@@ -1,1 +1,14 @@
-log
+log/
+*.class
+*.jar
+*.log
+
+target/
+build/
+
+*.settings
+*.classpath
+*.eclipse
+*.iml
+.idea
+

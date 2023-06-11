@@ -5,18 +5,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
 import com.octopus.kettlex.Engine;
 import com.octopus.kettlex.core.exception.KettleXJSONException;
-import com.octopus.kettlex.core.steps.StepConfigChannelCombination;
 import com.octopus.kettlex.core.steps.StepFactory;
+import com.octopus.kettlex.core.steps.reader.RowGenerator;
+import com.octopus.kettlex.core.steps.writer.LogMessage;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.model.RuntimeConfig;
 import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.writer.LogMessageConfig;
+import com.octopus.kettlex.runtime.StepConfigChannelCombination;
 import com.octopus.kettlex.runtime.TaskGroup;
-import com.octopus.kettlex.runtime.executor.DefaultExecutor;
-import com.octopus.kettlex.runtime.executor.Executor;
-import com.octopus.kettlex.runtime.reader.RowGenerator;
-import com.octopus.kettlex.runtime.writer.LogMessage;
+import com.octopus.kettlex.runtime.executor.Scheduler;
+import com.octopus.kettlex.runtime.factory.DefaultStepFactory;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 public class ExecuteTests {
 
   private static TaskGroup taskGroup;
+  private static final StepFactory stepFacotry = DefaultStepFactory.getStepFactory();
+  private static TaskConfiguration configuration;
 
   @BeforeAll
   public static void init() throws Exception {
@@ -45,7 +47,7 @@ public class ExecuteTests {
                 new TypeReference<LogMessageConfig>() {})
             .orElseThrow(() -> new KettleXJSONException("parse json error"));
 
-    TaskConfiguration configuration =
+    configuration =
         TaskConfiguration.builder()
             .taskId("simple_test")
             .taskName("simple_test")
@@ -65,8 +67,8 @@ public class ExecuteTests {
         taskGroup.getStepChannel("rowGeneratorTest");
     StepConfigChannelCombination logMessageCombination = taskGroup.getStepChannel("logMessage");
 
-    RowGenerator rowGenerator = (RowGenerator) StepFactory.createStep(rowGeneratorCombination);
-    LogMessage logMessage = (LogMessage) StepFactory.createStep(logMessageCombination);
+    RowGenerator rowGenerator = (RowGenerator) stepFacotry.createStep(rowGeneratorCombination);
+    LogMessage logMessage = (LogMessage) stepFacotry.createStep(logMessageCombination);
     rowGenerator.init();
     logMessage.init();
     rowGenerator.read();
@@ -75,9 +77,8 @@ public class ExecuteTests {
 
   @Test
   public void testThreadExecute() throws Exception {
-    Executor executor = new DefaultExecutor(taskGroup);
-    executor.executor();
-    TimeUnit.SECONDS.sleep(2);
+    Scheduler scheduler = new Scheduler();
+    scheduler.startTaskGroup(configuration);
   }
 
   @Test

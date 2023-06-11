@@ -1,4 +1,4 @@
-package com.octopus.kettlex.core.channel;
+package com.octopus.kettlex.core.row.channel;
 
 import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.row.Record;
