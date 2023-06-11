@@ -24,4 +24,6 @@ public interface Step<CONFIG extends StepConfig<?>> {
    * @throws KettleXException
    */
   void destroy() throws KettleXException;
+
+  void shutdown() throws KettleXException;
 }

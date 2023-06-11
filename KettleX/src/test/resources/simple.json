@@ -10,7 +10,7 @@
       "type": "ROW_GENERATOR",
       "output": "row_generator_output",
       "options": {
-        "rowLimit": 20,
+        "rowLimit": 1000000,
         "fields": [
           {
             "name": "id",

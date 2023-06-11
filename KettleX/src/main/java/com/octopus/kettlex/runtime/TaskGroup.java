@@ -1,10 +1,9 @@
 package com.octopus.kettlex.runtime;
 
-import com.octopus.kettlex.core.channel.Channel;
-import com.octopus.kettlex.core.channel.DefaultChannel;
 import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
-import com.octopus.kettlex.core.steps.StepConfigChannelCombination;
+import com.octopus.kettlex.core.row.channel.Channel;
+import com.octopus.kettlex.core.row.channel.DefaultChannel;
 import com.octopus.kettlex.model.ReaderConfig;
 import com.octopus.kettlex.model.StepConfig;
 import com.octopus.kettlex.model.TaskConfiguration;
@@ -15,9 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 public class TaskGroup {
 
+  private final String taskGroupId;
+  private final String taskGroupName;
   private final TaskConfiguration configuration;
   private final Map<String, StepConfig<?>> stepConfigMap = new HashMap<>();
   private final Map<String, StepConfigChannelCombination> stepConfigChannelCombinationMap =
@@ -26,8 +28,24 @@ public class TaskGroup {
 
   public TaskGroup(TaskConfiguration configuration) {
     this.configuration = configuration;
+    this.taskGroupId = configuration.getTaskId();
+    this.taskGroupName = configuration.getTaskName();
     combineStepLinks();
     combineStepChannelCombine();
+  }
+
+  public String getTaskGroupId() {
+    return taskGroupId;
+  }
+
+  public String getTaskGroupName() {
+    return taskGroupName;
+  }
+
+  public int size() {
+    return MapUtils.isEmpty(stepConfigChannelCombinationMap)
+        ? 0
+        : stepConfigChannelCombinationMap.size();
   }
 
   public List<StepConfigChannelCombination> getSteps() {

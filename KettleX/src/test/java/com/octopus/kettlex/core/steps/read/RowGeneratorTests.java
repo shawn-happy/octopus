@@ -10,17 +10,20 @@ import com.google.common.io.Resources;
 import com.octopus.kettlex.core.exception.KettleXJSONException;
 import com.octopus.kettlex.core.row.column.FieldType;
 import com.octopus.kettlex.core.steps.StepFactory;
+import com.octopus.kettlex.core.steps.reader.RowGenerator;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.model.TaskConfiguration;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig;
 import com.octopus.kettlex.model.reader.RowGeneratorConfig.RowGeneratorOptions;
 import com.octopus.kettlex.runtime.TaskGroup;
-import com.octopus.kettlex.runtime.reader.RowGenerator;
+import com.octopus.kettlex.runtime.factory.DefaultStepFactory;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 public class RowGeneratorTests {
+
+  private static final StepFactory stepFacotry = DefaultStepFactory.getStepFactory();
 
   @Test
   public void createRowGeneratorMeta() throws Exception {
@@ -62,7 +65,7 @@ public class RowGeneratorTests {
 
     TaskGroup taskGroup = new TaskGroup(TaskConfiguration.builder().build());
     RowGenerator rowGenerator =
-        (RowGenerator) StepFactory.createStep(taskGroup.getStepChannel("rowGeneratorTest"));
+        (RowGenerator) stepFacotry.createStep(taskGroup.getStepChannel("rowGeneratorTest"));
     rowGenerator.read();
   }
 }

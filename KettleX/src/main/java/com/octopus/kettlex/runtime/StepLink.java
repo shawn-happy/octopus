@@ -1,6 +1,6 @@
 package com.octopus.kettlex.runtime;
 
-import com.octopus.kettlex.core.channel.Channel;
+import com.octopus.kettlex.core.row.channel.Channel;
 import com.octopus.kettlex.model.StepConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,9 +1,10 @@
-package com.octopus.kettlex.runtime.writer;
+package com.octopus.kettlex.core.steps.writer;
 
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.column.Column;
 import com.octopus.kettlex.core.steps.BaseWriter;
 import com.octopus.kettlex.model.writer.LogMessageConfig;
+import com.octopus.kettlex.runtime.StepConfigChannelCombination;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +17,9 @@ public class LogMessage extends BaseWriter<LogMessageConfig> {
 
   private static final String CR = System.getProperty("line.separator");
 
-  public LogMessage(LogMessageConfig stepConfig) {
-    super(stepConfig);
-    this.stepConfig = stepConfig;
+  public LogMessage(StepConfigChannelCombination combination) {
+    super(combination);
+    this.stepConfig = (LogMessageConfig) combination.getStepConfig();
   }
 
   @Override

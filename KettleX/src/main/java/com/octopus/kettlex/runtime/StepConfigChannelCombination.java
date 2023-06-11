@@ -1,7 +1,8 @@
-package com.octopus.kettlex.core.steps;
+package com.octopus.kettlex.runtime;
 
-import com.octopus.kettlex.core.channel.Channel;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
+import com.octopus.kettlex.core.row.channel.Channel;
+import com.octopus.kettlex.core.steps.Verifyable;
 import com.octopus.kettlex.model.RuntimeConfig;
 import com.octopus.kettlex.model.StepConfig;
 import com.octopus.kettlex.model.TransformationConfig;
