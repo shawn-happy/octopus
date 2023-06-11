@@ -25,4 +25,11 @@ pluginManagement {
 }
 
 rootProject.name = 'KettleX'
+include 'kettlex-core'
+include 'kettlex-runtime'
+include 'kettlex-examples'
+
+include 'row-generator'
+include 'value-mapper'
+include 'log-message'
 

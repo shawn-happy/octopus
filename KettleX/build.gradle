@@ -5,7 +5,7 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
-group 'com.octopus'
+group 'com.octopus.kettlex'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -26,7 +26,7 @@ repositories {
 }
 
 allprojects{
-    group 'com.octopus'
+    group 'com.octopus.kettlex'
     repositories {
         maven {
             name 'aliyun-public'
@@ -45,21 +45,24 @@ allprojects{
     }
 }
 
-apply plugin: "java"
-apply plugin: 'groovy'
-apply plugin: 'com.diffplug.spotless'
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
-spotless {
-    java {
-        importOrder()
-        removeUnusedImports()
-        toggleOffOn("@formatter:off", "@formatter:on")
-        googleJavaFormat('1.8')
-        formatAnnotations()
-        target '**/*.java'
+subprojects{
+    apply plugin: "java"
+    apply plugin: 'groovy'
+    apply plugin: 'com.diffplug.spotless'
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+    spotless {
+        java {
+            importOrder()
+            removeUnusedImports()
+            toggleOffOn("@formatter:off", "@formatter:on")
+            googleJavaFormat('1.8')
+            formatAnnotations()
+            target '**/*.java'
+        }
     }
 }
+
 
 ext{
     lombokVersion = '1.18.10'
@@ -83,27 +86,6 @@ ext{
     libs_jacksonAnnotations = [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion]
     libs_jacksonDatatypeJsr310 = [group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion]
     libs_jacksonDataformatYaml = [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion]
-}
-
-dependencies {
-    annotationProcessor libs_lombok
-    compileOnly libs_lombok
-    implementation libs_slf4jApi
-    implementation libs_log4jSlf4jImpl
-    implementation libs_jacksonCore
-    implementation libs_jacksonDatabind
-    implementation libs_jacksonAnnotations
-    implementation libs_jacksonDatatypeJsr310
-    implementation libs_jacksonDataformatYaml
-    implementation libs_commonsCollections4
-    implementation libs_commonsLang3
-    implementation libs_commonsIO
-    implementation libs_guava
-
-    testCompileOnly libs_lombok
-    testAnnotationProcessor libs_lombok
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 test {
