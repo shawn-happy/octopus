@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(":kettlex-core")
     implementation project(":kettlex-runtime")
     implementation project(":row-generator")
     implementation project(":value-mapper")

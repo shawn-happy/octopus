@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(":kettlex-core")
+    implementation project(":log-message")
 
     annotationProcessor libs_lombok
     compileOnly libs_lombok
