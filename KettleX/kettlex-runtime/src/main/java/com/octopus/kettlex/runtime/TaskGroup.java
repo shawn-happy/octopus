@@ -106,7 +106,7 @@ public class TaskGroup {
 
   private void combineStepLinks() {
     String taskId = configuration.getTaskId();
-    List<ReaderConfig<?>> readers = configuration.getReaders();
+    List<ReaderConfig<?>> readers = null;
     if (CollectionUtils.isEmpty(readers)) {
       throw new KettleXException("reader config cannot be null");
     }
@@ -131,7 +131,7 @@ public class TaskGroup {
       stepConfigMap.put(name, readerConfig);
     }
 
-    List<TransformationConfig<?>> transformations = configuration.getTransformations();
+    List<TransformationConfig<?>> transformations = null;
     if (CollectionUtils.isNotEmpty(transformations)) {
       // transformation output也有可能是transformation或者writer的input，
       // 所以先记录transformation的output，避免由于顺序问题，而找不到input
@@ -168,7 +168,7 @@ public class TaskGroup {
       }
     }
 
-    List<WriterConfig<?>> writers = configuration.getWriters();
+    List<WriterConfig<?>> writers = null;
     if (CollectionUtils.isNotEmpty(writers)) {
       for (WriterConfig<?> writerConfig : writers) {
         writerConfig.verify();

@@ -1,0 +1,16 @@
+taskId: task
+taskName: test
+version: 1.0.0
+description: simple test
+readers:
+transforms:
+writers:
+  - id: log
+    name: log
+    type: log-message
+    input: input
+    writeMode: INSERT
+    options:
+runtimeConfig:
+  channelCapacity: 10
+

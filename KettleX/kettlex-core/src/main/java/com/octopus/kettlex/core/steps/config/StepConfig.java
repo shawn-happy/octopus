@@ -1,10 +1,12 @@
 package com.octopus.kettlex.core.steps.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.octopus.kettlex.core.exception.KettleXJSONException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.octopus.kettlex.core.exception.KettleXParseException;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
 import com.octopus.kettlex.core.steps.config.StepConfig.StepOptions;
 import com.octopus.kettlex.core.utils.JsonUtil;
+import com.octopus.kettlex.core.utils.YamlUtil;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +18,15 @@ public interface StepConfig<T extends StepOptions> {
 
   String getName();
 
+  String getType();
+
   T getOptions();
+
+  default void loadYaml(String yaml) {
+    loadYaml(YamlUtil.toYamlNode(yaml).orElse(null));
+  }
+
+  void loadYaml(JsonNode jsonNode);
 
   default void verify() {
     if (StringUtils.isBlank(getName())) {
@@ -31,11 +41,17 @@ public interface StepConfig<T extends StepOptions> {
     default Map<String, String> getOptions() {
       return JsonUtil.fromJson(
               JsonUtil.toJson(this)
-                  .orElseThrow(() -> new KettleXJSONException("parse Options error")),
+                  .orElseThrow(() -> new KettleXParseException("parse Options error")),
               new TypeReference<Map<String, String>>() {})
           .orElse(Collections.emptyMap());
     }
 
     void verify();
+
+    default void loadYaml(String yaml) {
+      loadYaml(YamlUtil.toYamlNode(yaml).orElse(null));
+    }
+
+    void loadYaml(JsonNode jsonNode);
   }
 }

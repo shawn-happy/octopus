@@ -191,4 +191,13 @@ public class YamlUtil {
       throw new RuntimeException(e);
     }
   }
+
+  public static Optional<JsonNode> toYamlNode(byte[] Yaml) {
+    try {
+      return Optional.ofNullable(OM.readTree(Yaml));
+    } catch (IOException e) {
+      log.error("error on deserialize", e);
+      throw new RuntimeException(e);
+    }
+  }
 }

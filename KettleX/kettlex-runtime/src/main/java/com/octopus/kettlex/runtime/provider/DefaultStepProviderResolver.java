@@ -27,7 +27,7 @@ public class DefaultStepProviderResolver extends StepProviderResolver {
   private StepConfigStepCombinationsBuilder newStepConfigStepCombinationBuilder(
       ClassLoader classLoader) {
     return new DefaultStepConfigStepCombinationsBuilder(classLoader)
-        .addBuiltInStepConfigSteps()
+        //        .addBuiltInStepConfigSteps()
         .addDiscoveredStepConfigSteps();
   }
 }
