@@ -2,9 +2,9 @@ package com.octopus.kettlex.core.steps;
 
 import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.row.Record;
-import com.octopus.kettlex.core.steps.config.TransformationConfig;
+import com.octopus.kettlex.core.steps.config.TransformerConfig;
 
-public abstract class BaseTransform<C extends TransformationConfig<?>> extends BaseStep<C>
+public abstract class BaseTransform<C extends TransformerConfig<?>> extends BaseStep<C>
     implements Transform<C> {
 
   protected BaseTransform() {

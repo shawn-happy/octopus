@@ -73,6 +73,7 @@ ext{
     commonsLang3Version = '3.4'
     commonsIOVersion = '2.11.0'
     guavaVersion = '31.1-jre'
+    annotationVersion = '20.1.0'
 
     libs_guava = [group: 'com.google.guava', name: 'guava', version: guavaVersion]
     libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
@@ -86,6 +87,7 @@ ext{
     libs_jacksonAnnotations = [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion]
     libs_jacksonDatatypeJsr310 = [group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion]
     libs_jacksonDataformatYaml = [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion]
+    libs_jetbrainsAnnotation = [group: 'org.jetbrains', name: 'annotations', version: annotationVersion]
 }
 
 test {

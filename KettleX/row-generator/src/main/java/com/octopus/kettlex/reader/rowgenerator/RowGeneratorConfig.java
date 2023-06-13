@@ -31,11 +31,11 @@ public class RowGeneratorConfig implements ReaderConfig<RowGeneratorOptions> {
 
   @Override
   public void loadYaml(JsonNode jsonNode) {
-    if (jsonNode == null || jsonNode.isNull()) {
+    if (jsonNode == null || jsonNode.isNull() || jsonNode.isEmpty()) {
       return;
     }
     RowGeneratorConfig rowGeneratorConfig =
-        YamlUtil.fromYaml(jsonNode.asText(), new TypeReference<RowGeneratorConfig>() {})
+        YamlUtil.fromYaml(jsonNode.toString(), new TypeReference<RowGeneratorConfig>() {})
             .orElse(null);
     if (rowGeneratorConfig != null) {
       String type = rowGeneratorConfig.type;

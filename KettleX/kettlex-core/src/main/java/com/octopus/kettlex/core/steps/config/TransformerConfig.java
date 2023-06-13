@@ -1,10 +1,10 @@
 package com.octopus.kettlex.core.steps.config;
 
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
-import com.octopus.kettlex.core.steps.config.TransformationConfig.TransformationOptions;
+import com.octopus.kettlex.core.steps.config.TransformerConfig.TransformerOptions;
 import org.apache.commons.lang3.StringUtils;
 
-public interface TransformationConfig<P extends TransformationOptions> extends StepConfig<P> {
+public interface TransformerConfig<P extends TransformerOptions> extends StepConfig<P> {
 
   /**
    * 目前只支持单个input，如果是多个input，会出现以下问题：
@@ -29,5 +29,5 @@ public interface TransformationConfig<P extends TransformationOptions> extends S
     }
   }
 
-  interface TransformationOptions extends StepOptions {}
+  interface TransformerOptions extends StepOptions {}
 }

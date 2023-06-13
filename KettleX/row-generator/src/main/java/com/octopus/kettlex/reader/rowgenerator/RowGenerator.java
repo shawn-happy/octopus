@@ -21,6 +21,7 @@ public class RowGenerator extends BaseReader<RowGeneratorConfig> {
 
   @Override
   public void doInit(RowGeneratorConfig stepConfig) throws KettleXException {
+    this.stepConfig = stepConfig;
     RowGeneratorOptions options = stepConfig.getOptions();
     Integer rowLimit = options.getRowLimit();
     if (rowLimit == null) {

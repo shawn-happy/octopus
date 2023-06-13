@@ -1,11 +1,7 @@
-package com.octopus.kettlex.runtime;
+package com.octopus.kettlex.core.steps.config;
 
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
 import com.octopus.kettlex.core.row.channel.Channel;
-import com.octopus.kettlex.core.steps.config.RuntimeConfig;
-import com.octopus.kettlex.core.steps.config.StepConfig;
-import com.octopus.kettlex.core.steps.config.TransformationConfig;
-import com.octopus.kettlex.core.steps.config.WriterConfig;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,17 +15,17 @@ import org.apache.commons.collections4.CollectionUtils;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StepConfigChannelCombination {
-  private StepConfig<?> stepConfig;
+public class StepConfigChannelCombination<C extends StepConfig<?>> {
+  private C stepConfig;
   private List<Channel> outputChannels;
   private Channel inputChannel;
 
   public void verify() {
     stepConfig.verify();
-    if (stepConfig instanceof RuntimeConfig && CollectionUtils.isEmpty(outputChannels)) {
+    if (stepConfig instanceof ReaderConfig && CollectionUtils.isEmpty(outputChannels)) {
       throw new KettleXStepConfigException("");
     }
-    if (stepConfig instanceof TransformationConfig
+    if (stepConfig instanceof TransformerConfig
         && (CollectionUtils.isEmpty(outputChannels) || inputChannel == null)) {
       throw new KettleXStepConfigException("");
     }

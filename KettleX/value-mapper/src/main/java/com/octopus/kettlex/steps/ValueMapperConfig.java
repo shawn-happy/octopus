@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
 import com.octopus.kettlex.core.row.column.FieldType;
-import com.octopus.kettlex.core.steps.config.TransformationConfig;
+import com.octopus.kettlex.core.steps.config.TransformerConfig;
 import com.octopus.kettlex.core.utils.YamlUtil;
 import com.octopus.kettlex.steps.ValueMapperConfig.ValueMapperOptions;
 import java.util.Map;
@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValueMapperConfig implements TransformationConfig<ValueMapperOptions> {
+public class ValueMapperConfig implements TransformerConfig<ValueMapperOptions> {
 
   private static final String STEP_TYPE = "value-mapper";
 
@@ -33,11 +33,11 @@ public class ValueMapperConfig implements TransformationConfig<ValueMapperOption
 
   @Override
   public void loadYaml(JsonNode jsonNode) {
-    if (jsonNode == null || jsonNode.isNull()) {
+    if (jsonNode == null || jsonNode.isNull() || jsonNode.isEmpty()) {
       return;
     }
     ValueMapperConfig valueMapperConfig =
-        YamlUtil.fromYaml(jsonNode.asText(), new TypeReference<ValueMapperConfig>() {})
+        YamlUtil.fromYaml(jsonNode.toString(), new TypeReference<ValueMapperConfig>() {})
             .orElse(null);
     if (valueMapperConfig != null) {
       String type = valueMapperConfig.getType();
@@ -58,7 +58,7 @@ public class ValueMapperConfig implements TransformationConfig<ValueMapperOption
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class ValueMapperOptions implements TransformationOptions {
+  public static class ValueMapperOptions implements TransformerOptions {
     private String sourceField;
     private String targetField;
     private FieldType targetFieldType;

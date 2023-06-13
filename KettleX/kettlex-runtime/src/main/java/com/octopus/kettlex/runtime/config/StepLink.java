@@ -1,4 +1,4 @@
-package com.octopus.kettlex.runtime;
+package com.octopus.kettlex.runtime.config;
 
 import com.octopus.kettlex.core.row.channel.Channel;
 import com.octopus.kettlex.core.steps.config.StepConfig;

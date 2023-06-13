@@ -1,19 +1,29 @@
-package com.octopus.kettlex.runtime;
+package com.octopus.kettlex.runtime.config;
 
-import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.exception.KettleXStepConfigException;
 import com.octopus.kettlex.core.row.channel.Channel;
 import com.octopus.kettlex.core.row.channel.DefaultChannel;
+import com.octopus.kettlex.core.steps.Reader;
+import com.octopus.kettlex.core.steps.Step;
+import com.octopus.kettlex.core.steps.Transform;
+import com.octopus.kettlex.core.steps.Writer;
 import com.octopus.kettlex.core.steps.config.ReaderConfig;
 import com.octopus.kettlex.core.steps.config.StepConfig;
 import com.octopus.kettlex.core.steps.config.StepConfig.StepOptions;
-import com.octopus.kettlex.core.steps.config.TaskConfiguration;
-import com.octopus.kettlex.core.steps.config.TransformationConfig;
+import com.octopus.kettlex.core.steps.config.StepConfigChannelCombination;
+import com.octopus.kettlex.core.steps.config.TransformerConfig;
 import com.octopus.kettlex.core.steps.config.WriterConfig;
+import com.octopus.kettlex.core.utils.LoadUtil;
+import com.octopus.kettlex.core.utils.YamlUtil;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 
@@ -21,17 +31,16 @@ public class TaskGroup {
 
   private final String taskGroupId;
   private final String taskGroupName;
-  private final TaskConfiguration configuration;
   private final Map<String, StepConfig<? extends StepOptions>> stepConfigMap = new HashMap<>();
-  private final Map<String, StepConfigChannelCombination> stepConfigChannelCombinationMap =
-      new HashMap<>();
+  private final Map<String, StepConfigChannelCombination<? extends StepConfig<?>>>
+      stepConfigChannelCombinationMap = new HashMap<>();
   private final Map<String, StepLink> stepLinkMap = new HashMap<>();
 
-  public TaskGroup(TaskConfiguration configuration) {
-    this.configuration = configuration;
+  public TaskGroup(JobConfiguration configuration) {
     this.taskGroupId = configuration.getTaskId();
     this.taskGroupName = configuration.getTaskName();
-    combineStepLinks();
+    TaskGroupExecutorConfig config = buildTaskGroupExecutorConfig(configuration);
+    combineStepLinks(config);
     combineStepChannelCombine();
   }
 
@@ -49,12 +58,12 @@ public class TaskGroup {
         : stepConfigChannelCombinationMap.size();
   }
 
-  public List<StepConfigChannelCombination> getSteps() {
+  public List<StepConfigChannelCombination<?>> getSteps() {
     return stepConfigChannelCombinationMap.values().stream()
         .collect(Collectors.toUnmodifiableList());
   }
 
-  public StepConfigChannelCombination getStepChannel(String name) {
+  public StepConfigChannelCombination<?> getStepChannel(String name) {
     return stepConfigChannelCombinationMap.get(name);
   }
 
@@ -104,21 +113,84 @@ public class TaskGroup {
     return stepLinkMap.get(getChannelId(from, to));
   }
 
-  private void combineStepLinks() {
-    String taskId = configuration.getTaskId();
-    List<ReaderConfig<?>> readers = null;
+  public TaskGroupExecutorConfig buildTaskGroupExecutorConfig(JobConfiguration configuration) {
+    TaskGroupExecutorConfig config = new TaskGroupExecutorConfig();
+    List<Map<String, Object>> readers = configuration.getReaders();
     if (CollectionUtils.isEmpty(readers)) {
-      throw new KettleXException("reader config cannot be null");
+      throw new KettleXStepConfigException("reader plugins cannot be null");
+    }
+    List<ReaderConfig<?>> readerConfigs = new ArrayList<>(readers.size());
+    for (Map<String, Object> reader : readers) {
+      String type = String.valueOf(reader.get("type"));
+      Step<?> step = LoadUtil.loadStep(type);
+      StepConfig<?> stepConfig = LoadUtil.loadStepConfig(type);
+      if (!(step instanceof Reader<?> && stepConfig instanceof ReaderConfig<?>)) {
+        throw new KettleXStepConfigException(String.format("step [%s] is not reader plugin", type));
+      }
+      stepConfig.loadYaml(YamlUtil.toYaml(reader).orElse(null));
+      ReaderConfig<?> readerConfig = (ReaderConfig<?>) stepConfig;
+      if (stepConfigMap.containsKey(stepConfig.getName())) {
+        throw new KettleXStepConfigException("Duplicate step name. [" + stepConfig.getName() + "]");
+      }
+      stepConfigMap.put(stepConfig.getName(), stepConfig);
+      readerConfigs.add(readerConfig);
+    }
+    config.setReaders(readerConfigs);
+
+    List<Map<String, Object>> transforms = configuration.getTransforms();
+    if (CollectionUtils.isNotEmpty(transforms)) {
+      List<TransformerConfig<?>> transformerConfigs = new ArrayList<>(transforms.size());
+      for (Map<String, Object> transform : transforms) {
+        String type = String.valueOf(transform.get("type"));
+        Step<?> step = LoadUtil.loadStep(type);
+        StepConfig<?> stepConfig = LoadUtil.loadStepConfig(type);
+        if (!(step instanceof Transform<?> && stepConfig instanceof TransformerConfig<?>)) {
+          throw new KettleXStepConfigException(
+              String.format("step [%s] is not transformer plugin", type));
+        }
+        stepConfig.loadYaml(YamlUtil.toYaml(transform).orElse(null));
+        if (stepConfigMap.containsKey(stepConfig.getName())) {
+          throw new KettleXStepConfigException(
+              "Duplicate step name. [" + stepConfig.getName() + "]");
+        }
+        stepConfigMap.put(stepConfig.getName(), stepConfig);
+        transformerConfigs.add((TransformerConfig<?>) stepConfig);
+      }
+      config.setTransforms(transformerConfigs);
     }
 
+    List<Map<String, Object>> writers = configuration.getWriters();
+    if (CollectionUtils.isNotEmpty(writers)) {
+      List<WriterConfig<?>> writerConfigs = new ArrayList<>(writers.size());
+      for (Map<String, Object> writer : writers) {
+        String type = String.valueOf(writer.get("type"));
+        Step<?> step = LoadUtil.loadStep(type);
+        StepConfig<?> stepConfig = LoadUtil.loadStepConfig(type);
+        if (!(step instanceof Writer<?> && stepConfig instanceof WriterConfig<?>)) {
+          throw new KettleXStepConfigException(
+              String.format("step [%s] is not writer plugin", type));
+        }
+        stepConfig.loadYaml(YamlUtil.toYaml(writer).orElse(null));
+        if (stepConfigMap.containsKey(stepConfig.getName())) {
+          throw new KettleXStepConfigException(
+              "Duplicate step name. [" + stepConfig.getName() + "]");
+        }
+        stepConfigMap.put(stepConfig.getName(), stepConfig);
+        writerConfigs.add((WriterConfig<?>) stepConfig);
+      }
+      config.setWriters(writerConfigs);
+    }
+    config.setRuntimeConfig(configuration.getRuntimeConfig());
+    return config;
+  }
+
+  private void combineStepLinks(TaskGroupExecutorConfig config) {
+    List<ReaderConfig<?>> readers = config.getReaders();
     // 用于记录output step映射
     Map<String, String> outputStepMap = new HashMap<>();
     for (ReaderConfig<?> readerConfig : readers) {
       readerConfig.verify();
       String name = readerConfig.getName();
-      if (stepConfigMap.containsKey(name)) {
-        throw new KettleXStepConfigException("Duplicate step name. [" + name + "]");
-      }
 
       String output = readerConfig.getOutput();
       if (outputStepMap.containsKey(output)) {
@@ -128,20 +200,15 @@ public class TaskGroup {
                 outputStepMap, output));
       }
       outputStepMap.put(output, name);
-      stepConfigMap.put(name, readerConfig);
     }
 
-    List<TransformationConfig<?>> transformations = null;
+    List<TransformerConfig<?>> transformations = config.getTransforms();
     if (CollectionUtils.isNotEmpty(transformations)) {
       // transformation output也有可能是transformation或者writer的input，
       // 所以先记录transformation的output，避免由于顺序问题，而找不到input
-      for (TransformationConfig<?> transformation : transformations) {
+      for (TransformerConfig<?> transformation : transformations) {
         transformation.verify();
         String name = transformation.getName();
-        if (stepConfigMap.containsKey(name)) {
-          throw new KettleXStepConfigException("Duplicate step name. [" + name + "]");
-        }
-
         String output = transformation.getOutput();
         if (outputStepMap.containsKey(output)) {
           throw new KettleXStepConfigException(
@@ -152,7 +219,7 @@ public class TaskGroup {
         outputStepMap.put(output, name);
       }
 
-      for (TransformationConfig<?> transformation : transformations) {
+      for (TransformerConfig<?> transformation : transformations) {
         String input = transformation.getInput();
         if (!outputStepMap.containsKey(input)) {
           throw new KettleXStepConfigException(
@@ -160,23 +227,19 @@ public class TaskGroup {
                   "cannot find this input from outputs, outputs: [%s], current input:[%s]",
                   outputStepMap, input));
         }
-        stepConfigMap.put(transformation.getName(), transformation);
 
         String fromStep = outputStepMap.get(input);
         String toStep = transformation.getName();
-        createStepLink(fromStep, toStep);
+        createStepLink(fromStep, toStep, config);
       }
     }
 
-    List<WriterConfig<?>> writers = null;
+    List<WriterConfig<?>> writers = config.getWriters();
     if (CollectionUtils.isNotEmpty(writers)) {
       for (WriterConfig<?> writerConfig : writers) {
         writerConfig.verify();
 
         String name = writerConfig.getName();
-        if (stepConfigMap.containsKey(name)) {
-          throw new KettleXStepConfigException("Duplicate step name. [" + name + "]");
-        }
 
         String input = writerConfig.getInput();
         if (!outputStepMap.containsKey(input)) {
@@ -185,14 +248,13 @@ public class TaskGroup {
                   "cannot find this input from outputs, outputs: [%s], current input:[%s]",
                   outputStepMap, input));
         }
-        stepConfigMap.put(name, writerConfig);
         String fromStep = outputStepMap.get(input);
-        createStepLink(fromStep, name);
+        createStepLink(fromStep, name, config);
       }
     }
   }
 
-  private void createStepLink(String from, String to) {
+  private void createStepLink(String from, String to, TaskGroupExecutorConfig config) {
     StepLink stepLink =
         StepLink.builder()
             .from(from)
@@ -201,17 +263,17 @@ public class TaskGroup {
             .toStepConfig(stepConfigMap.get(to))
             .channel(
                 new DefaultChannel(
-                    configuration.getRuntimeConfig().getChannelCapcacity(), getChannelId(from, to)))
+                    config.getRuntimeConfig().getChannelCapcacity(), getChannelId(from, to)))
             .build();
     stepLinkMap.put(getChannelId(from, to), stepLink);
   }
 
-  private void combineStepChannelCombine() {
+  private <C extends StepConfig<?>> void combineStepChannelCombine() {
     for (String stepName : stepConfigMap.keySet()) {
       List<StepConfig<?>> childSteps = findChildSteps(stepName);
       StepConfig<?> parentStep = findParentStep(stepName);
-      StepConfig<?> stepConfig = stepConfigMap.get(stepName);
-      StepConfigChannelCombination combination = new StepConfigChannelCombination();
+      C stepConfig = (C) stepConfigMap.get(stepName);
+      StepConfigChannelCombination<C> combination = new StepConfigChannelCombination<>();
       combination.setStepConfig(stepConfig);
       List<Channel> outputChannels =
           CollectionUtils.isEmpty(childSteps)
@@ -232,5 +294,16 @@ public class TaskGroup {
 
   private String getChannelId(String from, String to) {
     return String.format("%s->%s", from, to);
+  }
+
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  private static class TaskGroupExecutorConfig {
+    private List<ReaderConfig<?>> readers;
+    private List<TransformerConfig<?>> transforms;
+    private List<WriterConfig<?>> writers;
+    private RuntimeConfig runtimeConfig;
   }
 }

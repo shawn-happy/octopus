@@ -5,8 +5,9 @@ import com.octopus.kettlex.core.steps.Reader;
 import com.octopus.kettlex.core.steps.Step;
 import com.octopus.kettlex.core.steps.Transform;
 import com.octopus.kettlex.core.steps.Writer;
-import com.octopus.kettlex.runtime.StepConfigChannelCombination;
-import com.octopus.kettlex.runtime.TaskGroup;
+import com.octopus.kettlex.core.steps.config.StepConfigChannelCombination;
+import com.octopus.kettlex.core.utils.LoadUtil;
+import com.octopus.kettlex.runtime.config.TaskGroup;
 import com.octopus.kettlex.runtime.executor.runner.ReaderRunner;
 import com.octopus.kettlex.runtime.executor.runner.StepInitRunner;
 import com.octopus.kettlex.runtime.executor.runner.TransformRunner;
@@ -25,14 +26,19 @@ public class TaskGroupContainer implements Container {
   private final TaskGroup taskGroup;
   @Getter private final String containerId;
   @Getter private final String containerName;
-  private List<Step<?>> steps;
+  private final List<StepConfigChannelCombination<?>> stepConfigChannelCombinations;
+  private final List<Step<?>> steps;
 
   public TaskGroupContainer(TaskGroup taskGroup) {
     this.taskGroup = taskGroup;
     this.containerId = taskGroup.getTaskGroupId();
     this.containerName = taskGroup.getTaskGroupName();
-    List<StepConfigChannelCombination> stepConfigChannelCombinations = taskGroup.getSteps();
+    stepConfigChannelCombinations = taskGroup.getSteps();
     steps = new ArrayList<>(stepConfigChannelCombinations.size());
+    for (StepConfigChannelCombination stepConfigChannelCombination :
+        stepConfigChannelCombinations) {
+      steps.add(LoadUtil.loadStep(stepConfigChannelCombination.getStepConfig().getType()));
+    }
   }
 
   @Override
@@ -40,11 +46,13 @@ public class TaskGroupContainer implements Container {
     StepInitRunner[] initThreads = new StepInitRunner[steps.size()];
     Thread[] threads = new Thread[steps.size()];
     for (int i = 0; i < steps.size(); i++) {
-      initThreads[i] = new StepInitRunner(steps.get(i), null);
+      initThreads[i] = new StepInitRunner(steps.get(i), stepConfigChannelCombinations.get(i));
       threads[i] =
           new Thread(
               initThreads[i],
-              String.format("step_[%s]_init_thread", steps.get(i).getStepConfig().getName()));
+              String.format(
+                  "step_[%s]_init_thread",
+                  stepConfigChannelCombinations.get(i).getStepConfig().getName()));
       threads[i].start();
     }
 

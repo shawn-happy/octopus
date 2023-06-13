@@ -1,4 +1,4 @@
-package com.octopus.kettlex.core.steps.config;
+package com.octopus.kettlex.runtime.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

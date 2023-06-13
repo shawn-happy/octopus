@@ -3,6 +3,7 @@ package com.octopus.kettlex.runtime.executor.runner;
 import com.octopus.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.kettlex.core.steps.Step;
 import com.octopus.kettlex.core.steps.config.StepConfig;
+import com.octopus.kettlex.core.steps.config.StepConfigChannelCombination;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,12 +15,12 @@ public class StepInitRunner<C extends StepConfig<?>> extends AbstractRunner impl
   public boolean finished;
 
   private final Step<C> step;
-  private final C stepConfig;
+  private final StepConfigChannelCombination<C> combination;
 
-  public StepInitRunner(Step<C> step, C stepConfig) {
+  public StepInitRunner(Step<C> step, StepConfigChannelCombination<C> combination) {
     super(step);
     this.step = step;
-    this.stepConfig = stepConfig;
+    this.combination = combination;
     this.ok = false;
     this.finished = false;
   }
@@ -27,7 +28,7 @@ public class StepInitRunner<C extends StepConfig<?>> extends AbstractRunner impl
   @Override
   public void run() {
     try {
-      if (step.init(stepConfig)) {
+      if (step.init(combination)) {
         ok = true;
       } else {
         ok = false;

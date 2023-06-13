@@ -1,7 +1,9 @@
 package com.octopus.kettlex.runtime;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.google.common.io.Resources;
-import com.octopus.kettlex.core.steps.config.TaskConfiguration;
+import com.octopus.kettlex.runtime.config.JobConfiguration;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import org.apache.commons.io.IOUtils;
@@ -17,6 +19,8 @@ public class EngineTests {
             .encodeToString(
                 IOUtils.toString(Resources.getResource("simple.yaml"), StandardCharsets.UTF_8)
                     .getBytes(StandardCharsets.UTF_8));
-    TaskConfiguration taskConfiguration = engine.buildTaskConfiguration(configBase64);
+    JobConfiguration jobConfiguration = engine.buildJobConfiguration(configBase64);
+    assertNotNull(jobConfiguration);
+    engine.start(configBase64);
   }
 }

@@ -3,12 +3,41 @@ taskName: test
 version: 1.0.0
 description: simple test
 readers:
+  - id: row
+    name: row-generator
+    type: row-generator
+    output: row-generator-output
+    options:
+      rowLimit: 1000
+      fields:
+        - name: id
+          fieldType: String
+          value: 1
+        - name: date
+          fieldType: Date
+          value: 2023-05-18 13:14:15
+          format: yyyy-MM-dd HH:mm:ss
+          length: 13
+        - name: gender
+          fieldType: String
+          value: 男
 transforms:
+  - id: trans
+    name: trans
+    type: value-mapper
+    input: row-generator-output
+    output: value-mapper-output
+    options:
+      sourceField: gender
+      targetField: en_gender
+      targetFieldType: String
+      fieldValueMap:
+        男: man
 writers:
   - id: log
     name: log
     type: log-message
-    input: input
+    input: value-mapper-output
     writeMode: INSERT
     options:
 runtimeConfig:

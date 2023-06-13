@@ -1,4 +1,4 @@
-package com.octopus.kettlex.core.steps.config;
+package com.octopus.kettlex.runtime.config;
 
 import static com.octopus.kettlex.core.steps.config.ConfigurationTag.TaskConfigurationTag.TASK_DESCRIPTION;
 import static com.octopus.kettlex.core.steps.config.ConfigurationTag.TaskConfigurationTag.TASK_ID;
@@ -11,7 +11,6 @@ import static com.octopus.kettlex.core.steps.config.ConfigurationTag.TaskConfigu
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.octopus.kettlex.core.exception.KettleXParseException;
 import com.octopus.kettlex.core.utils.YamlUtil;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskConfiguration {
+public class JobConfiguration {
 
   private String taskId;
   private String taskName;
@@ -36,13 +35,13 @@ public class TaskConfiguration {
   private List<Map<String, Object>> writers;
   private RuntimeConfig runtimeConfig;
 
-  public void loadYaml(String yaml) {
-    JsonNode jsonNode =
-        YamlUtil.toYamlNode(yaml)
-            .orElseThrow(
-                () ->
-                    new KettleXParseException(
-                        String.format("parse task configuration error, config: [%s]", yaml)));
+  public void loadYaml(JsonNode jsonNode) {
+    //    JsonNode jsonNode =
+    //        YamlUtil.toYamlNode(yaml)
+    //            .orElseThrow(
+    //                () ->
+    //                    new KettleXParseException(
+    //                        String.format("parse task configuration error, config: [%s]", yaml)));
     this.taskId = jsonNode.findPath(TASK_ID).asText();
     this.taskName = jsonNode.findPath(TASK_NAME).asText();
     this.version = Version.of(jsonNode.findPath(TASK_VERSION).asText());
@@ -50,7 +49,7 @@ public class TaskConfiguration {
 
     JsonNode readerConfigsNode = jsonNode.findPath(TASK_READER_CONFIGS);
     this.readers =
-        (readerConfigsNode == null || readerConfigsNode.isNull())
+        (readerConfigsNode == null || readerConfigsNode.isNull() || readerConfigsNode.isEmpty())
             ? null
             : YamlUtil.fromYaml(
                     readerConfigsNode.toString(), new TypeReference<List<Map<String, Object>>>() {})
@@ -58,7 +57,9 @@ public class TaskConfiguration {
 
     JsonNode transformationConfigsNode = jsonNode.findPath(TASK_TRANSFORMATION_CONFIGS);
     this.transforms =
-        (transformationConfigsNode == null || transformationConfigsNode.isNull())
+        (transformationConfigsNode == null
+                || transformationConfigsNode.isNull()
+                || transformationConfigsNode.isEmpty())
             ? null
             : YamlUtil.fromYaml(
                     transformationConfigsNode.toString(),
@@ -67,7 +68,7 @@ public class TaskConfiguration {
 
     JsonNode writerConfigsNode = jsonNode.findPath(TASK_WRITER_CONFIGS);
     this.writers =
-        (writerConfigsNode == null || writerConfigsNode.isNull())
+        (writerConfigsNode == null || writerConfigsNode.isNull() || writerConfigsNode.isEmpty())
             ? null
             : YamlUtil.fromYaml(
                     writerConfigsNode.toString(), new TypeReference<List<Map<String, Object>>>() {})

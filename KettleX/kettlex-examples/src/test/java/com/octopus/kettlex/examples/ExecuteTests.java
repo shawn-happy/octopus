@@ -3,15 +3,15 @@ package com.octopus.kettlex.examples;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
 import com.octopus.kettlex.core.exception.KettleXParseException;
-import com.octopus.kettlex.core.steps.config.RuntimeConfig;
-import com.octopus.kettlex.core.steps.config.TaskConfiguration;
-import com.octopus.kettlex.core.steps.config.Version;
+import com.octopus.kettlex.core.steps.config.StepConfigChannelCombination;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.core.utils.YamlUtil;
 import com.octopus.kettlex.reader.rowgenerator.RowGeneratorConfig;
 import com.octopus.kettlex.runtime.Engine;
-import com.octopus.kettlex.runtime.StepConfigChannelCombination;
-import com.octopus.kettlex.runtime.TaskGroup;
+import com.octopus.kettlex.runtime.config.JobConfiguration;
+import com.octopus.kettlex.runtime.config.RuntimeConfig;
+import com.octopus.kettlex.runtime.config.TaskGroup;
+import com.octopus.kettlex.runtime.config.Version;
 import com.octopus.kettlex.runtime.executor.Scheduler;
 import com.octopus.kettlex.steps.LogMessageConfig;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 public class ExecuteTests {
 
   private static TaskGroup taskGroup;
-  private static TaskConfiguration configuration;
+  private static JobConfiguration configuration;
 
   @BeforeAll
   public static void init() throws Exception {
@@ -47,7 +47,7 @@ public class ExecuteTests {
             .orElseThrow(() -> new KettleXParseException("parse json error"));
 
     configuration =
-        TaskConfiguration.builder()
+        JobConfiguration.builder()
             .taskId("simple_test")
             .taskName("simple_test")
             .description("simple test")

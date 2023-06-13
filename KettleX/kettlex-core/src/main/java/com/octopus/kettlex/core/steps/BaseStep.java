@@ -6,6 +6,7 @@ import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.channel.Channel;
 import com.octopus.kettlex.core.steps.config.StepConfig;
 import com.octopus.kettlex.core.steps.config.StepConfig.StepOptions;
+import com.octopus.kettlex.core.steps.config.StepConfigChannelCombination;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,8 +26,10 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   protected BaseStep() {}
 
   @Override
-  public boolean init(C stepConfig) throws KettleXException {
-    this.stepConfig = stepConfig;
+  public boolean init(StepConfigChannelCombination<C> combination) throws KettleXException {
+    this.stepConfig = combination.getStepConfig();
+    this.outputChannels = combination.getOutputChannels();
+    this.inputChannel = combination.getInputChannel();
     if (shutdown) {
       throw new KettleXStepExecuteException("step is shutdown");
     }

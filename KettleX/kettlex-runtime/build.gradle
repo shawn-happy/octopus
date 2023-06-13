@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     implementation project(":kettlex-core")
+    implementation project(":row-generator")
+    implementation project(":value-mapper")
     implementation project(":log-message")
 
     annotationProcessor libs_lombok
@@ -26,6 +28,7 @@ dependencies {
     implementation libs_commonsLang3
     implementation libs_commonsIO
     implementation libs_guava
+    implementation libs_jetbrainsAnnotation
 
     testCompileOnly libs_lombok
     testAnnotationProcessor libs_lombok

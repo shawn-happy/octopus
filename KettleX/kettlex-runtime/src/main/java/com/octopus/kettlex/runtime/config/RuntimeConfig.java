@@ -1,4 +1,4 @@
-package com.octopus.kettlex.core.steps.config;
+package com.octopus.kettlex.runtime.config;
 
 import static com.octopus.kettlex.core.steps.config.ConfigurationTag.TaskRuntimeConfigTag.CHANNEL_CAPACITY;
 import static com.octopus.kettlex.core.steps.config.ConfigurationTag.TaskRuntimeConfigTag.PARAMS;

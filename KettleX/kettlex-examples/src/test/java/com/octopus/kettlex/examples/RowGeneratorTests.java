@@ -8,11 +8,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
 import com.octopus.kettlex.core.exception.KettleXParseException;
 import com.octopus.kettlex.core.row.column.FieldType;
-import com.octopus.kettlex.core.steps.config.TaskConfiguration;
 import com.octopus.kettlex.core.utils.JsonUtil;
 import com.octopus.kettlex.reader.rowgenerator.RowGeneratorConfig;
 import com.octopus.kettlex.reader.rowgenerator.RowGeneratorConfig.RowGeneratorOptions;
-import com.octopus.kettlex.runtime.TaskGroup;
+import com.octopus.kettlex.runtime.config.JobConfiguration;
+import com.octopus.kettlex.runtime.config.TaskGroup;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Disabled;
@@ -58,6 +58,6 @@ public class RowGeneratorTests {
                 new TypeReference<RowGeneratorConfig>() {})
             .orElseThrow(() -> new KettleXParseException("parse json error"));
 
-    TaskGroup taskGroup = new TaskGroup(TaskConfiguration.builder().build());
+    TaskGroup taskGroup = new TaskGroup(JobConfiguration.builder().build());
   }
 }

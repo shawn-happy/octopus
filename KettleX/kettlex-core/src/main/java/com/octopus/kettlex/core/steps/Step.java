@@ -3,6 +3,7 @@ package com.octopus.kettlex.core.steps;
 import com.octopus.kettlex.core.exception.KettleXException;
 import com.octopus.kettlex.core.steps.config.StepConfig;
 import com.octopus.kettlex.core.steps.config.StepConfig.StepOptions;
+import com.octopus.kettlex.core.steps.config.StepConfigChannelCombination;
 
 /**
  * @author shawn
@@ -17,7 +18,7 @@ public interface Step<CONFIG extends StepConfig<? extends StepOptions>> {
    *
    * @throws KettleXException
    */
-  boolean init(CONFIG stepConfig) throws KettleXException;
+  boolean init(StepConfigChannelCombination<CONFIG> combination) throws KettleXException;
 
   /**
    * Dispose of this step: close files, empty logs, etc.

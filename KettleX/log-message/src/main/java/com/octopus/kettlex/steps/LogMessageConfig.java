@@ -31,11 +31,12 @@ public class LogMessageConfig implements WriterConfig<LogMessageOptions> {
 
   @Override
   public void loadYaml(JsonNode jsonNode) {
-    if (jsonNode == null || jsonNode.isNull()) {
+    if (jsonNode == null || jsonNode.isNull() || jsonNode.isEmpty()) {
       return;
     }
     LogMessageConfig logMessageConfig =
-        YamlUtil.fromYaml(jsonNode.asText(), new TypeReference<LogMessageConfig>() {}).orElse(null);
+        YamlUtil.fromYaml(jsonNode.toString(), new TypeReference<LogMessageConfig>() {})
+            .orElse(null);
     if (!Objects.isNull(logMessageConfig)) {
       String type = logMessageConfig.getType();
       if (!STEP_TYPE.equals(type)) {
