@@ -8,7 +8,7 @@ readers:
     type: row-generator
     output: row-generator-output
     options:
-      rowLimit: 1000
+      rowLimit: 1000000
       fields:
         - name: id
           fieldType: String

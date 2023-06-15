@@ -1,7 +1,7 @@
 package com.octopus.kettlex.runtime.executor.runner;
 
 import com.octopus.kettlex.core.steps.Step;
-import com.octopus.kettlex.runtime.monitor.ExecutionStatus;
+import com.octopus.kettlex.core.management.ExecutionStatus;
 
 public abstract class AbstractRunner implements Runner {
 

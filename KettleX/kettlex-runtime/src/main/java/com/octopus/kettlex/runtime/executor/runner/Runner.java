@@ -1,6 +1,6 @@
 package com.octopus.kettlex.runtime.executor.runner;
 
-import com.octopus.kettlex.runtime.monitor.ExecutionStatus;
+import com.octopus.kettlex.core.management.ExecutionStatus;
 
 public interface Runner extends Runnable {
 

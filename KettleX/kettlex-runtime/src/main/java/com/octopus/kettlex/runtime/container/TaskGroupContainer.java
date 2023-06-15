@@ -14,6 +14,7 @@ import com.octopus.kettlex.runtime.executor.runner.TransformRunner;
 import com.octopus.kettlex.runtime.executor.runner.WriterRunner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +84,12 @@ public class TaskGroupContainer implements Container {
   public void start() {
     TaskGroupExecutor executor = new TaskGroupExecutor(steps);
     executor.executor();
+    while (true) {
+      if (executor.isFinished()) {
+        break;
+      }
+      log.info("==============");
+    }
   }
 
   @Override
@@ -122,12 +129,47 @@ public class TaskGroupContainer implements Container {
               .filter(step -> step instanceof Writer<?>)
               .map(step -> (Writer<?>) step)
               .collect(Collectors.toUnmodifiableList());
+
+      ReaderRunner[] readerRunners = new ReaderRunner[readers.size()];
+      readerThreads = new Thread[readers.size()];
+      for (int i = 0; i < readers.size(); i++) {
+        Reader<?> reader = readers.get(i);
+        readerRunners[i] = new ReaderRunner(reader);
+        readerThreads[i] =
+            new Thread(
+                readerRunners[i],
+                String.format("reader_[%s]_thread", reader.getStepConfig().getName()));
+      }
+
+      if (CollectionUtils.isNotEmpty(transforms)) {
+        TransformRunner[] tranformRunners = new TransformRunner[transforms.size()];
+        transformThreads = new Thread[transforms.size()];
+        for (int i = 0; i < transforms.size(); i++) {
+          Transform<?> transform = transforms.get(i);
+          tranformRunners[i] = new TransformRunner(transform);
+          transformThreads[i] =
+              new Thread(
+                  tranformRunners[i],
+                  String.format("transform_[%s]_thread", transform.getStepConfig().getName()));
+        }
+      }
+
+      WriterRunner[] writerRunners = new WriterRunner[writers.size()];
+      writerThreads = new Thread[writers.size()];
+      for (int i = 0; i < writers.size(); i++) {
+        Writer<?> writer = writers.get(i);
+        writerRunners[i] = new WriterRunner(writer);
+        writerThreads[i] =
+            new Thread(
+                writerRunners[i],
+                String.format("writer_[%s]_thread", writer.getStepConfig().getName()));
+      }
     }
 
     public void executor() {
-      processReaders();
-      processTransformations();
-      processWriters();
+      for (Thread writerThread : writerThreads) {
+        writerThread.start();
+      }
 
       for (Thread writerThread : writerThreads) {
         // reader没有起来，writer不可能结束
@@ -138,6 +180,9 @@ public class TaskGroupContainer implements Container {
 
       if (ArrayUtils.isNotEmpty(transformThreads)) {
         for (Thread transformThread : transformThreads) {
+          transformThread.start();
+        }
+        for (Thread transformThread : transformThreads) {
           // reader没有起来，transform不可能结束
           if (!transformThread.isAlive()) {
             throw new KettleXStepExecuteException("transform error");
@@ -145,6 +190,9 @@ public class TaskGroupContainer implements Container {
         }
       }
 
+      for (Thread readerThread : readerThreads) {
+        readerThread.start();
+      }
       for (Thread readerThread : readerThreads) {
         // 这里reader可能很快结束
         if (!readerThread.isAlive()) {
@@ -192,54 +240,6 @@ public class TaskGroupContainer implements Container {
         }
       }
       return true;
-    }
-
-    private void processReaders() {
-      ReaderRunner[] readerRunners = new ReaderRunner[readers.size()];
-      readerThreads = new Thread[readers.size()];
-      for (int i = 0; i < readers.size(); i++) {
-        Reader<?> reader = readers.get(i);
-        readerRunners[i] = new ReaderRunner(reader);
-        readerThreads[i] =
-            new Thread(
-                readerRunners[i],
-                String.format("reader_[%s]_thread", reader.getStepConfig().getName()));
-        readerThreads[i].start();
-      }
-    }
-
-    private void processTransformations() {
-      if (CollectionUtils.isEmpty(transforms)) {
-        return;
-      }
-      TransformRunner[] tranformRunners = new TransformRunner[transforms.size()];
-      transformThreads = new Thread[transforms.size()];
-      for (int i = 0; i < transforms.size(); i++) {
-        Transform<?> transform = transforms.get(i);
-        tranformRunners[i] = new TransformRunner(transform);
-        transformThreads[i] =
-            new Thread(
-                tranformRunners[i],
-                String.format("transform_[%s]_thread", transform.getStepConfig().getName()));
-        transformThreads[i].start();
-      }
-    }
-
-    private void processWriters() {
-      if (CollectionUtils.isEmpty(writers)) {
-        return;
-      }
-      WriterRunner[] writerRunners = new WriterRunner[writers.size()];
-      writerThreads = new Thread[writers.size()];
-      for (int i = 0; i < writers.size(); i++) {
-        Writer<?> writer = writers.get(i);
-        writerRunners[i] = new WriterRunner(writer);
-        writerThreads[i] =
-            new Thread(
-                writerRunners[i],
-                String.format("writer_[%s]_thread", writer.getStepConfig().getName()));
-        writerThreads[i].start();
-      }
     }
   }
 }

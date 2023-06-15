@@ -2,7 +2,7 @@ package com.octopus.kettlex.runtime.executor.runner;
 
 import com.octopus.kettlex.core.exception.KettleXTransException;
 import com.octopus.kettlex.runtime.container.TaskGroupContainer;
-import com.octopus.kettlex.runtime.monitor.ExecutionStatus;
+import com.octopus.kettlex.core.management.ExecutionStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

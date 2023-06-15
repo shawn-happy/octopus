@@ -6,6 +6,7 @@ import com.octopus.kettlex.runtime.container.TaskGroupContainer;
 import com.octopus.kettlex.runtime.executor.runner.TaskGroupContainerRunner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Scheduler {
 
@@ -19,6 +20,7 @@ public class Scheduler {
     TaskGroupContainerRunner taskGroupContainerRunner = new TaskGroupContainerRunner(container);
     taskGroupContainerExecutorService = Executors.newFixedThreadPool(taskGroup.size());
     taskGroupContainerExecutorService.submit(taskGroupContainerRunner);
+    TimeUnit.SECONDS.sleep(1);
     this.taskGroupContainerExecutorService.shutdown();
   }
 }

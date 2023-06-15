@@ -1,6 +1,7 @@
 package com.octopus.kettlex.core.row.channel;
 
 import com.octopus.kettlex.core.exception.KettleXException;
+import com.octopus.kettlex.core.management.Communication;
 import com.octopus.kettlex.core.row.Record;
 import com.octopus.kettlex.core.row.record.TerminateRecord;
 import java.util.Collection;
@@ -17,11 +18,12 @@ public class DefaultChannel implements Channel {
   private BlockingQueue<Record> queue;
   private ReentrantReadWriteLock lock;
   private final String id;
+  private Communication currentCommunication;
+
+  private Communication lastCommunication = new Communication();
 
   public DefaultChannel(String id) {
-    this.capacity = DEFAULT_CAPACITY;
-    this.queue = new ArrayBlockingQueue<>(capacity);
-    this.id = id;
+    this(DEFAULT_CAPACITY, id);
   }
 
   public DefaultChannel(int capacity, String id) {
@@ -91,5 +93,11 @@ public class DefaultChannel implements Channel {
   @Override
   public void clear() {
     this.queue.clear();
+  }
+
+  private void statePush(long recordSize) {
+    currentCommunication.increaseSendRecords(recordSize);
+    // 在读的时候进行统计waitCounter即可，因为写（pull）的时候可能正在阻塞，但读的时候已经能读到这个阻塞的counter数
+    lastCommunication.increaseSendRecords(currentCommunication.getSendRecords());
   }
 }
