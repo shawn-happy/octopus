@@ -1,6 +1,7 @@
 package com.octopus.operators.kettlex.runtime.container;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
+import com.octopus.operators.kettlex.core.listener.DefaultStepListener;
 import com.octopus.operators.kettlex.core.management.Communication;
 import com.octopus.operators.kettlex.core.steps.Reader;
 import com.octopus.operators.kettlex.core.steps.Step;
@@ -36,15 +37,19 @@ public class TaskGroupContainer implements Container {
     this.containerName = taskGroup.getTaskGroupName();
     stepConfigChannelCombinations = taskGroup.getSteps();
     steps = new ArrayList<>(stepConfigChannelCombinations.size());
-    for (StepConfigChannelCombination stepConfigChannelCombination :
+    for (StepConfigChannelCombination<?> stepConfigChannelCombination :
         stepConfigChannelCombinations) {
       steps.add(LoadUtil.loadStep(stepConfigChannelCombination.getStepConfig().getType()));
     }
+    steps.forEach(
+        step -> {
+          step.addStepListeners(new DefaultStepListener());
+        });
   }
 
   @Override
   public void init() {
-    StepInitRunner[] initThreads = new StepInitRunner[steps.size()];
+    StepInitRunner<?>[] initThreads = new StepInitRunner[steps.size()];
     Thread[] threads = new Thread[steps.size()];
     for (int i = 0; i < steps.size(); i++) {
       initThreads[i] = new StepInitRunner(steps.get(i), stepConfigChannelCombinations.get(i));
@@ -91,6 +96,14 @@ public class TaskGroupContainer implements Container {
 
   @Override
   public void destroy() {}
+
+  public void getStatus() {
+    stepConfigChannelCombinations.forEach(
+        combination -> {
+          Communication communication = combination.getStepContext().getCommunication();
+          log.info("{}", communication.toString());
+        });
+  }
 
   class TaskGroupExecutor {
     private List<Reader<?>> readers;

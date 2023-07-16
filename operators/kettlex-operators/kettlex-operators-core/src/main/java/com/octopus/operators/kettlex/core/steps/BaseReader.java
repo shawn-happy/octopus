@@ -1,7 +1,6 @@
 package com.octopus.operators.kettlex.core.steps;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
-import com.octopus.operators.kettlex.core.management.ExecutionStatus;
 import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.record.TerminateRecord;
 import com.octopus.operators.kettlex.core.steps.config.ReaderConfig;
@@ -21,6 +20,7 @@ public abstract class BaseReader<C extends ReaderConfig<?>> extends BaseStep<C>
     }
     try {
       List<Record> records = doReader().get();
+      stepListeners.forEach(stepListener -> stepListener.onRunnable(stepContext));
       if (CollectionUtils.isEmpty(records)) {
         return;
       }
@@ -28,7 +28,7 @@ public abstract class BaseReader<C extends ReaderConfig<?>> extends BaseStep<C>
         putRow(record);
       }
       putRow(TerminateRecord.get());
-      getCommunication().markStatus(ExecutionStatus.SUCCEEDED);
+      stepListeners.forEach(stepListener -> stepListener.onSuccess(stepContext));
     } catch (Exception e) {
       setError(e);
     }

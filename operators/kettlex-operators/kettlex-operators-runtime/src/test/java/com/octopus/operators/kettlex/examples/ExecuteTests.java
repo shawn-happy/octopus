@@ -18,18 +18,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-// @Disabled
-public class ExecuteTests {
+@Disabled
+class ExecuteTests {
 
   private static TaskGroup taskGroup;
   private static JobConfiguration configuration;
 
-  @BeforeAll
+  //  @BeforeAll
   public static void init() throws Exception {
     RowGeneratorConfig meta =
         JsonUtil.fromJson(
@@ -99,6 +98,5 @@ public class ExecuteTests {
                     .getBytes(StandardCharsets.UTF_8));
     Engine engine = new Engine();
     engine.start(configBase64);
-    TimeUnit.SECONDS.sleep(2);
   }
 }

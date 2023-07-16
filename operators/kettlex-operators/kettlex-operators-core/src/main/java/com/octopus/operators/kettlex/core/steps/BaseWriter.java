@@ -1,7 +1,6 @@
 package com.octopus.operators.kettlex.core.steps;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
-import com.octopus.operators.kettlex.core.management.ExecutionStatus;
 import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.record.TerminateRecord;
 import com.octopus.operators.kettlex.core.steps.config.WriterConfig;
@@ -19,9 +18,10 @@ public abstract class BaseWriter<C extends WriterConfig<?>> extends BaseStep<C>
     }
     Record record;
     try {
+      stepListeners.forEach(stepListener -> stepListener.onRunnable(stepContext));
       while ((record = getRow()) != null) {
         if (record instanceof TerminateRecord) {
-          getCommunication().markStatus(ExecutionStatus.SUCCEEDED);
+          stepListeners.forEach(stepListener -> stepListener.onSuccess(stepContext));
           break;
         }
         doWriter().accept(record);

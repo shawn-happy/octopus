@@ -1,5 +1,6 @@
 package com.octopus.operators.kettlex.runtime.config;
 
+import com.octopus.operators.kettlex.core.context.DefaultStepContext;
 import com.octopus.operators.kettlex.core.exception.KettleXStepConfigException;
 import com.octopus.operators.kettlex.core.management.Communication;
 import com.octopus.operators.kettlex.core.row.channel.Channel;
@@ -289,7 +290,7 @@ public class TaskGroup {
       if (CollectionUtils.isNotEmpty(outputChannels)) {
         combination.setOutputChannels(outputChannels);
       }
-      combination.setCommunication(new Communication());
+      combination.setStepContext(new DefaultStepContext(stepName, new Communication()));
       stepConfigChannelCombinationMap.put(stepName, combination);
     }
   }

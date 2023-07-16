@@ -9,7 +9,7 @@ public interface ConfigurationTag {
     String TASK_DESCRIPTION = "description";
 
     String TASK_READER_CONFIGS = "readers";
-    String TASK_TRANSFORMATION_CONFIGS = "transforms";
+    String TASK_TRANSFORMATION_CONFIGS = "transformations";
     String TASK_WRITER_CONFIGS = "writers";
 
     String TASK_RUNTIME_CONFIG = "runtimeConfig";

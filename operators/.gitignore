@@ -11,4 +11,7 @@ build/
 .idea/
 log/
 **/target/
+out
+output
 
+*.hprof

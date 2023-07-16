@@ -1,7 +1,7 @@
 package com.octopus.operators.kettlex.core.steps.config;
 
+import com.octopus.operators.kettlex.core.context.StepContext;
 import com.octopus.operators.kettlex.core.exception.KettleXStepConfigException;
-import com.octopus.operators.kettlex.core.management.Communication;
 import com.octopus.operators.kettlex.core.row.channel.Channel;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class StepConfigChannelCombination<C extends StepConfig<?>> {
   private C stepConfig;
   private List<Channel> outputChannels;
   private Channel inputChannel;
-  private Communication communication;
+  private StepContext stepContext;
 
   public void verify() {
     stepConfig.verify();

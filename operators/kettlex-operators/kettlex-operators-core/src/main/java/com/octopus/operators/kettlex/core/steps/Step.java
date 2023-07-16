@@ -1,6 +1,7 @@
 package com.octopus.operators.kettlex.core.steps;
 
 import com.octopus.operators.kettlex.core.exception.KettleXException;
+import com.octopus.operators.kettlex.core.listener.StepListener;
 import com.octopus.operators.kettlex.core.steps.config.StepConfig;
 import com.octopus.operators.kettlex.core.steps.config.StepConfig.StepOptions;
 import com.octopus.operators.kettlex.core.steps.config.StepConfigChannelCombination;
@@ -28,4 +29,6 @@ public interface Step<CONFIG extends StepConfig<? extends StepOptions>> {
   void destroy() throws KettleXException;
 
   void shutdown() throws KettleXException;
+
+  void addStepListeners(StepListener stepListener);
 }

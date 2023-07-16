@@ -26,10 +26,10 @@ public class TaskGroupContainerRunner implements Runner {
           .setName(String.format("taskGroup-%s", this.taskGroupContainer.getContainerName()));
       communication.markStatus(ExecutionStatus.SUBMITTING);
       this.taskGroupContainer.init();
+      this.taskGroupContainer.getStatus();
       communication.markStatus(ExecutionStatus.WAITING);
       communication.markStatus(ExecutionStatus.RUNNING);
       this.taskGroupContainer.start();
-      communication.markStatus(ExecutionStatus.SUCCEEDED);
     } catch (Throwable e) {
       communication.markStatus(ExecutionStatus.FAILED);
       log.error("task group run error.", e);

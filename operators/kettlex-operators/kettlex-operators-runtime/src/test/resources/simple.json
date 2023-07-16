@@ -7,7 +7,7 @@
     {
       "id": "1",
       "name": "rowGeneratorTest",
-      "type": "ROW_GENERATOR",
+      "type": "row-generator",
       "output": "row_generator_output",
       "options": {
         "rowLimit": 1000000,
@@ -37,7 +37,7 @@
     {
       "id": "2",
       "name": "valueMapper",
-      "type": "VALUE_MAPPER",
+      "type": "value-mapper",
       "input": "row_generator_output",
       "output": "value_mapper_output",
       "options": {
@@ -54,7 +54,7 @@
     {
       "id": "3",
       "name": "logMessage",
-      "type": "LOG_MESSAGE",
+      "type": "log-message",
       "options": null,
       "input": "value_mapper_output"
     }

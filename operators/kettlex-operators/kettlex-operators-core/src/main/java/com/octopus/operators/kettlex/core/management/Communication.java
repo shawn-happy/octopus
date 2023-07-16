@@ -80,4 +80,25 @@ public class Communication {
   public synchronized boolean isFinished() {
     return this.status == SUCCEEDED || this.status == FAILED || this.status == KILLED;
   }
+
+  @Override
+  public String toString() {
+    return "Communication{"
+        + "status="
+        + status
+        + ", exception="
+        + exception
+        + ", message='"
+        + message
+        + '\''
+        + ", timestamp="
+        + timestamp
+        + ", sendRecords="
+        + sendRecords
+        + ", transformRecords="
+        + transformRecords
+        + ", receivedRecords="
+        + receivedRecords
+        + '}';
+  }
 }

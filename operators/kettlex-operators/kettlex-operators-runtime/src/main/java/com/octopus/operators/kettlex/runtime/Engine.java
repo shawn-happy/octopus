@@ -26,7 +26,7 @@ public class Engine {
   public JobConfiguration buildJobConfiguration(@Nonnull String configBase64) {
     JobConfiguration jobConfiguration = new JobConfiguration();
     YamlUtil.toYamlNode(Base64.getDecoder().decode(configBase64.getBytes(StandardCharsets.UTF_8)))
-        .ifPresent(jsonNode -> jobConfiguration.loadYaml(jsonNode));
+        .ifPresent(jobConfiguration::loadYaml);
     return jobConfiguration;
   }
 }

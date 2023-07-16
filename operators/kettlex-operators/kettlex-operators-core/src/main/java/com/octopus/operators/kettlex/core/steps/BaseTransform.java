@@ -1,7 +1,6 @@
 package com.octopus.operators.kettlex.core.steps;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
-import com.octopus.operators.kettlex.core.management.ExecutionStatus;
 import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.record.TerminateRecord;
 import com.octopus.operators.kettlex.core.steps.config.TransformerConfig;
@@ -20,16 +19,17 @@ public abstract class BaseTransform<C extends TransformerConfig<?>> extends Base
     }
     Record record;
     try {
+      stepListeners.forEach(stepListener -> stepListener.onRunnable(stepContext));
       while ((record = getRow()) != null) {
         if (record instanceof TerminateRecord) {
-          getCommunication().markStatus(ExecutionStatus.SUCCEEDED);
           break;
         }
         Record newRecord = processRecord(record);
-        getCommunication().increaseTransformRecords(1);
         putRow(newRecord);
+        stepContext.getCommunication().increaseTransformRecords(1);
       }
       putRow(TerminateRecord.get());
+      stepListeners.forEach(stepListener -> stepListener.onSuccess(stepContext));
     } catch (Exception e) {
       setError(e);
     }

@@ -13,9 +13,9 @@ public class DefaultChannel implements Channel {
 
   private static final int DEFAULT_CAPACITY = 10000;
 
-  private int capacity;
-  private BlockingQueue<Record> queue;
-  private ReentrantReadWriteLock lock;
+  private final int capacity;
+  private final BlockingQueue<Record> queue;
+  private final ReentrantReadWriteLock lock;
   private final String id;
 
   public DefaultChannel(String id) {
@@ -29,6 +29,7 @@ public class DefaultChannel implements Channel {
     }
     this.capacity = capacity;
     this.queue = new ArrayBlockingQueue<>(capacity);
+    this.lock = new ReentrantReadWriteLock();
     this.id = id;
   }
 

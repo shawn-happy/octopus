@@ -1,9 +1,9 @@
 package com.octopus.operators.kettlex.core.steps;
 
+import com.octopus.operators.kettlex.core.context.StepContext;
 import com.octopus.operators.kettlex.core.exception.KettleXException;
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
-import com.octopus.operators.kettlex.core.management.Communication;
-import com.octopus.operators.kettlex.core.management.ExecutionStatus;
+import com.octopus.operators.kettlex.core.listener.StepListener;
 import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.channel.Channel;
 import com.octopus.operators.kettlex.core.row.record.TerminateRecord;
@@ -11,6 +11,8 @@ import com.octopus.operators.kettlex.core.steps.config.StepConfig;
 import com.octopus.operators.kettlex.core.steps.config.StepConfig.StepOptions;
 import com.octopus.operators.kettlex.core.steps.config.StepConfigChannelCombination;
 import com.octopus.operators.kettlex.core.utils.JsonUtil;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
@@ -22,19 +24,21 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   @Getter private C stepConfig;
   private List<Channel> outputChannels;
   private Channel inputChannel;
-  private Communication communication;
   private volatile boolean shutdown;
   private final ReentrantReadWriteLock inputChannelLock = new ReentrantReadWriteLock();
   private final ReentrantReadWriteLock outputChannelLock = new ReentrantReadWriteLock();
+  protected List<StepListener> stepListeners = new ArrayList<>();
+  protected StepContext stepContext;
 
   protected BaseStep() {}
 
   @Override
   public boolean init(StepConfigChannelCombination<C> combination) throws KettleXException {
+    Collections.sort(stepListeners);
     this.stepConfig = combination.getStepConfig();
     this.outputChannels = combination.getOutputChannels();
     this.inputChannel = combination.getInputChannel();
-    this.communication = combination.getCommunication();
+    this.stepContext = combination.getStepContext();
     if (shutdown) {
       throw new KettleXStepExecuteException("step is shutdown");
     }
@@ -47,7 +51,7 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
       options.verify();
     }
     doInit(stepConfig);
-    communication.markStatus(ExecutionStatus.WAITING);
+    stepListeners.forEach(stepListener -> stepListener.onPrepare(this.stepContext));
     return true;
   }
 
@@ -71,7 +75,7 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
         outputChannel.push(record);
       }
       if (!(record instanceof TerminateRecord)) {
-        communication.increaseSendRecords(1);
+        this.stepContext.getCommunication().increaseSendRecords(1);
       }
     } finally {
       outputChannelLock.readLock().unlock();
@@ -86,7 +90,7 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
     try {
       Record record = inputChannel.pull();
       if (!(record instanceof TerminateRecord)) {
-        communication.increaseReceivedRecords(1);
+        this.stepContext.getCommunication().increaseReceivedRecords(1);
       }
       return record;
     } finally {
@@ -99,17 +103,17 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
     shutdown = true;
   }
 
+  @Override
+  public void addStepListeners(StepListener stepListener) {
+    stepListeners.add(stepListener);
+  }
+
   protected boolean isShutdown() {
     return shutdown;
   }
 
-  protected Communication getCommunication() {
-    return communication;
-  }
-
   protected void setError(Exception e) {
-    communication.markStatus(ExecutionStatus.FAILED);
-    communication.setException(e);
+    stepListeners.forEach(stepListener -> stepListener.onError(stepContext, e));
     log.error("{} execute error. {}", stepConfig.getName(), e.getMessage(), e);
     throw new KettleXStepExecuteException(e);
   }
