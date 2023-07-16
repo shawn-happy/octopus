@@ -1,6 +1,7 @@
 package com.octopus.operators.kettlex.runtime.container;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
+import com.octopus.operators.kettlex.core.exception.KettleXTransException;
 import com.octopus.operators.kettlex.core.listener.DefaultStepListener;
 import com.octopus.operators.kettlex.core.management.Communication;
 import com.octopus.operators.kettlex.core.steps.Reader;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 
 @Slf4j
 public class TaskGroupContainer implements Container {
@@ -30,6 +30,7 @@ public class TaskGroupContainer implements Container {
   @Getter private final String containerName;
   private final List<StepConfigChannelCombination<?>> stepConfigChannelCombinations;
   private final List<Step<?>> steps;
+  private TaskGroupExecutor executor;
 
   public TaskGroupContainer(TaskGroup taskGroup) {
     this.taskGroup = taskGroup;
@@ -62,16 +63,16 @@ public class TaskGroupContainer implements Container {
       threads[i].start();
     }
 
-    for (int i = 0; i < threads.length; i++) {
+    for (Thread thread : threads) {
       try {
-        threads[i].join();
+        thread.join();
       } catch (Exception ex) {
-        log.error("Error with init thread: " + ex.getMessage(), ex.getMessage());
+        throw new KettleXTransException("Error with init TaskGroup", ex);
       }
     }
 
     boolean ok = true;
-    for (StepInitRunner initThread : initThreads) {
+    for (StepInitRunner<?> initThread : initThreads) {
       if (!initThread.isOk()) {
         ok = false;
         break;
@@ -79,15 +80,19 @@ public class TaskGroupContainer implements Container {
     }
 
     if (!ok) {
-      for (StepInitRunner initThread : initThreads) {
+      for (StepInitRunner<?> initThread : initThreads) {
         initThread.getStep().destroy();
       }
     }
+
+    executor = new TaskGroupExecutor(containerId, steps);
   }
 
   @Override
   public void start() {
-    TaskGroupExecutor executor = new TaskGroupExecutor(steps);
+    if (executor == null) {
+      executor = new TaskGroupExecutor(containerId, steps);
+    }
     executor.executor();
   }
 
@@ -106,70 +111,45 @@ public class TaskGroupContainer implements Container {
   }
 
   class TaskGroupExecutor {
-    private List<Reader<?>> readers;
-    private Thread[] readerThreads;
-    private List<Transform<?>> transforms;
-    private Thread[] transformThreads;
-    private List<Writer<?>> writers;
-    private Thread[] writerThreads;
+    private List<Thread> readerThreads;
+    private List<Thread> transformThreads;
+    private List<Thread> writerThreads;
     private Communication taskCommunication;
 
-    public TaskGroupExecutor(List<Step<?>> steps) {
+    public TaskGroupExecutor(String taskId, List<Step<?>> steps) {
       if (CollectionUtils.isEmpty(steps)) {
         throw new KettleXStepExecuteException("steps is null");
       }
-      this.readers =
+      this.readerThreads =
           steps.stream()
               .filter(step -> step instanceof Reader<?>)
-              .map(step -> (Reader<?>) step)
+              .map(
+                  step ->
+                      new Thread(
+                          new ReaderRunner((Reader<?>) step),
+                          String.format("%s_%s_reader", taskId, step.getStepConfig().getId())))
               .collect(Collectors.toUnmodifiableList());
 
-      this.transforms =
+      this.transformThreads =
           steps.stream()
               .filter(step -> step instanceof Transform<?>)
-              .map(step -> (Transform<?>) step)
+              .map(
+                  step ->
+                      new Thread(
+                          new TransformRunner((Transform<?>) step),
+                          String.format(
+                              "%s_%s_transformation", taskId, step.getStepConfig().getId())))
               .collect(Collectors.toUnmodifiableList());
 
-      this.writers =
+      this.writerThreads =
           steps.stream()
               .filter(step -> step instanceof Writer<?>)
-              .map(step -> (Writer<?>) step)
+              .map(
+                  step ->
+                      new Thread(
+                          new WriterRunner((Writer<?>) step),
+                          String.format("%s_%s_writer", taskId, step.getStepConfig().getId())))
               .collect(Collectors.toUnmodifiableList());
-
-      ReaderRunner[] readerRunners = new ReaderRunner[readers.size()];
-      readerThreads = new Thread[readers.size()];
-      for (int i = 0; i < readers.size(); i++) {
-        Reader<?> reader = readers.get(i);
-        readerRunners[i] = new ReaderRunner(reader);
-        readerThreads[i] =
-            new Thread(
-                readerRunners[i],
-                String.format("reader_[%s]_thread", reader.getStepConfig().getName()));
-      }
-
-      if (CollectionUtils.isNotEmpty(transforms)) {
-        TransformRunner[] tranformRunners = new TransformRunner[transforms.size()];
-        transformThreads = new Thread[transforms.size()];
-        for (int i = 0; i < transforms.size(); i++) {
-          Transform<?> transform = transforms.get(i);
-          tranformRunners[i] = new TransformRunner(transform);
-          transformThreads[i] =
-              new Thread(
-                  tranformRunners[i],
-                  String.format("transform_[%s]_thread", transform.getStepConfig().getName()));
-        }
-      }
-
-      WriterRunner[] writerRunners = new WriterRunner[writers.size()];
-      writerThreads = new Thread[writers.size()];
-      for (int i = 0; i < writers.size(); i++) {
-        Writer<?> writer = writers.get(i);
-        writerRunners[i] = new WriterRunner(writer);
-        writerThreads[i] =
-            new Thread(
-                writerRunners[i],
-                String.format("writer_[%s]_thread", writer.getStepConfig().getName()));
-      }
 
       taskCommunication = new Communication();
     }
@@ -186,7 +166,7 @@ public class TaskGroupContainer implements Container {
         }
       }
 
-      if (ArrayUtils.isNotEmpty(transformThreads)) {
+      if (CollectionUtils.isNotEmpty(transformThreads)) {
         for (Thread transformThread : transformThreads) {
           transformThread.start();
         }
@@ -208,8 +188,6 @@ public class TaskGroupContainer implements Container {
           throw new KettleXStepExecuteException("reader error");
         }
       }
-
-      waitUntilFinished(100);
     }
 
     public void shutdown() {
@@ -250,24 +228,6 @@ public class TaskGroupContainer implements Container {
         }
       }
       return true;
-    }
-
-    private void waitUntilFinished(final long waitMillis) {
-
-      if (!isFinished()) {
-
-        for (int i = 0; i < 100; i++) {
-          if (isFinished()) {
-            break;
-          }
-          try {
-            Thread.sleep(waitMillis);
-          } catch (Exception e) {
-            e.printStackTrace();
-            break;
-          }
-        }
-      }
     }
   }
 }

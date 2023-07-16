@@ -101,4 +101,43 @@ public class Communication {
         + receivedRecords
         + '}';
   }
+
+  public synchronized Communication mergeFrom(final Communication otherComm) {
+    if (otherComm == null) {
+      return this;
+    }
+
+    long receivedRecords = otherComm.getReceivedRecords();
+    long sendRecords = otherComm.getSendRecords();
+    long transformRecords = otherComm.getTransformRecords();
+    this.receivedRecords += receivedRecords;
+    this.sendRecords += sendRecords;
+    this.transformRecords += transformRecords;
+
+    // 合并state
+    mergeStateFrom(otherComm);
+
+    this.exception = this.exception == null ? otherComm.getException() : this.exception;
+    this.message = this.message == null ? otherComm.getMessage() : this.message;
+
+    return this;
+  }
+
+  public synchronized void mergeStateFrom(final Communication otherComm) {
+    ExecutionStatus executionStatus = this.getStatus();
+    if (otherComm == null) {
+      return;
+    }
+
+    if (this.status == ExecutionStatus.FAILED
+        || otherComm.getStatus() == ExecutionStatus.FAILED
+        || this.status == ExecutionStatus.KILLED
+        || otherComm.getStatus() == ExecutionStatus.KILLED) {
+      executionStatus = ExecutionStatus.FAILED;
+    } else if (this.status.isRunning() || otherComm.getStatus().isRunning()) {
+      executionStatus = ExecutionStatus.RUNNING;
+    }
+
+    this.markStatus(executionStatus);
+  }
 }
