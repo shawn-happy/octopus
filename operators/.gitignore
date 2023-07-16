@@ -1,0 +1,14 @@
+*.classpath
+*.class
+*.log
+*.tar
+*.tar.gz
+*.zip
+*.jar
+
+build/
+.gradle/
+.idea/
+log/
+**/target/
+
