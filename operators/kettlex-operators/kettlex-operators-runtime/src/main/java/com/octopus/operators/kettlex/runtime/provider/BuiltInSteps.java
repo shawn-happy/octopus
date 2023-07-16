@@ -1,18 +1,20 @@
 package com.octopus.operators.kettlex.runtime.provider;
 
-import com.octopus.kettlex.reader.rowgenerator.RowGenerator;
-import com.octopus.kettlex.reader.rowgenerator.RowGeneratorConfig;
-import com.octopus.kettlex.steps.ValueMapper;
-import com.octopus.kettlex.steps.ValueMapperConfig;
+import com.octopus.operators.kettlex.builtin.logmessage.LogMessage;
+import com.octopus.operators.kettlex.builtin.logmessage.LogMessageConfig;
+import com.octopus.operators.kettlex.builtin.rowgenerator.RowGenerator;
+import com.octopus.operators.kettlex.builtin.rowgenerator.RowGeneratorConfig;
+import com.octopus.operators.kettlex.builtin.valuemapper.ValueMapper;
+import com.octopus.operators.kettlex.builtin.valuemapper.ValueMapperConfig;
 import com.octopus.operators.kettlex.core.provider.StepConfigStepCombination;
 
 public enum BuiltInSteps {
-  //  LOG_MESSAGE(
-  //      new StepConfigStepCombination(
-  //          "log-message",
-  //          LogMessage.class,
-  //          LogMessageConfig.class,
-  //          Thread.currentThread().getContextClassLoader())),
+  LOG_MESSAGE(
+      new StepConfigStepCombination(
+          "log-message",
+          LogMessage.class,
+          LogMessageConfig.class,
+          Thread.currentThread().getContextClassLoader())),
 
   ROW_GENERATOR(
       new StepConfigStepCombination(
