@@ -6,9 +6,6 @@ import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.column.Column;
 import com.octopus.operators.kettlex.core.row.record.DefaultRecord;
 import com.octopus.operators.kettlex.core.steps.BaseReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class RowGenerator extends BaseReader<RowGeneratorConfig> {
 
@@ -31,10 +28,9 @@ public class RowGenerator extends BaseReader<RowGeneratorConfig> {
   }
 
   @Override
-  protected Supplier<List<Record>> doReader() {
+  protected void doReader() {
     Field[] fields = stepConfig.getOptions().getFields();
     int i = 0;
-    List<Record> records = new ArrayList<>(rowLimit);
     while (i < rowLimit) {
       Record record = new DefaultRecord();
       for (Field field : fields) {
@@ -45,9 +41,8 @@ public class RowGenerator extends BaseReader<RowGeneratorConfig> {
                 .rawData(field.getValue())
                 .build());
       }
-      records.add(record);
+      putRow(record);
       i++;
     }
-    return () -> records;
   }
 }

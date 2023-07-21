@@ -181,10 +181,10 @@ public class VMInfo {
             memoryStatus.name = pool.getName();
             processMomoryStatus.memoryStatusMap.put(pool.getName(), memoryStatus);
           }
-          memoryStatus.commitedSize = pool.getUsage().getCommitted();
+          memoryStatus.committedSize = pool.getUsage().getCommitted();
           memoryStatus.setMaxMinUsedSize(pool.getUsage().getUsed());
           long maxMemory =
-              memoryStatus.commitedSize > 0 ? memoryStatus.commitedSize : memoryStatus.maxSize;
+              memoryStatus.committedSize > 0 ? memoryStatus.committedSize : memoryStatus.maxSize;
           memoryStatus.setMaxMinPercent(
               maxMemory > 0 ? (float) 100 * memoryStatus.usedSize / maxMemory : -1);
         }
@@ -261,40 +261,30 @@ public class VMInfo {
     }
 
     public String getDeltaString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("\n\t [delta cpu info] => \n");
-      sb.append("\t\t");
-      sb.append(
-          String.format(
+      return "\n\t [delta cpu info] => \n"
+          + "\t\t"
+          + String.format(
               "%-30s | %-30s | %-30s | %-30s \n",
-              "curDeltaCpu", "averageCpu", "maxDeltaCpu", "minDeltaCpu"));
-      sb.append("\t\t");
-      sb.append(
-          String.format(
+              "curDeltaCpu", "averageCpu", "maxDeltaCpu", "minDeltaCpu")
+          + "\t\t"
+          + String.format(
               "%-30s | %-30s | %-30s | %-30s \n",
               String.format("%,.2f%%", processCpuStatus.curDeltaCpu),
               String.format("%,.2f%%", processCpuStatus.averageCpu),
               String.format("%,.2f%%", processCpuStatus.maxDeltaCpu),
-              String.format("%,.2f%%\n", processCpuStatus.minDeltaCpu)));
-
-      return sb.toString();
+              String.format("%,.2f%%\n", processCpuStatus.minDeltaCpu));
     }
 
     public String getTotalString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("\n\t [total cpu info] => \n");
-      sb.append("\t\t");
-      sb.append(
-          String.format("%-30s | %-30s | %-30s \n", "averageCpu", "maxDeltaCpu", "minDeltaCpu"));
-      sb.append("\t\t");
-      sb.append(
-          String.format(
+      return "\n\t [total cpu info] => \n"
+          + "\t\t"
+          + String.format("%-30s | %-30s | %-30s \n", "averageCpu", "maxDeltaCpu", "minDeltaCpu")
+          + "\t\t"
+          + String.format(
               "%-30s | %-30s | %-30s \n",
               String.format("%,.2f%%", processCpuStatus.averageCpu),
               String.format("%,.2f%%", processCpuStatus.maxDeltaCpu),
-              String.format("%,.2f%%\n", processCpuStatus.minDeltaCpu)));
-
-      return sb.toString();
+              String.format("%,.2f%%\n", processCpuStatus.minDeltaCpu));
     }
   }
 
@@ -455,7 +445,7 @@ public class VMInfo {
     String name;
     long initSize;
     long maxSize;
-    long commitedSize;
+    long committedSize;
     long usedSize;
     float percent;
     long maxUsedSize = -1;

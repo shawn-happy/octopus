@@ -1,4 +1,4 @@
-package com.octopus.operators.kettlex.examples;
+package com.octopus.operators.kettlex.runtime.provider;
 
 import com.octopus.operators.kettlex.builtin.logmessage.LogMessage;
 import com.octopus.operators.kettlex.builtin.logmessage.LogMessageConfig;

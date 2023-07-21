@@ -14,35 +14,79 @@ public class Communication {
   private String message;
   /** 执行记录的时间 */
   private long timestamp;
-  /** 读取到的数据量 */
+  /** 任务开始时间 */
+  private final long startTime;
+  /** 任务结束时间 */
+  private long endTime;
+  /** 写入到Channel中的数据量 */
   private long sendRecords;
-  /** 转换的数据量 */
-  private long transformRecords;
-  /** 接受到的数据量 */
+  /** 从Channel中获取到的数据量 */
   private long receivedRecords;
+  /** 参与处理的数据量 */
+  private long transformRecords;
+  /** 最终入库的数据量 */
+  private long writerRecords;
+  /** 处理失败的数据量 */
+  private long errorRecords;
+  /** 处理速率 单位 record/s */
+  private double processSpeed;
+
+  public Communication() {
+    this.status = ExecutionStatus.SUBMITTING;
+    long now = System.currentTimeMillis();
+    this.startTime = now;
+    this.timestamp = now;
+  }
 
   public synchronized void increaseSendRecords(final long deltaValue) {
     this.sendRecords += deltaValue;
+    updateTimestamp();
   }
 
   public synchronized void increaseTransformRecords(final long deltaValue) {
     this.transformRecords += deltaValue;
+    updateTimestamp();
   }
 
   public synchronized void increaseReceivedRecords(final long deltaValue) {
     this.receivedRecords += deltaValue;
+    updateTimestamp();
+  }
+
+  public synchronized void increaseWriteRecords(final long deltaValue) {
+    this.writerRecords += deltaValue;
+    updateTimestamp();
+  }
+
+  public synchronized void increaseErrorRecords(final long deltaValue) {
+    this.errorRecords += deltaValue;
+    updateTimestamp();
+  }
+
+  public synchronized void setProcessSpeed(double processSpeed) {
+    this.processSpeed = processSpeed;
+    updateTimestamp();
   }
 
   public synchronized void markStatus(ExecutionStatus status) {
     this.status = status;
+    updateTimestamp();
+    if (isFinished()) {
+      this.endTime = System.currentTimeMillis();
+    }
   }
 
   public synchronized void setException(Throwable exception) {
     this.exception = exception;
+    updateTimestamp();
   }
 
-  public void setTimestamp(long timestamp) {
-    this.timestamp = timestamp;
+  public long getStartTime() {
+    return startTime;
+  }
+
+  public long getEndTime() {
+    return endTime;
   }
 
   public synchronized String getThrowableMessage() {
@@ -77,6 +121,18 @@ public class Communication {
     return receivedRecords;
   }
 
+  public long getWriterRecords() {
+    return writerRecords;
+  }
+
+  public long getErrorRecords() {
+    return errorRecords;
+  }
+
+  public double getProcessSpeed() {
+    return processSpeed;
+  }
+
   public synchronized boolean isFinished() {
     return this.status == SUCCEEDED || this.status == FAILED || this.status == KILLED;
   }
@@ -93,18 +149,26 @@ public class Communication {
         + '\''
         + ", timestamp="
         + timestamp
+        + ", startTime="
+        + startTime
+        + ", endTime="
+        + endTime
         + ", sendRecords="
         + sendRecords
-        + ", transformRecords="
-        + transformRecords
         + ", receivedRecords="
         + receivedRecords
+        + ", transformRecords="
+        + transformRecords
+        + ", writerRecords="
+        + writerRecords
+        + ", errorRecords="
+        + errorRecords
         + '}';
   }
 
-  public synchronized Communication mergeFrom(final Communication otherComm) {
+  public synchronized void mergeFrom(final Communication otherComm) {
     if (otherComm == null) {
-      return this;
+      return;
     }
 
     long receivedRecords = otherComm.getReceivedRecords();
@@ -113,14 +177,15 @@ public class Communication {
     this.receivedRecords += receivedRecords;
     this.sendRecords += sendRecords;
     this.transformRecords += transformRecords;
+    this.writerRecords += otherComm.getWriterRecords();
+    this.errorRecords += otherComm.getErrorRecords();
 
     // 合并state
     mergeStateFrom(otherComm);
 
     this.exception = this.exception == null ? otherComm.getException() : this.exception;
     this.message = this.message == null ? otherComm.getMessage() : this.message;
-
-    return this;
+    this.updateTimestamp();
   }
 
   public synchronized void mergeStateFrom(final Communication otherComm) {
@@ -139,5 +204,9 @@ public class Communication {
     }
 
     this.markStatus(executionStatus);
+  }
+
+  private void updateTimestamp() {
+    this.timestamp = System.currentTimeMillis();
   }
 }

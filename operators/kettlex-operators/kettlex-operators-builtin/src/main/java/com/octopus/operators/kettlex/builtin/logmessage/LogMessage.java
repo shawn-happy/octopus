@@ -19,7 +19,6 @@ public class LogMessage extends BaseWriter<LogMessageConfig> {
 
   @Override
   protected void doInit(LogMessageConfig stepConfig) throws KettleXException {
-    super.doInit(stepConfig);
     this.stepConfig = stepConfig;
   }
 

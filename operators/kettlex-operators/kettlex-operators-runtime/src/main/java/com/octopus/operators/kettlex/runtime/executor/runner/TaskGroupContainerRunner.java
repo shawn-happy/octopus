@@ -13,10 +13,9 @@ public class TaskGroupContainerRunner implements Runner {
   public final TaskGroupContainer taskGroupContainer;
   @Getter private Communication communication;
 
-  public TaskGroupContainerRunner(
-      TaskGroupContainer taskGroupContainer, Communication communication) {
+  public TaskGroupContainerRunner(TaskGroupContainer taskGroupContainer) {
     this.taskGroupContainer = taskGroupContainer;
-    this.communication = communication;
+    this.communication = taskGroupContainer.getContainerCommunicator().getCollectCommunication();
   }
 
   @Override
@@ -45,10 +44,5 @@ public class TaskGroupContainerRunner implements Runner {
   @Override
   public void shutdown() {
     taskGroupContainer.stop();
-  }
-
-  @Override
-  public void destroy() {
-    taskGroupContainer.destroy();
   }
 }
