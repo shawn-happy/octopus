@@ -25,9 +25,12 @@ public abstract class BaseWriter<C extends WriterConfig<?>> extends BaseStep<C>
           break;
         }
         doWriter().accept(record);
+        stepContext.getCommunication().increaseWriteRecords(1);
       }
     } catch (Exception e) {
       setError(e);
+      throw new KettleXStepExecuteException(
+          String.format("%s write error", stepContext.getStepName()), e);
     }
   }
 

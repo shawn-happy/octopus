@@ -1,12 +1,8 @@
 package com.octopus.operators.kettlex.core.steps;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
-import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.record.TerminateRecord;
 import com.octopus.operators.kettlex.core.steps.config.ReaderConfig;
-import java.util.List;
-import java.util.function.Supplier;
-import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class BaseReader<C extends ReaderConfig<?>> extends BaseStep<C>
     implements Reader<C> {
@@ -19,20 +15,16 @@ public abstract class BaseReader<C extends ReaderConfig<?>> extends BaseStep<C>
       throw new KettleXStepExecuteException("step is shutdown");
     }
     try {
-      List<Record> records = doReader().get();
       stepListeners.forEach(stepListener -> stepListener.onRunnable(stepContext));
-      if (CollectionUtils.isEmpty(records)) {
-        return;
-      }
-      for (Record record : records) {
-        putRow(record);
-      }
+      doReader();
       putRow(TerminateRecord.get());
       stepListeners.forEach(stepListener -> stepListener.onSuccess(stepContext));
     } catch (Exception e) {
       setError(e);
+      throw new KettleXStepExecuteException(
+          String.format("%s read error", stepContext.getStepName()), e);
     }
   }
 
-  protected abstract Supplier<List<Record>> doReader() throws KettleXStepExecuteException;
+  protected abstract void doReader() throws KettleXStepExecuteException;
 }

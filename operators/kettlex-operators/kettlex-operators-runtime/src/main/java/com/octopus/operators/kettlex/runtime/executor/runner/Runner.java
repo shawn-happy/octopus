@@ -17,13 +17,10 @@ public interface Runner extends Runnable {
 
   default void markFail(final Throwable throwable) {
     mark(ExecutionStatus.FAILED);
-    getCommunication().setTimestamp(System.currentTimeMillis());
     getCommunication().setException(throwable);
   }
 
   void mark(ExecutionStatus status);
 
   void shutdown();
-
-  void destroy();
 }

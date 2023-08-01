@@ -1,4 +1,4 @@
-package com.octopus.operators.kettlex.examples;
+package com.octopus.operators.kettlex.runtime;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Resources;
@@ -8,7 +8,6 @@ import com.octopus.operators.kettlex.core.exception.KettleXParseException;
 import com.octopus.operators.kettlex.core.steps.config.StepConfigChannelCombination;
 import com.octopus.operators.kettlex.core.utils.JsonUtil;
 import com.octopus.operators.kettlex.core.utils.YamlUtil;
-import com.octopus.operators.kettlex.runtime.Engine;
 import com.octopus.operators.kettlex.runtime.config.JobConfiguration;
 import com.octopus.operators.kettlex.runtime.config.RuntimeConfig;
 import com.octopus.operators.kettlex.runtime.config.TaskGroup;
@@ -19,11 +18,10 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
-class ExecuteTests {
+// @Disabled
+public class ExecutorTests {
 
   private static TaskGroup taskGroup;
   private static JobConfiguration configuration;

@@ -1,6 +1,7 @@
 package com.octopus.operators.kettlex.runtime.executor.runner;
 
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
+import com.octopus.operators.kettlex.core.management.ExecutionStatus;
 import com.octopus.operators.kettlex.core.steps.Step;
 import com.octopus.operators.kettlex.core.steps.config.StepConfig;
 import com.octopus.operators.kettlex.core.steps.config.StepConfigChannelCombination;
@@ -18,7 +19,7 @@ public class StepInitRunner<C extends StepConfig<?>> extends AbstractRunner impl
   private final StepConfigChannelCombination<C> combination;
 
   public StepInitRunner(Step<C> step, StepConfigChannelCombination<C> combination) {
-    super(step);
+    super(step, combination);
     this.step = step;
     this.combination = combination;
     this.ok = false;
@@ -32,9 +33,11 @@ public class StepInitRunner<C extends StepConfig<?>> extends AbstractRunner impl
         ok = true;
       } else {
         ok = false;
+        mark(ExecutionStatus.FAILED);
         log.error("Error initializing step {}.", step.getStepConfig().getName());
       }
     } catch (Throwable e) {
+      markFail(e);
       log.error("Error initializing step {}.", step.getStepConfig().getName(), e);
       throw new KettleXStepExecuteException(
           String.format("Error initializing step %s.", step.getStepConfig().getName()), e);

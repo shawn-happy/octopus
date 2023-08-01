@@ -18,7 +18,6 @@ public class ValueMapper extends BaseTransform<ValueMapperConfig> {
 
   @Override
   protected void doInit(ValueMapperConfig stepConfig) throws KettleXException {
-    super.doInit(stepConfig);
     this.stepConfig = stepConfig;
   }
 

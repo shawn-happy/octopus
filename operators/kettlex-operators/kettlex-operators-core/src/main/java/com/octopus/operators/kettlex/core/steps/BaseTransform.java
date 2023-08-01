@@ -32,6 +32,8 @@ public abstract class BaseTransform<C extends TransformerConfig<?>> extends Base
       stepListeners.forEach(stepListener -> stepListener.onSuccess(stepContext));
     } catch (Exception e) {
       setError(e);
+      throw new KettleXStepExecuteException(
+          String.format("%s transfer error", stepContext.getStepName()), e);
     }
   }
 

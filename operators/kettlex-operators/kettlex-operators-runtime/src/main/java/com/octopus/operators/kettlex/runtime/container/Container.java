@@ -1,10 +1,8 @@
 package com.octopus.operators.kettlex.runtime.container;
 
+import com.octopus.operators.kettlex.runtime.monitor.ContainerCommunicator;
+
 public interface Container {
-
-  String getContainerId();
-
-  String getContainerName();
 
   void init();
 
@@ -12,5 +10,5 @@ public interface Container {
 
   void stop();
 
-  void destroy();
+  ContainerCommunicator getContainerCommunicator();
 }

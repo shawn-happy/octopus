@@ -4,11 +4,12 @@ import com.octopus.operators.kettlex.core.context.StepContext;
 import com.octopus.operators.kettlex.core.exception.KettleXException;
 import com.octopus.operators.kettlex.core.exception.KettleXStepExecuteException;
 import com.octopus.operators.kettlex.core.listener.StepListener;
+import com.octopus.operators.kettlex.core.management.Communication;
+import com.octopus.operators.kettlex.core.management.CommunicationUtils;
 import com.octopus.operators.kettlex.core.row.Record;
 import com.octopus.operators.kettlex.core.row.channel.Channel;
 import com.octopus.operators.kettlex.core.row.record.TerminateRecord;
 import com.octopus.operators.kettlex.core.steps.config.StepConfig;
-import com.octopus.operators.kettlex.core.steps.config.StepConfig.StepOptions;
 import com.octopus.operators.kettlex.core.steps.config.StepConfigChannelCombination;
 import com.octopus.operators.kettlex.core.utils.JsonUtil;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   private final ReentrantReadWriteLock outputChannelLock = new ReentrantReadWriteLock();
   protected List<StepListener> stepListeners = new ArrayList<>();
   protected StepContext stepContext;
+  private Communication lastCommunication;
 
   protected BaseStep() {}
 
@@ -45,13 +47,13 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
     if (log.isDebugEnabled()) {
       log.debug("init step config. {}", JsonUtil.toJson(stepConfig));
     }
-    StepOptions options = stepConfig.getOptions();
-    // 有些组件没有options，可能会为Null
-    if (options != null) {
-      options.verify();
+    if (stepConfig == null) {
+      throw new KettleXStepExecuteException("step config is null");
     }
+    stepConfig.verify();
     doInit(stepConfig);
     stepListeners.forEach(stepListener -> stepListener.onPrepare(this.stepContext));
+    lastCommunication = new Communication();
     return true;
   }
 
@@ -59,6 +61,9 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
   public void destroy() throws KettleXException {
     log.info("destroy step. {}", stepConfig.getName());
     doDestroy();
+    Communication communication = stepContext.getCommunication();
+    this.lastCommunication =
+        CommunicationUtils.getLastCommunication(communication, this.lastCommunication);
   }
 
   protected void doDestroy() throws KettleXException {}
@@ -100,6 +105,7 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
 
   @Override
   public void shutdown() throws KettleXException {
+    destroy();
     shutdown = true;
   }
 
@@ -114,6 +120,7 @@ public abstract class BaseStep<C extends StepConfig<?>> implements Step<C> {
 
   protected void setError(Exception e) {
     stepListeners.forEach(stepListener -> stepListener.onError(stepContext, e));
+    this.stepContext.getCommunication().increaseErrorRecords(1);
     log.error("{} execute error. {}", stepConfig.getName(), e.getMessage(), e);
     throw new KettleXStepExecuteException(e);
   }
