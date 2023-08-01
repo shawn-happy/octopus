@@ -30,28 +30,48 @@ ext {
     annotationVersion = '20.1.0'
     slf4jVersion = '1.7.30'
     log4jVersion = '2.17.1'
+    flinkVersion = '1.16.0'
+    flinkOperatorVersion = '1.2.0'
+    flinkJacksonVersion = '2.13.4-16.0'
 
+    // tools
     libs_guava = [group: 'com.google.guava', name: 'guava', version: guavaVersion]
     libs_commonsCollections4 = [group: 'org.apache.commons', name: 'commons-collections4', version: commonCollections4Version]
     libs_commonsLang3 = [group: 'org.apache.commons', name: 'commons-lang3', version: commonLang3Version]
     libs_commonsIO = [group: 'commons-io', name: 'commons-io', version: commonsIOVersion]
     libs_lombok = [group: 'org.projectlombok', name: 'lombok', version: lombokVersion]
     libs_jetbrainsAnnotation = [group: 'org.jetbrains', name: 'annotations', version: annotationVersion]
+
+    // log4j
     libs_slf4jApi = [group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion]
     libs_log4jSlf4jImpl = [group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: log4jVersion]
 
 
     libs_mysqlConnector = [group: 'mysql', name: 'mysql-connector-java', version: mysqlConnectorVersion]
+
+    // jackson
     libs_jacksonDatabind = [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion]
     libs_jacksonCore = [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion]
     libs_jacksonAnnotations = [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion]
     libs_jacksonDatatypeJsr310 = [group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion]
     libs_jacksonDataformatYaml = [group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion]
+
     libs_aviator = [group: 'com.googlecode.aviator', name: 'aviator', version: aviatorVersion]
 
+    // spark
     libs_icebergSparkRuntime = [group: 'org.apache.iceberg', name: 'iceberg-spark-runtime-3.2_2.12', version: icebergVersion]
     libs_sparkSql = [group: 'org.apache.spark', name: 'spark-sql_2.12', version: sparkVersion]
     libs_sparkGraphx = [group: 'org.apache.spark', name: 'spark-graphx_2.12', version: sparkVersion]
+
+    // flink
+    libs_flinkConnKafka = [group: 'org.apache.flink', name: 'flink-connector-kafka', version: flinkVersion]
+    libs_flinkConnBase = [group: 'org.apache.flink', name: 'flink-connector-base', version: flinkVersion]
+    libs_flinkCep = [group: 'org.apache.flink', name: 'flink-cep', version: flinkVersion]
+    libs_flinkJson = [group: 'org.apache.flink', name: 'flink-json', version: flinkVersion]
+    libs_flinkStreamingJava = [group: 'org.apache.flink', name: 'flink-streaming-java', version: flinkVersion]
+    libs_flinkOperator = [group: 'org.apache.flink', name: 'flink-kubernetes-operator', version: flinkOperatorVersion]
+    libs_flinkTestUtils = [group: 'org.apache.flink', name: 'flink-test-utils', version: flinkVersion]
+    libs_flinkShadedJackson = [group: 'org.apache.flink', name: 'flink-shaded-jackson', version: flinkJacksonVersion]
 
     libs_junitJupiterApi = [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion]
     libs_junitJupiterEngine = [group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion]

@@ -24,4 +24,5 @@ findProject(':kettlex-operators:kettlex-operators-runtime')?.name = 'kettlex-ope
 include 'kettlex-operators:kettlex-operators-builtin'
 findProject(':kettlex-operators:kettlex-operators-builtin')?.name = 'kettlex-operators-builtin'
 include 'spark-operators'
+include 'flink-operators'
 

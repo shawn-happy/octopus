@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group 'com.octopus.operators'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs_jacksonDataformatYaml
+    implementation libs_commonsCollections4
+    implementation libs_commonsLang3
+    implementation libs_aviator
+    implementation libs_mysqlConnector
+
+    implementation libs_flinkConnKafka
+    implementation libs_flinkConnBase
+    implementation libs_flinkCep
+    implementation libs_flinkJson
+    implementation libs_flinkStreamingJava
+    implementation libs_flinkOperator
+    implementation libs_flinkTestUtils
+    implementation libs_flinkShadedJackson
+
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
+
+    testImplementation libs_junitJupiterApi
+    testRuntimeOnly libs_junitJupiterEngine
+}
+
+
+test {
+    useJUnitPlatform()
+}
