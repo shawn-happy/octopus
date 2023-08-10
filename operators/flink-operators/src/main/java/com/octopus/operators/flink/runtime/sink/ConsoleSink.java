@@ -6,6 +6,12 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 public class ConsoleSink implements Sink<ConsoleSinkDeclare> {
 
+  private final ConsoleSinkDeclare sinkDeclare;
+
+  public ConsoleSink(ConsoleSinkDeclare sinkDeclare) {
+    this.sinkDeclare = sinkDeclare;
+  }
+
   @Override
   public void writer(StreamExecutionEnvironment executionEnvironment, DataStream<?> dataStream)
       throws Exception {

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.Level;
 
 @Builder
 @Getter
@@ -25,5 +26,7 @@ public class ConsoleSinkDeclare implements SinkDeclare<ConsoleSinkOptions> {
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class ConsoleSinkOptions implements SinkOptions {}
+  public static class ConsoleSinkOptions implements SinkOptions {
+    @Default private Level level = Level.INFO;
+  }
 }

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
   @JsonSubTypes.Type(value = ConsoleSinkDeclare.class, name = "console"),
+  @JsonSubTypes.Type(value = CSVSinkDeclare.class, name = "csv"),
 })
 public interface SinkDeclare<P extends SinkOptions> extends Verifiable {
   SinkType getType();

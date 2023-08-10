@@ -2,7 +2,6 @@ package com.octopus.operators.flink;
 
 import com.google.common.io.Resources;
 import java.net.URL;
-import java.util.Base64;
 import java.util.Map;
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -39,7 +38,5 @@ public class Starter {
     streamExecutionEnvironment.close();
   }
 
-  public void execute(String configBase64) {
-
-  }
+  public void execute(String configBase64) {}
 }

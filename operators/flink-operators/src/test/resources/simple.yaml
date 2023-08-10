@@ -1,0 +1,22 @@
+sources:
+  - type: csv
+    repartition: 1
+    output: user
+    name: user
+    options:
+      paths: ["E:\\workspace\\myself-projects\\octopus\\operators\\flink-operators\\src\\test\\resources\\user.csv"]
+      schemas:
+        - name: id
+          type: Integer
+        - name: name
+          type: String
+        - name: createTime
+          type: Timestamp
+
+sinks:
+  - type: console
+    name: console
+    input: user
+    writeMode: append
+    options:
+
