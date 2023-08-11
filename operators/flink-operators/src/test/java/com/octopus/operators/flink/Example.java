@@ -6,18 +6,22 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.google.common.io.Resources;
 import com.octopus.operators.flink.declare.sink.ConsoleSinkDeclare;
 import com.octopus.operators.flink.declare.source.CSVSourceDeclare;
+import com.octopus.operators.flink.declare.transform.SQLTransformDeclare;
+import com.octopus.operators.flink.declare.transform.TransformDeclare;
 import com.octopus.operators.flink.runtime.FlinkRuntimeConfig;
+import com.octopus.operators.flink.runtime.FlinkRuntimeEnvironment;
 import com.octopus.operators.flink.runtime.sink.ConsoleSink;
 import com.octopus.operators.flink.runtime.source.CSVFileSource;
+import com.octopus.operators.flink.runtime.transform.SQLTransform;
 import java.nio.charset.Charset;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.types.Row;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
+// @Disabled
 public class Example {
 
   private static final ObjectMapper objectMapperYaml =
@@ -30,15 +34,23 @@ public class Example {
             IOUtils.toString(Resources.getResource("simple.yaml"), Charset.defaultCharset()),
             FlinkRuntimeConfig.class);
     Assertions.assertNotNull(flinkRuntimeConfig);
+    FlinkRuntimeEnvironment flinkRuntimeEnvironment =
+        FlinkRuntimeEnvironment.getFlinkRuntimeEnvironment();
     CSVSourceDeclare sourceDeclare = (CSVSourceDeclare) flinkRuntimeConfig.getSources().get(0);
-    CSVFileSource source = new CSVFileSource(sourceDeclare);
-    StreamExecutionEnvironment executionEnvironment =
-        StreamExecutionEnvironment.getExecutionEnvironment();
-    DataStream<?> reader = source.reader(executionEnvironment);
+    CSVFileSource source = new CSVFileSource(flinkRuntimeEnvironment, sourceDeclare);
+    DataStream<Row> reader = source.reader();
+    TransformDeclare<?> transformDeclare = flinkRuntimeConfig.getTransforms().get(0);
+    SQLTransform sqlTransform =
+        new SQLTransform(flinkRuntimeEnvironment, (SQLTransformDeclare) transformDeclare);
+    DataStream<Row> process =
+        sqlTransform.process(
+            Map.of(transformDeclare.getInput().get(sourceDeclare.getOutput()), reader));
 
-    ConsoleSink sink = new ConsoleSink((ConsoleSinkDeclare) flinkRuntimeConfig.getSinks().get(0));
-    sink.writer(executionEnvironment, reader);
-    executionEnvironment.execute("job name");
-    executionEnvironment.close();
+    ConsoleSink sink =
+        new ConsoleSink(
+            flinkRuntimeEnvironment, (ConsoleSinkDeclare) flinkRuntimeConfig.getSinks().get(0));
+    sink.writer(process);
+    flinkRuntimeEnvironment.getStreamExecutionEnvironment().execute("job name");
+    flinkRuntimeEnvironment.getStreamExecutionEnvironment().close();
   }
 }

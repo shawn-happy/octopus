@@ -13,10 +13,19 @@ sources:
         - name: createTime
           type: Timestamp
 
+transforms:
+  - type: sql
+    name: sql
+    input:
+      user: t
+    output: user_filter
+    repartition: 1
+    options: select id, name, createTime from t where id <= 10
+
 sinks:
   - type: console
     name: console
-    input: user
+    input: user_filter
     writeMode: append
     options:
 
