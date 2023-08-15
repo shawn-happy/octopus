@@ -9,6 +9,7 @@ public enum SinkType {
   jdbc,
   iceberg,
   hive,
+  console,
   ;
 
   public static List<SinkType> getFileFormat() {
