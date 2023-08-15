@@ -50,7 +50,7 @@ public class Example {
         new ConsoleSink(
             flinkRuntimeEnvironment, (ConsoleSinkDeclare) flinkRuntimeConfig.getSinks().get(0));
     sink.writer(process);
-    flinkRuntimeEnvironment.getStreamExecutionEnvironment().execute("job name");
+    flinkRuntimeEnvironment.getStreamExecutionEnvironment().execute(flinkRuntimeConfig.getName());
     flinkRuntimeEnvironment.getStreamExecutionEnvironment().close();
   }
 }

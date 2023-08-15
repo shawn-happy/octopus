@@ -1,5 +1,6 @@
 package com.octopus.operators.flink.runtime.source;
 
+import com.octopus.operators.flink.declare.common.ColumnDesc;
 import com.octopus.operators.flink.declare.source.CSVSourceDeclare;
 import com.octopus.operators.flink.runtime.FlinkRuntimeEnvironment;
 import java.util.Arrays;
@@ -42,13 +43,15 @@ public class CSVFileSource implements Source<CSVSourceDeclare> {
     SerializableFunction<CsvMapper, CsvSchema> schemaGenerator =
         mapper -> mapper.schemaFor(Map.class).withHeader();
 
+    List<ColumnDesc> schemas = options.getSchemas();
+
     var csvFormat =
         CsvReaderFormat.forSchema(CsvMapper::new, schemaGenerator, TypeInformation.of(Map.class));
 
     var fileSource = FileSource.forRecordStreamFormat(csvFormat, paths).build();
 
     return executionEnvironment
-        .fromSource(fileSource, WatermarkStrategy.noWatermarks(), "fileSource")
+        .fromSource(fileSource, WatermarkStrategy.noWatermarks(), declare.getName())
         .map(
             map -> {
               List<Object> collection = Arrays.asList(map.values().toArray());
@@ -60,7 +63,10 @@ public class CSVFileSource implements Source<CSVSourceDeclare> {
             })
         .returns(
             Types.ROW_NAMED(
-                new String[] {"id", "name", "createTime"},
+                schemas.stream()
+                    .map(ColumnDesc::getName)
+                    .collect(Collectors.toUnmodifiableList())
+                    .toArray(new String[] {}),
                 Types.STRING,
                 Types.STRING,
                 Types.STRING));

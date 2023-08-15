@@ -1,3 +1,4 @@
+name: example
 sources:
   - type: csv
     repartition: 1

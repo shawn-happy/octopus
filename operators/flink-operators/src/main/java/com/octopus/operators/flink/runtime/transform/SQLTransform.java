@@ -27,8 +27,7 @@ public class SQLTransform implements Transform<SQLTransformDeclare> {
       tableEnvironment.createTemporaryView(entry.getKey(), entry.getValue());
     }
 
-    Table table =
-        tableEnvironment.sqlQuery(declare.getOptions().getSql()).as("id", "name", "createTime");
+    Table table = tableEnvironment.sqlQuery(declare.getOptions().getSql());
     return tableEnvironment.toChangelogStream(table);
   }
 }
