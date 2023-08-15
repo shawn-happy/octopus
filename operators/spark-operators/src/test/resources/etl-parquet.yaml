@@ -1,22 +1,9 @@
 sources:
-  - type: jdbc                                    # SourceType: [csv, parquet, json, orc, jdbc, iceberg, hive]
+  - type: parquet                                 # SourceType: [csv, parquet, json, orc, jdbc, iceberg, hive]
     name: user                                    # name: unique source name
     output: user                                  # output: unique output
     options:
-      url: jdbc:mysql://localhost:3306/demo       # jdbc url
-      username: root                              # jdbc username
-      password: root                              # jdbc password
-      driverClassName: com.mysql.cj.jdbc.Driver   # jdbc driver class name
-      query: select * from user where id > ${id}  # query sql
-      params:
-        - type: Integer
-          value: 23
-#      partitionColumn: birth_date                 # partitionColumn + lowerBound + upperBound + numPartitions. If you fill in one of them, you must fill in all
-#      lowerBound: 1920-01-01
-#      upperBound: 2023-04-09
-#      numPartitions: 100
-#      partitionExpressions: [ "id > 0 and id <= 100", "id > 100 and id <= 200" ] # Condition in the where clause for each partition.
-      fetchSize: 1000                            # default 1000
+      paths: [ "src/test/resources/user.parquet" ]
 
 transforms:
   - type: sparkSQL
@@ -28,57 +15,9 @@ transforms:
       sql: select *, (FLOOR(RAND() * 100) - 10) as age from user_temp
 
 sinks:
-  - type: jdbc                                         # sink type: [parquet, csv, json, jdbc, iceberg, hive]
+  - type: parquet                                      # sink type: [parquet, csv, json, jdbc, iceberg, hive]
     name: user-sink                                    # unique sink name
     input: user_trans_output                           # dataframe name
     writeMode: append                                  # write mode: [append, replace, create_or_replace, replace_by_time, overwrite_partitions]
     options:
-      url: jdbc:mysql://localhost:3306/demo          # jdbc url
-      username: root                                   # jdbc username
-      password: root                                   # jdbc password
-      driverClassName: com.mysql.cj.jdbc.Driver        # jdbc driver class name
-      table: user_sink
-      schemas:
-        - name: id
-          type: Integer
-          nullable: false
-          primaryKey: true
-        - name: birth_date
-          type: Date
-          nullable: true
-          primaryKey: false
-        - name: email
-          type: String
-          nullable: false
-          primaryKey: false
-        - name: gender
-          type: String
-          nullable: false
-          primaryKey: false
-        - name: locked
-          type: Integer
-          nullable: false
-          primaryKey: false
-        - name: name
-          type: String
-          nullable: false
-          primaryKey: false
-        - name: password
-          type: String
-          nullable: false
-          primaryKey: false
-        - name: phone_number
-          type: String
-          nullable: false
-          primaryKey: false
-        - name: address_id
-          type: Integer
-          nullable: false
-          primaryKey: false
-        - name: age
-          type: Integer
-          nullable: false
-          primaryKey: false
-      batchSize: 1000                                   # commit num
-      isolationLevel: READ_COMMITTED                    # READ_UNCOMMITTED,READ_COMMITTED,REPEATABLE_READ,SERIALIZABLE,NONE
-      numPartitions: 2
+      path: output/parquet

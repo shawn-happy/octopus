@@ -61,4 +61,15 @@ public class ExecutorTests {
     Executor executor = new ETLExecutor(sparkSession, path);
     executor.run();
   }
+
+  @Test
+  public void createETLExecutorWithParquet() throws Exception {
+    String path = DeclareTests.class.getClassLoader().getResource("etl-parquet.yaml").getPath();
+    SparkSession sparkSession =
+        SparkSession.builder().appName("test").master("local[2]").getOrCreate();
+    Loader loader = new DefaultLoader(OpRegistry.OP_REGISTRY);
+    loader.init();
+    Executor executor = new ETLExecutor(sparkSession, path);
+    executor.run();
+  }
 }

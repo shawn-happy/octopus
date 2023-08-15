@@ -15,6 +15,7 @@ import org.apache.hadoop.shaded.com.google.common.base.Verify;
   @JsonSubTypes.Type(value = IcebergSinkDeclare.class, name = "iceberg"),
   @JsonSubTypes.Type(value = JDBCSinkDeclare.class, name = "jdbc"),
   @JsonSubTypes.Type(value = ConsoleSinkDeclare.class, name = "console"),
+  @JsonSubTypes.Type(value = ParquetSinkDeclare.class, name = "parquet"),
 })
 public interface SinkDeclare<P extends SinkOptions> extends Verifiable {
   SinkType getType();

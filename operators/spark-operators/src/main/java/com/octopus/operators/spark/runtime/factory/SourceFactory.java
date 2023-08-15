@@ -4,10 +4,12 @@ import com.octopus.operators.spark.declare.common.SourceType;
 import com.octopus.operators.spark.declare.source.CSVSourceDeclare;
 import com.octopus.operators.spark.declare.source.IcebergSourceDeclare;
 import com.octopus.operators.spark.declare.source.JDBCSourceDeclare;
+import com.octopus.operators.spark.declare.source.ParquetSourceDeclare;
 import com.octopus.operators.spark.declare.source.SourceDeclare;
 import com.octopus.operators.spark.runtime.step.source.CSVSource;
 import com.octopus.operators.spark.runtime.step.source.IcebergSource;
 import com.octopus.operators.spark.runtime.step.source.JDBCSource;
+import com.octopus.operators.spark.runtime.step.source.ParquetSource;
 import com.octopus.operators.spark.runtime.step.source.Source;
 
 public class SourceFactory {
@@ -25,6 +27,9 @@ public class SourceFactory {
     } else if (type == SourceType.iceberg) {
       IcebergSourceDeclare icebergSourceDeclare = (IcebergSourceDeclare) sourceDeclare;
       source = new IcebergSource(icebergSourceDeclare);
+    } else if (type == SourceType.parquet) {
+      ParquetSourceDeclare parquetSourceDeclare = (ParquetSourceDeclare) sourceDeclare;
+      source = new ParquetSource(parquetSourceDeclare);
     }
     return source;
   }

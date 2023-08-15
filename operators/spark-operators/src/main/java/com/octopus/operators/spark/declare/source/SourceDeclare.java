@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
   @JsonSubTypes.Type(value = CSVSourceDeclare.class, name = "csv"),
   @JsonSubTypes.Type(value = IcebergSourceDeclare.class, name = "iceberg"),
   @JsonSubTypes.Type(value = JDBCSourceDeclare.class, name = "jdbc"),
+  @JsonSubTypes.Type(value = ParquetSourceDeclare.class, name = "parquet"),
 })
 public interface SourceDeclare<P extends SourceOptions> extends Verifiable {
 
