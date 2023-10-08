@@ -1,0 +1,18 @@
+dependencies {
+    implementation libs_commonsLang3
+    implementation libs_commonsCollections4
+    implementation libs_lombok
+    implementation libs_guava
+    implementation libs_slf4jApi
+    implementation libs_log4jSlf4jImpl
+    implementation libs_jetbrainsAnnotation
+
+    annotationProcessor libs_lombok
+    testImplementation libs_junitJupiterApi
+    testRuntimeOnly libs_junitJupiterEngine
+    testAnnotationProcessor libs_lombok
+}
+
+test {
+    useJUnitPlatform()
+}

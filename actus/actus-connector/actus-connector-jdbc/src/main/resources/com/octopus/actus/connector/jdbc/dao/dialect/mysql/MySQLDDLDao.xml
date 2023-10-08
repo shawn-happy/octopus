@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.octopus.actus.connector.jdbc.dao.dialect.mysql.MySQLDDLDao">
+
+  <update id="createDatabase">
+    CREATE
+    DATABASE IF NOT EXISTS `${database}`
+  </update>
+
+  <update id="dropDatabase">
+    DROP
+    DATABASE IF EXISTS `${database}`
+  </update>
+
+  <update id="createTable" parameterType="table">
+    CREATE TABLE IF NOT EXISTS <if test="databaseName != null">`${databaseName}`.</if>`${tableName}`(
+    <foreach item="item" index="index" collection="columnDefinitions"
+      separator=",">
+      `${item.columnName}` ${item.fieldType}
+      <if test="!item.isNullable()">NOT NULL</if>
+      <if test="item.isAutoIncrement()">AUTO_INCREMENT</if>
+      <if test="item.defaultValue != null">DEFAULT #{item.defaultValue}</if>
+      <if test="item.comment != null">comment '${item.comment}'</if>
+    </foreach>
+    <if test="primaryKey != null">
+      ,
+      PRIMARY KEY `${primaryKey.primaryKeyName}`
+      <foreach collection="primaryKey.columns" item="item" index="index" open="(" close=")" separator=",">
+        `${item}`
+      </foreach>
+    </if>
+    <if test="indexDefinitions != null and !indexDefinitions.isEmpty()">
+      ,
+      <foreach item="item" index="index" collection="indexDefinitions"
+        separator=",">
+        INDEX `${item.indexName}`
+        <foreach collection="item.columns" item="column" index="index" open="(" close=")" separator=",">
+          `${column}`
+        </foreach>
+        <if test="item.algo != null">UsSING ${item.algo}</if>
+        <if test="item.comment != null">comment #{item.comment}</if>
+      </foreach>
+    </if>
+    ) engine = INNODB CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci
+    <if test="comment != null">
+      COMMENT = #{comment}
+    </if>
+  </update>
+
+  <update id="renameTable">
+    ALTER TABLE <if test="database != null">`${database}`.</if>`${oldTable}` RENAME <if test="database != null">
+    `${database}`.</if>`${newTable}`
+  </update>
+
+  <update id="modifyTableComment">
+    ALTER TABLE <if test="database != null">${database}.</if>${table} COMMENT = #{comment}
+  </update>
+
+  <update id="dropTable">
+    DROP TABLE IF EXISTS <if test="database != null">${database}.</if>${table}
+  </update>
+
+  <update id="addColumn" parameterType="table">
+    ALTER TABLE <if test="databaseName != null">${databaseName}.</if>${tableName} ADD COLUMN
+    <foreach item="item" index="index" collection="columnDefinitions"
+      separator=",">
+      `${item.columnName}` ${item.fieldType}
+      <if test="!item.isNullable()">NOT NULL</if>
+      <if test="item.isAutoIncrement()">AUTO_INCREMENT</if>
+      <if test="item.defaultValue != null">DEFAULT #{item.defaultValue}</if>
+      <if test="item.comment != null">comment #{item.comment}</if>
+    </foreach>
+  </update>
+
+  <update id="removeColumn">
+    ALTER TABLE <if test="database != null">${database}.</if>${table} DROP COLUMN ${column}
+  </update>
+
+  <update id="modifyColumn">
+    ALTER TABLE <if test="database != null">${database}.</if>${table}
+    MODIFY COLUMN ${column.columnName} ${column.fieldType}
+    <if test="!column.isNullable()">NOT NULL</if>
+    <if test="column.isAutoIncrement()">AUTO_INCREMENT</if>
+    <if test="column.defaultValue != null">DEFAULT #{column.defaultValue}</if>
+    <if test="column.comment != null">COMMENT #{column.comment}</if>
+  </update>
+
+  <update id="renameColumn">
+    ALTER TABLE <if test="database != null">${database}.</if>${table} RENAME COLUMN ${oldColumn} TO ${newColumn}
+  </update>
+
+  <update id="createIndex">
+    CREATE INDEX ${index.indexName} ON <if test="database != null">${database}.</if>${table}
+    <foreach collection="index.columns" item="column" index="index" open="(" separator="," close=")">
+      ${column}
+    </foreach>
+    <if test="index.algo != null">USING ${index.algo}</if>
+    <if test="index.comment != null">COMMENT #{index.comment}</if>
+  </update>
+
+  <update id="dropIndex">
+    DROP INDEX ${index} ON <if test="database != null">${database}.</if>${table}
+  </update>
+
+  <update id="executeSQL">
+    ${sql}
+  </update>
+
+</mapper>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.octopus.actus.connector.jdbc.dao.dialect.mysql.MySQLDCLDao">
+
+    <update id="createRole">
+        CREATE ROLE IF NOT EXISTS #{role}
+    </update>
+
+    <update id="createRoles">
+        CREATE ROLE IF NOT EXISTS
+        <foreach collection="roles" item="role" separator=",">
+            #{role}
+        </foreach>
+    </update>
+
+    <update id="dropRole">
+        DROP ROLE IF EXISTS #{role}
+    </update>
+
+    <update id="dropRoles">
+        DROP ROLE IF EXISTS
+        <foreach collection="roles" item="role" separator=",">
+            #{role}
+        </foreach>
+    </update>
+
+    <update id="createUser" parameterType="user">
+        CREATE USER IF NOT EXISTS #{name}
+        <if test="host != null">@#{host}</if>
+        <if test="password != null">IDENTIFIED BY #{password}</if>
+        <if test="roles != null">
+            <foreach collection="roles" item="role" separator=",">
+                DEFAULT ROLE ${role}
+            </foreach>
+        </if>
+        <choose>
+            <when test="historyPolicy != null">
+                PASSWORD HISTORY
+                <choose>
+                    <when test="historyPolicy.interval == null">DEFAULT</when>
+                    <otherwise>
+                        ${historyPolicy.interval}
+                    </otherwise>
+                </choose>
+            </when>
+            <when test="expirePolicy != null">
+                PASSWORD EXPIRE
+                <choose>
+                    <when test="expirePolicy.isNever()">NEVER</when>
+                    <when test="!expirePolicy.isNever() and expirePolicy.interval == null">DEFAULT</when>
+                    <otherwise>
+                        INTERVAL ${expirePolicy.interval} DAY
+                    </otherwise>
+                </choose>
+            </when>
+            <when test="failedLoginPolicy != null and lockTimePolicy != null">
+                FAILED_LOGIN_ATTEMPTS ${failedLoginPolicy.interval} PASSWORD_LOCK_TIME ${lockTimePolicy.interval}
+            </when>
+        </choose>
+    </update>
+
+    <update id="dropUser" parameterType="user">
+        DROP USER IF EXISTS #{name}
+        <if test="host != null">@#{host}</if>
+    </update>
+
+    <update id="dropUsers" parameterType="user">
+        DROP USER IF EXISTS
+        <foreach collection="users" item="user" separator=",">
+            #{user.name}
+            <if test="user.host != null">@#{user.host}</if>
+        </foreach>
+    </update>
+
+    <update id="modifyPassword" parameterType="user">
+        ALTER USER IF EXISTS #{name}
+        <if test="host != null">@#{host}</if>
+        <if test="password != null">IDENTIFIED BY #{password}</if>
+        <choose>
+            <when test="historyPolicy != null">
+                PASSWORD HISTORY
+                <choose>
+                    <when test="historyPolicy.interval == null">DEFAULT</when>
+                    <otherwise>
+                        ${historyPolicy.interval}
+                    </otherwise>
+                </choose>
+            </when>
+            <when test="expirePolicy != null">
+                PASSWORD EXPIRE
+                <choose>
+                    <when test="expirePolicy.isNever()">NEVER</when>
+                    <when test="!expirePolicy.isNever() and expirePolicy.interval == null">DEFAULT</when>
+                    <otherwise>
+                        INTERVAL ${expirePolicy.interval} DAY
+                    </otherwise>
+                </choose>
+            </when>
+            <when test="failedLoginPolicy != null and lockTimePolicy != null">
+                FAILED_LOGIN_ATTEMPTS ${failedLoginPolicy.interval} PASSWORD_LOCK_TIME ${lockTimePolicy.interval}
+            </when>
+        </choose>
+    </update>
+
+    <update id="grantUserPrivilege" parameterType="privilege">
+        GRANT <foreach collection="privileges" item="item" separator=",">
+        ${item}
+    </foreach> ON
+        <choose>
+            <when test="database == null and table == null">
+                *.*
+            </when>
+            <when test="database != null and table == null">
+                ${database}.*
+            </when>
+            <otherwise>
+                ${database}.${table}
+            </otherwise>
+        </choose>
+        TO
+        <foreach collection="users" item="user" separator=",">
+            #{user.name}
+            <if test="user.host != null">@#{user.host}</if>
+        </foreach>
+    </update>
+
+    <update id="grantRolePrivilege" parameterType="privilege">
+        GRANT <foreach collection="privileges" item="item" separator=",">
+        ${item}
+    </foreach> ON
+        <choose>
+            <when test="database == null and table == null">
+                *.*
+            </when>
+            <when test="database != null and table == null">
+                ${database}.*
+            </when>
+            <otherwise>
+                ${database}.${table}
+            </otherwise>
+        </choose>
+        TO
+        <foreach collection="roles" item="role" separator=",">
+            #{role}
+        </foreach>
+    </update>
+
+    <update id="grantRolesToUser">
+        GRANT <foreach collection="roles" item="role" separator=",">
+        #{role}
+    </foreach> ON #{user}
+        <if test="host != null">@#{host}</if>
+    </update>
+
+    <update id="revokeUserPrivilege" parameterType="privilege">
+        REVOKE IF EXISTS <foreach collection="privileges" item="item" separator=",">
+        ${item}
+    </foreach> ON
+        <choose>
+            <when test="database == null and table == null">
+                *.*
+            </when>
+            <when test="database != null and table == null">
+                ${database}.*
+            </when>
+            <otherwise>
+                ${database}.${table}
+            </otherwise>
+        </choose>
+        FROM
+        <foreach collection="users" item="user" separator=",">
+            #{user.name}
+            <if test="user.host != null">@#{user.host}</if>
+        </foreach>
+    </update>
+
+    <update id="revokeRolePrivilege" parameterType="privilege">
+        REVOKE IF EXISTS <foreach collection="privileges" item="item" separator=",">
+        ${item}
+    </foreach> ON
+        <choose>
+            <when test="database == null and table == null">
+                *.*
+            </when>
+            <when test="database != null and table == null">
+                ${database}.*
+            </when>
+            <otherwise>
+                ${database}.${table}
+            </otherwise>
+        </choose>
+        FROM
+        <foreach collection="roles" item="role" separator=",">
+            #{role}
+        </foreach>
+    </update>
+
+    <update id="revokeRolesFromUser">
+        REVOKE IF EXISTS <foreach collection="roles" item="role" separator=",">
+        #{role}
+    </foreach> ON #{user}
+        <if test="host != null">@#{host}</if>
+    </update>
+</mapper>

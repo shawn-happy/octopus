@@ -1,0 +1,22 @@
+pluginManagement {
+    plugins {
+        id 'org.springframework.boot' version '2.7.0'
+        id 'com.diffplug.spotless' version '6.17.0'
+        id 'com.google.protobuf' version '0.8.13'
+    }
+
+    repositories {
+        maven {
+            name "aliyun-maven-gradle-plugin"
+            url "https://maven.aliyun.com/repository/gradle-plugin"
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'actus'
+include 'actus-common'
+include 'actus-connector:actus-connector-jdbc'
+findProject(':actus-connector:actus-connector-jdbc')?.name = 'actus-connector-jdbc'
+
