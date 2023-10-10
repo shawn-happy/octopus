@@ -16,13 +16,6 @@ pluginManagement {
 }
 
 rootProject.name = 'operators'
-include 'kettlex-operators'
-include 'kettlex-operators:kettlex-operators-core'
-findProject(':kettlex-operators:kettlex-operators-core')?.name = 'kettlex-operators-core'
-include 'kettlex-operators:kettlex-operators-runtime'
-findProject(':kettlex-operators:kettlex-operators-runtime')?.name = 'kettlex-operators-runtime'
-include 'kettlex-operators:kettlex-operators-builtin'
-findProject(':kettlex-operators:kettlex-operators-builtin')?.name = 'kettlex-operators-builtin'
 include 'spark-operators'
 include 'flink-operators'
 
