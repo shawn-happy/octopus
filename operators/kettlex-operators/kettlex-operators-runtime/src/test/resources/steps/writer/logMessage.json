@@ -1,7 +1,0 @@
-{
-  "id": "2",
-  "name": "logMessage",
-  "type": "LOG_MESSAGE",
-  "options": null,
-  "input": "row_generator_output"
-}
