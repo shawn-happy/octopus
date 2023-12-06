@@ -1,17 +1,23 @@
 package com.octopus.actus.connector.jdbc.service.impl;
 
-import com.octopus.actus.connector.jdbc.JDBCDataSourceProperties;
+import com.octopus.actus.connector.jdbc.DbType;
+import com.octopus.actus.connector.jdbc.JdbcProperties;
 import com.octopus.actus.connector.jdbc.mapper.DCLMapper;
 import com.octopus.actus.connector.jdbc.model.PrivilegeInfo;
 import com.octopus.actus.connector.jdbc.model.UserInfo;
 import com.octopus.actus.connector.jdbc.service.DataWarehouseDCLService;
 import java.util.List;
+import javax.sql.DataSource;
 import org.apache.commons.collections4.CollectionUtils;
 
 public class DataWarehouseDCLServiceImpl extends AbstractSqlExecutor
     implements DataWarehouseDCLService {
 
-  public DataWarehouseDCLServiceImpl(JDBCDataSourceProperties properties) {
+  public DataWarehouseDCLServiceImpl(String name, DataSource dataSource, DbType dbType) {
+    super(name, dataSource, dbType);
+  }
+
+  public DataWarehouseDCLServiceImpl(JdbcProperties properties) {
     super(properties);
   }
 
