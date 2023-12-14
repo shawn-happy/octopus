@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'com.octopus.operators'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs_jacksonDataformatYaml
+    implementation libs_commonsCollections4
+    implementation libs_commonsLang3
+    implementation libs_guava
+    implementation libs_jetbrainsAnnotation
+    implementation libs_slf4jApi
+    implementation libs_log4jSlf4jImpl
+
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
