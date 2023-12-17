@@ -12,6 +12,7 @@ repositories {
 dependencies {
     compileOnly libs_icebergSparkRuntime
     compileOnly libs_sparkSql
+    implementation project(":engine")
     implementation libs_jacksonDataformatYaml
     implementation libs_commonsCollections4
     implementation libs_commonsLang3

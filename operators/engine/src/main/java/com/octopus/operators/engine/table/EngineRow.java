@@ -1,31 +1,35 @@
 package com.octopus.operators.engine.table;
 
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EngineRow {
 
-  private EngineRowRecord[] fields;
-  private volatile long size;
-  private final AtomicLong sizeIncrementor = new AtomicLong();
+  private String[] fieldNames;
+  private Object[] fieldValues;
+  private FieldType[] fieldTypes;
 
   public EngineRow(int rowSize) {
-    this.fields = new EngineRowRecord[rowSize];
+    this.fieldNames = new String[rowSize];
+    this.fieldValues = new Object[rowSize];
+    this.fieldTypes = new FieldType[rowSize];
   }
 
-  public EngineRowRecord[] getFields() {
-    return fields;
+  public String[] getFieldNames() {
+    return fieldNames;
   }
 
-  @Getter
-  @AllArgsConstructor
-  public static class EngineRowRecord {
-    private final Object field;
-    private final FieldType fieldType;
+  public Object[] getFieldValues() {
+    return fieldValues;
+  }
 
-    public static EngineRowRecord of(Object field, FieldType fieldType) {
-      return new EngineRowRecord(field, fieldType);
-    }
+  public FieldType[] getFieldTypes() {
+    return fieldTypes;
   }
 }

@@ -5,7 +5,6 @@ import com.octopus.operators.flink.declare.source.SourceDeclare;
 import com.octopus.operators.flink.declare.transform.TransformDeclare;
 import java.util.List;
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

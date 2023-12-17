@@ -13,5 +13,4 @@ public interface SinkConfig<P extends SinkOptions> {
   Integer getParallelism();
 
   WriteMode getWriteMode();
-
 }
