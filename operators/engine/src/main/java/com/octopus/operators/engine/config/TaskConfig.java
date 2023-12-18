@@ -26,6 +26,7 @@ public class TaskConfig {
   @Default private TaskMode taskMode = TaskMode.BATCH;
   private long checkpointInterval;
   private String jars;
+  private Map<String, Object> runtimeConfig;
   private Map<String, Object> extraParams;
   private List<SourceConfig<? extends SourceOptions>> sources;
   private List<SinkConfig<? extends SinkOptions>> sinks;

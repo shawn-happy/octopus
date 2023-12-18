@@ -22,7 +22,7 @@ public class ConsoleSinkConfig implements SinkConfig<ConsoleSinkOptions> {
   private ConsoleSinkOptions options;
   private String input;
   private Integer parallelism;
-  private WriteMode writeMode = WriteMode.APPEND;
+  @Default private WriteMode writeMode = WriteMode.APPEND;
 
   public static class ConsoleSinkOptions implements SinkOptions {
 

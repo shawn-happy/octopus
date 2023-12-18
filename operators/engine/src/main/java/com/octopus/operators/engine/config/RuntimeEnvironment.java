@@ -12,6 +12,8 @@ public interface RuntimeEnvironment {
 
   CheckResult checkTaskConfig();
 
+  RuntimeEnvironment prepare();
+
   default TaskMode getTaskMode() {
     return Optional.ofNullable(getTaskConfig()).orElse(TaskConfig.builder().build()).getTaskMode();
   }
