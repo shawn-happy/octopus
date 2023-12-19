@@ -10,7 +10,7 @@ public class ArrayDataType implements RowDataType {
       new ArrayDataType(boolean[].class, Boolean.TYPE);
   public static final ArrayDataType FLOAT_ARRAY = new ArrayDataType(float[].class, Float.TYPE);
   public static final ArrayDataType DOUBLE_ARRAY = new ArrayDataType(double[].class, Double.TYPE);
-  public static final ArrayDataType String_ARRAY = new ArrayDataType(String[].class, String.class);
+  public static final ArrayDataType STRING_ARRAY = new ArrayDataType(String[].class, String.class);
 
   private final Class<?> arrayClass;
   private final Class<?> elementClass;

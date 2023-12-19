@@ -6,7 +6,6 @@ import com.octopus.operators.engine.config.source.SourceOptions;
 import com.octopus.operators.engine.config.source.SourceType;
 import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceOptions;
 import com.octopus.operators.engine.exception.ConfigParseException;
-import com.octopus.operators.engine.table.FieldType;
 import com.octopus.operators.engine.util.JsonUtils;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -72,7 +71,7 @@ public class FakeSourceConfig implements SourceConfig<FakeSourceOptions> {
   @AllArgsConstructor
   public static class FakeSourceRow {
     private String fieldName;
-    private FieldType fieldType;
+    private String fieldType;
 
     private List<String> booleanTemplate;
     @Default private FakeMode booleanFakeMode = FakeMode.RANDOM;

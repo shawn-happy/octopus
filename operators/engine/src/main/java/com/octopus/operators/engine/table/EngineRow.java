@@ -1,5 +1,6 @@
 package com.octopus.operators.engine.table;
 
+import com.octopus.operators.engine.table.type.RowDataType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,12 +14,12 @@ public class EngineRow {
 
   private String[] fieldNames;
   private Object[] fieldValues;
-  private FieldType[] fieldTypes;
+  private RowDataType[] fieldTypes;
 
   public EngineRow(int rowSize) {
     this.fieldNames = new String[rowSize];
     this.fieldValues = new Object[rowSize];
-    this.fieldTypes = new FieldType[rowSize];
+    this.fieldTypes = new RowDataType[rowSize];
   }
 
   public String[] getFieldNames() {
@@ -29,7 +30,7 @@ public class EngineRow {
     return fieldValues;
   }
 
-  public FieldType[] getFieldTypes() {
+  public RowDataType[] getFieldTypes() {
     return fieldTypes;
   }
 }
