@@ -1,7 +1,7 @@
 package com.octopus.actus.connector.jdbc.service.mysql;
 
 import com.octopus.actus.connector.jdbc.DbType;
-import com.octopus.actus.connector.jdbc.JDBCDataSourceProperties;
+import com.octopus.actus.connector.jdbc.JdbcProperties;
 import com.octopus.actus.connector.jdbc.model.ColumnInfo;
 import com.octopus.actus.connector.jdbc.model.DatabaseInfo;
 import com.octopus.actus.connector.jdbc.model.PrimaryKeyInfo;
@@ -14,14 +14,14 @@ import java.util.List;
 
 public class MySQLTestsCommon {
   protected static final String url =
-      "jdbc:mysql://localhost:3306/datawarehouse?characterEncoding=utf-8&useSSL=false";
+      "jdbc:mysql://192.168.54.206:3306/datawarehouse?characterEncoding=utf-8&useSSL=false";
   protected static final String username = "root";
   protected static final String password = "bigdata321";
   protected static final String driverClass = "com.mysql.cj.jdbc.Driver";
   protected static final String database = "mysql_test";
 
-  protected static final JDBCDataSourceProperties properties =
-      JDBCDataSourceProperties.builder()
+  protected static final JdbcProperties properties =
+      JdbcProperties.builder()
           .dbType(DbType.mysql)
           .name("mysql_ds")
           .driverClassName(driverClass)

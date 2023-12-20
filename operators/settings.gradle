@@ -18,4 +18,5 @@ pluginManagement {
 rootProject.name = 'operators'
 include 'spark-operators'
 include 'flink-operators'
+include 'engine'
 

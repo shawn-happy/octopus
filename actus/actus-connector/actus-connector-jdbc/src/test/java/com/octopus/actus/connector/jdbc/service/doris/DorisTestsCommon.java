@@ -1,7 +1,7 @@
 package com.octopus.actus.connector.jdbc.service.doris;
 
 import com.octopus.actus.connector.jdbc.DbType;
-import com.octopus.actus.connector.jdbc.JDBCDataSourceProperties;
+import com.octopus.actus.connector.jdbc.JdbcProperties;
 import com.octopus.actus.connector.jdbc.model.ColumnInfo;
 import com.octopus.actus.connector.jdbc.model.DatabaseInfo;
 import com.octopus.actus.connector.jdbc.model.TableInfo;
@@ -73,8 +73,8 @@ public class DorisTestsCommon {
   protected static final String table = "doris_test_table";
   protected static final TableInfo tableInfo = tableInfoBuilder.name(table).build();
 
-  protected static final JDBCDataSourceProperties properties =
-      JDBCDataSourceProperties.builder()
+  protected static final JdbcProperties properties =
+      JdbcProperties.builder()
           .dbType(DbType.doris)
           .name("doris_test")
           .driverClassName(driverClass)

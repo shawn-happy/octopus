@@ -1,17 +1,23 @@
 package com.octopus.actus.connector.jdbc.service.impl;
 
-import com.octopus.actus.connector.jdbc.JDBCDataSourceProperties;
+import com.octopus.actus.connector.jdbc.DbType;
+import com.octopus.actus.connector.jdbc.JdbcProperties;
 import com.octopus.actus.connector.jdbc.mapper.MetaDataMapper;
 import com.octopus.actus.connector.jdbc.model.ColumnMetaInfo;
 import com.octopus.actus.connector.jdbc.model.DatabaseInfo;
 import com.octopus.actus.connector.jdbc.model.TableMetaInfo;
 import com.octopus.actus.connector.jdbc.service.DataWarehouseMetaDataService;
 import java.util.List;
+import javax.sql.DataSource;
 
 public class DataWarehouseMetaDataServiceImpl extends AbstractSqlExecutor
     implements DataWarehouseMetaDataService {
 
-  public DataWarehouseMetaDataServiceImpl(JDBCDataSourceProperties properties) {
+  public DataWarehouseMetaDataServiceImpl(String name, DataSource dataSource, DbType dbType) {
+    super(name, dataSource, dbType);
+  }
+
+  public DataWarehouseMetaDataServiceImpl(JdbcProperties properties) {
     super(properties);
   }
 

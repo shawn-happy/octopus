@@ -10,11 +10,12 @@ import org.jetbrains.annotations.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JDBCDataSourceProperties {
+public class JdbcProperties {
   @NotNull private DbType dbType;
   @NotNull private String name;
   @NotNull private String url;
   private String username;
   private String password;
+  private String database;
   @NotNull private String driverClassName;
 }

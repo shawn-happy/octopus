@@ -1,7 +1,7 @@
 package com.octopus.actus.connector.jdbc.service.impl;
 
 import com.octopus.actus.connector.jdbc.DbType;
-import com.octopus.actus.connector.jdbc.JDBCDataSourceProperties;
+import com.octopus.actus.connector.jdbc.JdbcProperties;
 import com.octopus.actus.connector.jdbc.entity.Table;
 import com.octopus.actus.connector.jdbc.mapper.DDLMapper;
 import com.octopus.actus.connector.jdbc.model.ColumnInfo;
@@ -13,13 +13,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.sql.DataSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DataWarehouseDDLServiceImpl extends AbstractSqlExecutor
     implements DataWarehouseDDLService {
 
-  public DataWarehouseDDLServiceImpl(JDBCDataSourceProperties properties) {
+  public DataWarehouseDDLServiceImpl(String name, DataSource dataSource, DbType dbType) {
+    super(name, dataSource, dbType);
+  }
+
+  public DataWarehouseDDLServiceImpl(JdbcProperties properties) {
     super(properties);
   }
 
