@@ -2,6 +2,7 @@ package com.octopus.operators.engine.table.type;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MapDataType implements CompositeDataType {
 
@@ -34,5 +35,23 @@ public class MapDataType implements CompositeDataType {
   @Override
   public String toString() {
     return String.format("map<%s, %s>", keyRowDataType, valueRowDataType);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    MapDataType that = (MapDataType) o;
+    return Objects.equals(keyRowDataType, that.keyRowDataType)
+        && Objects.equals(valueRowDataType, that.valueRowDataType);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(keyRowDataType, valueRowDataType);
   }
 }

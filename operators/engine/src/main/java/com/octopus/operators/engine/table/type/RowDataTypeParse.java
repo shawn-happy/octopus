@@ -1,6 +1,7 @@
 package com.octopus.operators.engine.table.type;
 
 import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceRow;
+import com.octopus.operators.engine.exception.CommonExceptionConstant;
 import com.octopus.operators.engine.exception.EngineException;
 import com.octopus.operators.engine.table.EngineRow;
 import javax.annotation.Nonnull;
@@ -8,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RowDataTypeParse {
 
-  public EngineRow toEngineRow(FakeSourceRow[] fakeSourceRows) {
+  public static EngineRow toEngineRow(FakeSourceRow[] fakeSourceRows) {
     String[] fieldNames = new String[fakeSourceRows.length];
     RowDataType[] rowDataTypes = new RowDataType[fakeSourceRows.length];
     for (int i = 0; i < fakeSourceRows.length; i++) {
@@ -19,7 +20,12 @@ public class RowDataTypeParse {
   }
 
   public static RowDataType parseDataType(String fieldType) {
-    FieldType basicDataType = FieldType.of(fieldType);
+    FieldType basicDataType = null;
+    try {
+      basicDataType = FieldType.of(fieldType);
+    } catch (EngineException ignore) {
+      // nothing to do
+    }
     RowDataType rowDataType = null;
     if (basicDataType == null) {
       rowDataType = parseComplexDataType(fieldType);
@@ -27,6 +33,10 @@ public class RowDataTypeParse {
       rowDataType = parseBasicDataType(basicDataType);
     }
     return rowDataType;
+  }
+
+  public static RowDataType parseBasicDataType(@Nonnull String fieldType) {
+    return parseBasicDataType(FieldType.of(fieldType));
   }
 
   public static RowDataType parseBasicDataType(@Nonnull FieldType fieldType) {
@@ -53,9 +63,12 @@ public class RowDataTypeParse {
         return DateDataType.DATE_TIME_TYPE;
       case TIME:
         return DateDataType.TIME_TYPE;
+      case DECIMAL:
+      case MAP:
+      case ARRAY:
+        return null;
       default:
-        throw new EngineException(
-            String.format("The basic data type [%s] is not supported", fieldType));
+        throw new EngineException(CommonExceptionConstant.unsupportedDataType(fieldType.name()));
     }
   }
 
@@ -67,8 +80,10 @@ public class RowDataTypeParse {
       return parseArrayDataType(fieldType);
     } else if (fieldType.toUpperCase().startsWith(FieldType.MAP.name())) {
       return parseMapDataType(fieldType);
+    } else if (fieldType.toUpperCase().startsWith(FieldType.DECIMAL.name())) {
+      return parseDecimalDataType(fieldType);
     }
-    throw new EngineException(String.format("field type [%s] is not supported", fieldType));
+    throw new EngineException(CommonExceptionConstant.unsupportedDataType(fieldType));
   }
 
   public static RowDataType parseDecimalDataType(String fieldType) {
@@ -87,15 +102,28 @@ public class RowDataTypeParse {
 
   public static RowDataType parseMapDataType(String fieldType) {
     String genericType = getGenericType(fieldType);
-    int index = genericType.indexOf(",");
-    String keyGenericType = genericType.substring(0, index);
-    String valueGenericType = genericType.substring(index + 1);
+    int index =
+        genericType.toUpperCase().startsWith(FieldType.DECIMAL.name())
+                || genericType.toUpperCase().startsWith(FieldType.MAP.name())
+            ?
+            // if map key is decimal, we should find the index of second ','
+            StringUtils.ordinalIndexOf(genericType, ",", 2)
+            :
+            // if map key is not decimal, we should find the index of first ','
+            genericType.indexOf(",");
+    String keyGenericType = genericType.substring(0, index).trim();
+    String valueGenericType = genericType.substring(index + 1).trim();
     return new MapDataType(parseDataType(keyGenericType), parseDataType(valueGenericType));
   }
 
   public static RowDataType parseArrayDataType(String fieldType) {
     String genericType = getGenericType(fieldType);
-    PrimitiveDataType primitiveDataType = PrimitiveDataType.of(genericType);
+    PrimitiveDataType primitiveDataType = null;
+    try {
+      primitiveDataType = PrimitiveDataType.of(genericType);
+    } catch (Exception ignore) {
+      throw new EngineException(CommonExceptionConstant.unsupportedDataType(fieldType));
+    }
     switch (primitiveDataType) {
       case TINYINT:
         return ArrayDataType.TINYINT_ARRAY;
@@ -114,11 +142,11 @@ public class RowDataTypeParse {
       case STRING:
         return ArrayDataType.STRING_ARRAY;
       default:
-        throw new EngineException(String.format("The data type [%s] is not supported", fieldType));
+        throw new EngineException(CommonExceptionConstant.unsupportedDataType(fieldType));
     }
   }
 
   private static String getGenericType(String fieldType) {
-    return fieldType.substring(fieldType.indexOf("<") + 1, fieldType.lastIndexOf(">"));
+    return fieldType.substring(fieldType.indexOf("<") + 1, fieldType.lastIndexOf(">")).trim();
   }
 }

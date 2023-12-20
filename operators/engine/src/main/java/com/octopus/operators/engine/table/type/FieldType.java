@@ -1,9 +1,10 @@
 package com.octopus.operators.engine.table.type;
 
+import com.octopus.operators.engine.exception.CommonExceptionConstant;
+import com.octopus.operators.engine.exception.EngineException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public enum FieldType {
   STRING,
@@ -30,11 +31,14 @@ public enum FieldType {
   }
 
   public static FieldType of(String dataType) {
-    return Optional.ofNullable(ROW_DATA_TYPE_MAP.get(dataType.toLowerCase()))
-        .orElse(
-            Arrays.stream(values())
-                .filter(primitiveDataType -> primitiveDataType.name().equalsIgnoreCase(dataType))
-                .findFirst()
-                .orElse(null));
+    FieldType fieldType = ROW_DATA_TYPE_MAP.get(dataType.toLowerCase());
+    if (fieldType != null) {
+      return fieldType;
+    }
+    return Arrays.stream(values())
+        .filter(primitiveDataType -> primitiveDataType.name().equalsIgnoreCase(dataType))
+        .findFirst()
+        .orElseThrow(
+            () -> new EngineException(CommonExceptionConstant.unsupportedDataType(dataType)));
   }
 }

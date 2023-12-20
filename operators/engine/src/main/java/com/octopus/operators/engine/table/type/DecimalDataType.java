@@ -18,4 +18,9 @@ public class DecimalDataType implements RowDataType {
   public Class<?> getTypeClass() {
     return BigDecimal.class;
   }
+
+  @Override
+  public String toString() {
+    return String.format("decimal<%d, %d>", precision, scale);
+  }
 }

@@ -1,10 +1,10 @@
 package com.octopus.operators.engine.table.type;
 
+import com.octopus.operators.engine.exception.CommonExceptionConstant;
 import com.octopus.operators.engine.exception.EngineException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public enum PrimitiveDataType implements RowDataType {
   BOOLEAN(Boolean.TYPE),
@@ -35,15 +35,20 @@ public enum PrimitiveDataType implements RowDataType {
     return primitiveType;
   }
 
+  @Override
+  public String toString() {
+    return this.name().toLowerCase();
+  }
+
   public static PrimitiveDataType of(String dataType) {
-    return Optional.ofNullable(ROW_DATA_TYPE_MAP.get(dataType.toLowerCase()))
-        .orElse(
-            Arrays.stream(values())
-                .filter(primitiveDataType -> primitiveDataType.name().equalsIgnoreCase(dataType))
-                .findFirst()
-                .orElseThrow(
-                    () ->
-                        new EngineException(
-                            String.format("The data type [%s] is not supported", dataType))));
+    PrimitiveDataType rowDataType = ROW_DATA_TYPE_MAP.get(dataType.toLowerCase());
+    if (rowDataType != null) {
+      return rowDataType;
+    }
+    return Arrays.stream(values())
+        .filter(primitiveDataType -> primitiveDataType.name().equalsIgnoreCase(dataType))
+        .findFirst()
+        .orElseThrow(
+            () -> new EngineException(CommonExceptionConstant.unsupportedDataType(dataType)));
   }
 }
