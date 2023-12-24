@@ -18,6 +18,7 @@ public enum FieldType {
   DATE,
   TIME,
   TIMESTAMP,
+  DATETIME,
   ARRAY,
   MAP,
   DECIMAL,

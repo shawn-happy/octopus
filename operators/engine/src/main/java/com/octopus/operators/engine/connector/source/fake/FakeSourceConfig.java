@@ -74,45 +74,36 @@ public class FakeSourceConfig implements SourceConfig<FakeSourceOptions> {
     private String fieldType;
 
     private List<String> booleanTemplate;
-    @Default private FakeMode booleanFakeMode = FakeMode.RANDOM;
 
     private List<Integer> tinyIntTemplate;
-    @Default private Integer tinyIntMin = -128;
+    @Default private Integer tinyIntMin = 0;
     @Default private Integer tinyIntMax = 127;
-    @Default private FakeMode tinyIntFakeMode = FakeMode.RANDOM;
 
-    @Default private Integer smallIntMin = -32768;
+    @Default private Integer smallIntMin = 0;
     @Default private Integer smallIntMax = 32767;
     private List<Integer> smallIntTemplate;
-    @Default private FakeMode smallIntFakeMode = FakeMode.RANDOM;
 
-    @Default private Integer intMin = Integer.MIN_VALUE;
+    @Default private Integer intMin = 0;
     @Default private Integer intMax = Integer.MAX_VALUE;
     private List<Integer> intTemplate;
-    @Default private FakeMode intFakeMode = FakeMode.RANDOM;
 
-    @Default private Long bigIntMin = Long.MIN_VALUE;
+    @Default private Long bigIntMin = 0L;
     @Default private Long bigIntMax = Long.MAX_VALUE;
     private List<Long> bigIntTemplate;
-    @Default private FakeMode bigIntFakeMode = FakeMode.RANDOM;
 
-    @Default private float floatMin = Float.MIN_VALUE;
+    @Default private float floatMin = 0.0f;
     @Default private float floatMax = Float.MAX_VALUE;
     private List<Float> floatTemplate;
-    @Default private FakeMode floatFakeMode = FakeMode.RANDOM;
 
-    @Default private double doubleMin = Double.MIN_VALUE;
+    @Default private double doubleMin = 0.0D;
     @Default private double doubleMax = Double.MAX_VALUE;
     private List<Double> doubleTemplate;
-    @Default private FakeMode doubleFakeMode = FakeMode.RANDOM;
 
     @Default private Integer stringLength = 5;
     private List<String> stringTemplate;
-    @Default private FakeMode stringFakeMode = FakeMode.RANDOM;
 
     private Integer decimalPrecision;
     private Integer decimalScale;
-    @Default private FakeMode decimalFakeMode = FakeMode.RANDOM;
 
     private Integer year;
     private Integer month;

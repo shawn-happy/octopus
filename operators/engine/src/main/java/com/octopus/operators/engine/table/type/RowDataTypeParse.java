@@ -60,6 +60,7 @@ public class RowDataTypeParse {
       case DATE:
         return DateDataType.DATE_TYPE;
       case TIMESTAMP:
+      case DATETIME:
         return DateDataType.DATE_TIME_TYPE;
       case TIME:
         return DateDataType.TIME_TYPE;

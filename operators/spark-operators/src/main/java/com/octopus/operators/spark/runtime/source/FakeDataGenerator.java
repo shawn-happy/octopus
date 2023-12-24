@@ -6,11 +6,13 @@ import com.octopus.operators.engine.exception.CommonExceptionConstant;
 import com.octopus.operators.engine.exception.EngineException;
 import com.octopus.operators.engine.table.EngineRow;
 import com.octopus.operators.engine.table.type.ArrayDataType;
+import com.octopus.operators.engine.table.type.DateDataType;
 import com.octopus.operators.engine.table.type.DecimalDataType;
 import com.octopus.operators.engine.table.type.MapDataType;
 import com.octopus.operators.engine.table.type.PrimitiveDataType;
 import com.octopus.operators.engine.table.type.RowDataType;
 import com.octopus.operators.engine.table.type.RowDataTypeParse;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 public class FakeDataGenerator {
@@ -40,7 +43,7 @@ public class FakeDataGenerator {
     return rows;
   }
 
-  private Object randomValueByType(RowDataType dataType, FakeSourceRow fakeSourceRow) {
+  public static Object randomValueByType(RowDataType dataType, FakeSourceRow fakeSourceRow) {
     if (dataType instanceof ArrayDataType) {
       ArrayDataType arrayDataType = (ArrayDataType) dataType;
       Integer arraySize = fakeSourceRow.getArraySize();
@@ -64,9 +67,22 @@ public class FakeDataGenerator {
       return map;
     } else if (dataType instanceof DecimalDataType) {
       DecimalDataType decimalDataType = (DecimalDataType) dataType;
-      Integer decimalPrecision = fakeSourceRow.getDecimalPrecision();
-      Integer decimalScale = fakeSourceRow.getDecimalScale();
-
+      int decimalPrecision = decimalDataType.getPrecision();
+      int decimalScale = decimalDataType.getScale();
+      return randomBigDecimal(decimalPrecision, decimalScale);
+    } else if (dataType instanceof DateDataType) {
+      DateDataType dateDataType = (DateDataType) dataType;
+      switch (dateDataType) {
+        case DATE_TYPE:
+          return randomLocalDate();
+        case DATE_TIME_TYPE:
+          return randomLocalDateTime();
+        case TIME_TYPE:
+          return randomLocalTime();
+        default:
+          throw new EngineException(
+              CommonExceptionConstant.unsupportedDataType(dateDataType.name()));
+      }
     } else if (dataType instanceof PrimitiveDataType) {
       PrimitiveDataType primitiveDataType = (PrimitiveDataType) dataType;
       switch (primitiveDataType) {
@@ -100,6 +116,8 @@ public class FakeDataGenerator {
               fakeSourceRow.getDoubleTemplate(),
               fakeSourceRow.getDoubleMin(),
               fakeSourceRow.getDoubleMax());
+        case STRING:
+          return randomString(fakeSourceRow.getStringTemplate(), fakeSourceRow.getStringLength());
         default:
           throw new EngineException(
               CommonExceptionConstant.unsupportedDataType(primitiveDataType.name()));
@@ -161,15 +179,15 @@ public class FakeDataGenerator {
     return RandomUtils.nextDouble(min, max);
   }
 
-  public LocalDate randomLocalDate() {
+  public static LocalDate randomLocalDate() {
     return randomLocalDateTime().toLocalDate();
   }
 
-  public LocalTime randomLocalTime() {
+  public static LocalTime randomLocalTime() {
     return randomLocalDateTime().toLocalTime();
   }
 
-  public LocalDateTime randomLocalDateTime() {
+  public static LocalDateTime randomLocalDateTime() {
     int year = RandomUtils.nextInt(2000, LocalDateTime.now().getYear() + 1);
     int month = RandomUtils.nextInt(1, 13);
     int day = month == 2 ? RandomUtils.nextInt(1, 29) : RandomUtils.nextInt(1, 31);
@@ -177,6 +195,20 @@ public class FakeDataGenerator {
     int minute = RandomUtils.nextInt(0, 60);
     int second = RandomUtils.nextInt(0, 60);
     return LocalDateTime.of(year, month, day, hour, minute, second);
+  }
+
+  public static BigDecimal randomBigDecimal(int precision, int scale) {
+    return new BigDecimal(
+        RandomStringUtils.randomNumeric(precision - scale)
+            + "."
+            + RandomStringUtils.randomNumeric(scale));
+  }
+
+  public static String randomString(List<String> stringTemplate, int stringLength) {
+    if (!CollectionUtils.isEmpty(stringTemplate)) {
+      return randomFromList(stringTemplate);
+    }
+    return RandomStringUtils.randomAlphabetic(stringLength);
   }
 
   public static <T> T randomFromList(List<T> list) {
