@@ -1,4 +1,4 @@
-package com.octopus.operators.spark.source;
+package com.octopus.operators.engine.connector.source.fake;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +10,6 @@ import com.octopus.operators.engine.table.type.DateDataType;
 import com.octopus.operators.engine.table.type.DecimalDataType;
 import com.octopus.operators.engine.table.type.MapDataType;
 import com.octopus.operators.engine.table.type.PrimitiveDataType;
-import com.octopus.operators.spark.runtime.source.FakeDataGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
