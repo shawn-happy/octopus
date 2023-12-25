@@ -35,6 +35,8 @@ dependencies {
     implementation libs_flinkOperator
     implementation libs_flinkRuntimeWeb
 
+    implementation project(":engine")
+
     annotationProcessor libs_lombok
     compileOnly libs_lombok
     testAnnotationProcessor libs_lombok

@@ -25,6 +25,7 @@ public class TaskConfig {
   @Default private Integer parallelism = 1;
   @Default private TaskMode taskMode = TaskMode.BATCH;
   private long checkpointInterval;
+  private long checkpointTimeout;
   private String jars;
   private Map<String, Object> runtimeConfig;
   private Map<String, Object> extraParams;
