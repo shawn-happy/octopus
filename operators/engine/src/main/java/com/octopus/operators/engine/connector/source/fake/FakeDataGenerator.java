@@ -4,7 +4,6 @@ import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeS
 import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceRow;
 import com.octopus.operators.engine.exception.CommonExceptionConstant;
 import com.octopus.operators.engine.exception.EngineException;
-import com.octopus.operators.engine.table.EngineRow;
 import com.octopus.operators.engine.table.type.ArrayDataType;
 import com.octopus.operators.engine.table.type.DateDataType;
 import com.octopus.operators.engine.table.type.DecimalDataType;
@@ -31,16 +30,14 @@ public class FakeDataGenerator {
     this.options = options;
   }
 
-  public EngineRow random() {
+  public Object[] random() {
     FakeSourceRow[] fields = options.getFields();
-    EngineRow rows = RowDataTypeParse.toEngineRow(fields);
-    RowDataType[] fieldTypes = rows.getFieldTypes();
     Object[] values = new Object[fields.length];
     for (int i = 0; i < fields.length; i++) {
-      values[i] = randomValueByType(fieldTypes[i], fields[i]);
+      values[i] =
+          randomValueByType(RowDataTypeParse.parseDataType(fields[i].getFieldType()), fields[i]);
     }
-    rows.setFieldValues(values);
-    return rows;
+    return values;
   }
 
   public static Object randomValueByType(RowDataType dataType, FakeSourceRow fakeSourceRow) {

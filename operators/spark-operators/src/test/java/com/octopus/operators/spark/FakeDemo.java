@@ -3,6 +3,7 @@ package com.octopus.operators.spark;
 import com.octopus.operators.engine.config.TaskConfig;
 import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig;
 import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceOptions;
+import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceRow;
 import com.octopus.operators.spark.runtime.DatasetTableInfo;
 import com.octopus.operators.spark.runtime.SparkJobContext;
 import com.octopus.operators.spark.runtime.SparkRuntimeEnvironment;
@@ -25,7 +26,19 @@ public class FakeDemo {
                         .name("fake-source")
                         .output("fake")
                         .parallelism(1)
-                        .options(FakeSourceOptions.builder().build())
+                        .options(
+                            FakeSourceOptions.builder()
+                                .rowNum(100)
+                                .fields(
+                                    new FakeSourceRow[] {
+                                      FakeSourceRow.builder()
+                                          .fieldName("age")
+                                          .fieldType("int")
+                                          .intMin(0)
+                                          .intMax(120)
+                                          .build()
+                                    })
+                                .build())
                         .build()))
             .build();
     SparkRuntimeEnvironment sparkRuntimeEnvironment = new SparkRuntimeEnvironment();
@@ -38,6 +51,6 @@ public class FakeDemo {
         new FakeSource(
             sparkRuntimeEnvironment, context, (FakeSourceConfig) config.getSources().get(0));
     DatasetTableInfo read = fakeSource.read();
-    read.getDataset().show();
+    read.getDataset().show(1000);
   }
 }
