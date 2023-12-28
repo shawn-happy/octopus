@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
 
 @Getter
 @Builder
@@ -33,6 +34,17 @@ public class FakeSourceConfig implements SourceConfig<FakeSourceOptions> {
 
     @Default private int rowNum = 1000;
     private FakeSourceRow[] fields;
+
+    public String[] getFieldNames() {
+      if (ArrayUtils.isEmpty(fields)) {
+        return null;
+      }
+      String[] fieldNames = new String[fields.length];
+      for (int i = 0; i < fields.length; i++) {
+        fieldNames[i] = fields[i].getFieldName();
+      }
+      return fieldNames;
+    }
 
     @Override
     public FakeSourceOptions toOptions(String json) {
