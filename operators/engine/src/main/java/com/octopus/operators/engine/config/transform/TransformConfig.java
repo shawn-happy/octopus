@@ -1,6 +1,6 @@
 package com.octopus.operators.engine.config.transform;
 
-import java.util.Map;
+import java.util.List;
 
 public interface TransformConfig<P extends TransformOptions> {
 
@@ -10,7 +10,7 @@ public interface TransformConfig<P extends TransformOptions> {
 
   P getOptions();
 
-  Map<String, String> getInputs();
+  List<String> getInputs();
 
   String getOutput();
 

@@ -46,6 +46,17 @@ public class FakeSourceConfig implements SourceConfig<FakeSourceOptions> {
       return fieldNames;
     }
 
+    public String[] getFieldTypes() {
+      if (ArrayUtils.isEmpty(fields)) {
+        return null;
+      }
+      String[] fieldTypes = new String[fields.length];
+      for (int i = 0; i < fields.length; i++) {
+        fieldTypes[i] = fields[i].getFieldType();
+      }
+      return fieldTypes;
+    }
+
     @Override
     public FakeSourceOptions toOptions(String json) {
       return JsonUtils.fromJson(json, new TypeReference<FakeSourceOptions>() {})

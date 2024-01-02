@@ -24,6 +24,9 @@ public class ConsoleSinkConfig implements SinkConfig<ConsoleSinkOptions> {
   private Integer parallelism;
   @Default private WriteMode writeMode = WriteMode.APPEND;
 
+  @Getter
+  @Builder
+  @NoArgsConstructor
   public static class ConsoleSinkOptions implements SinkOptions {
 
     @Override

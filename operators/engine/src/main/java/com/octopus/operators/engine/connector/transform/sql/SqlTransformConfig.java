@@ -7,7 +7,7 @@ import com.octopus.operators.engine.config.transform.TransformType;
 import com.octopus.operators.engine.connector.transform.sql.SqlTransformConfig.SqlTransformOptions;
 import com.octopus.operators.engine.exception.ConfigParseException;
 import com.octopus.operators.engine.util.JsonUtils;
-import java.util.Map;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -24,7 +24,7 @@ public class SqlTransformConfig implements TransformConfig<SqlTransformOptions> 
   @Default private TransformType type = TransformType.SQL;
   private SqlTransformOptions options;
   private Integer parallelism;
-  private Map<String, String> inputs;
+  private List<String> inputs;
   private String output;
 
   @Getter
