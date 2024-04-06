@@ -1,0 +1,17 @@
+{
+  "type": "file",
+  "name": "file",
+  "input": "file-input",
+  "options": {
+    "path": "D:\\dev\\workspaces\\data-workflow\\data-workflow-engine\\src\\test\\resources\\example\\sink\\file\\result.json",
+    "sinkColumns": [
+      "id",
+      "name",
+      "age"
+    ],
+    "format": "JSON"
+  },
+  "fileSystemConfig": {
+    "type": "LOCAL"
+  }
+}

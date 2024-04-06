@@ -1,0 +1,40 @@
+{
+  "type": "pulsar",
+  "name": "pulsar",
+  "output": "pulsar-output",
+  "options": {
+    "clientUrl": "pulsar://pulsar.batch.e2e:6650",
+    "adminUrl": "http://pulsar.batch.e2e:8080",
+    "token": "token",
+    "topic": "batch-e2e",
+    "subscription": "batch-e2e",
+    "subscriptionType": "Earliest",
+    "commitSize": 1000
+  },
+  "columns": [
+    {
+      "name": "id",
+      "type": "long",
+      "nullable": false,
+      "length": 100,
+      "comment": "主键",
+      "defaultValue": -1
+    },
+    {
+      "name": "name",
+      "type": "varchar",
+      "nullable": true,
+      "length": 100,
+      "comment": "用户名",
+      "defaultValue": null
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    }
+  ]
+}

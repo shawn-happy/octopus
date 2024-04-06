@@ -1,0 +1,25 @@
+{
+  "type": "doris",
+  "name": "doris",
+  "input": "doris-input",
+  "options": {
+    "jdbcUrl": "jdbc:mysql:loadbalance://192.168.54.206:9030,192.168.54.207:9030,192.168.54.208:9030",
+    "username": "root",
+    "password": "",
+    "database": "test",
+    "feNodes": "192.168.54.206:8130",
+    "table": "user",
+    "batchSize": 1000,
+    "labelPrefix": "test",
+    "enable2PC": false,
+    "columns": [
+      "id",
+      "name",
+      "password"
+    ],
+    "extraOptions": {
+      "format": "JSON",
+      "read_json_by_line": true
+    }
+  }
+}

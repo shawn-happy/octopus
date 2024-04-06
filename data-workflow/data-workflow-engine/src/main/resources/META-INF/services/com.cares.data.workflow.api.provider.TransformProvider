@@ -1,0 +1,6 @@
+com.cares.data.workflow.engine.connector.transform.jsonParse.JsonParseTransformProvider
+com.cares.data.workflow.engine.connector.transform.desensitizeParse.DesensitizeParseTransformProvider
+com.cares.data.workflow.engine.connector.transform.xmlParse.XmlParseTransformProvider
+com.cares.data.workflow.engine.connector.transform.expression.ExpressionTransformProvider
+com.cares.data.workflow.engine.connector.transform.valueMapper.MapTransformProvider
+com.cares.data.workflow.engine.connector.transform.generatedField.GeneratedFieldTransformProvider

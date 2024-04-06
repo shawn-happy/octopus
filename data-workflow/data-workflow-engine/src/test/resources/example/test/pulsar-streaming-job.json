@@ -1,0 +1,698 @@
+{
+  "jobName": "simple-job",
+  "jobMode": "STREAMING",
+  "sources": [
+    {
+      "type": "pulsar",
+      "name": "pulsar",
+      "output": "pulsar-output",
+      "options": {
+        "clientUrl": "pulsar://192.168.54.206:6650,192.168.54.207:6650,192.168.54.208:6650",
+        "adminUrl": "http://192.168.54.206:8080,192.168.54.207:8080,192.168.54.208:8080",
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.yY2MSTBSEk3WkL3yEfSUdyq-EbeO1Lyg5EG1KiuGO4M",
+        "topic": "topic200w1",
+        "subscription": "zyl-test",
+        "subscriptionType": "Earliest",
+        "commitSize": 1000
+      },
+      "columns": [
+        {
+          "name": "sendTime",
+          "type": "varchar",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "eventTime",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "operate",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "data",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "xml-parse",
+      "name": "xml-parse",
+      "inputs": [
+        "pulsar-output"
+      ],
+      "output": "xml-output",
+      "options": {
+        "valueField": "data",
+        "xmlParseFields": [
+          {
+            "destination": "(3)FlightScheduledDate",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/FlightScheduledDate",
+            "type": "String"
+          },
+          {
+            "destination": "(3)FlightIdentity",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/FlightIdentity",
+            "type": "String"
+          },
+          {
+            "destination": "(3)FlightDirection",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/FlightDirection",
+            "type": "String"
+          },
+          {
+            "destination": "(3)AirportIATACode",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/BaseAirport/AirportIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(3)AirportICAOCode",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/BaseAirport/AirportICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(3)AirlineIATACode",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/DetailedIdentity/AirlineIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(3)AirlineICAOCode",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/DetailedIdentity/AirlineICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(3)InternalID",
+            "sourcePath": "/IMFRoot/Data/PrimaryKey/FlightKey/InternalID",
+            "type": "String"
+          },
+          {
+            "destination": "(4)FlightScheduledDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightScheduledDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(4)Registration",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/Registration",
+            "type": "String"
+          },
+          {
+            "destination": "(4)CallSign",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/CallSign",
+            "type": "String"
+          },
+          {
+            "destination": "(4)AircraftIATACode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/AircraftType/AircraftIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(4)AircraftICAOCode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/AircraftType/AircraftICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(4)FlightCAACServiceType",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightServiceType/FlightCAACServiceType",
+            "type": "String"
+          },
+          {
+            "destination": "(4)FlightIATAServiceType",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightServiceType/FlightIATAServiceType",
+            "type": "String"
+          },
+          {
+            "destination": "(4)AirportIATACode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightRoute/IATARoute/IATAFullRoute/AirportIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(4)IATANextAirport",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightRoute/IATARoute/IATANextAirport",
+            "type": "String"
+          },
+          {
+            "destination": "(4)IATADestinationAirport",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightRoute/IATARoute/IATADestinationAirport",
+            "type": "String"
+          },
+          {
+            "destination": "(5)AirportICAOCode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightRoute/ICAORoute/ICAOFullRoute/AirportICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(5)ICAONextAirport",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightRoute/ICAORoute/ICAONextAirport",
+            "type": "String"
+          },
+          {
+            "destination": "(5)ICAODestinationAirport",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightRoute/ICAORoute/ICAODestinationAirport",
+            "type": "String"
+          },
+          {
+            "destination": "(5)FlightCountryType",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/FlightCountryType",
+            "type": "String"
+          },
+          {
+            "destination": "(5)FlightScheduledDate",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/FlightScheduledDate",
+            "type": "String"
+          },
+          {
+            "destination": "(5)FlightIdentity",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/FlightIdentity",
+            "type": "String"
+          },
+          {
+            "destination": "(5)FlightDirection",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/FlightDirection",
+            "type": "String"
+          },
+          {
+            "destination": "(6)AirportIATACode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/BaseAirport/AirportIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(6)AirportICAOCode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/BaseAirport/AirportICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(6)AirlineIATACode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/DetailedIdentity/AirlineIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(6)AirlineICAOCode",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/DetailedIdentity/AirlineICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(6)InternalID",
+            "sourcePath": "/IMFRoot/Data/FlightData/General/LinkFlight/InternalID",
+            "type": "String"
+          },
+          {
+            "destination": "(6)ScheduledOffBlockDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/OperationalDateTime/OffBlockDateTime/ScheduledOffBlockDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(6)EstimatedOffBlockDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/OperationalDateTime/OffBlockDateTime/EstimatedOffBlockDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(6)ScheduledTakeOffDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/OperationalDateTime/TakeOffDateTime/ScheduledTakeOffDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(6)FlightStatus",
+            "sourcePath": "/IMFRoot/Data/FlightData/Status/FlightStatus",
+            "type": "String"
+          },
+          {
+            "destination": "(7)FlightTerminalID",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Terminal/FlightTerminalID",
+            "type": "String"
+          },
+          {
+            "destination": "(7)StandID",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Stand/StandID",
+            "type": "String"
+          },
+          {
+            "destination": "(8)StandID",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/GroundMovement/StandID",
+            "type": "String"
+          },
+          {
+            "destination": "(8)ScheduledStandStartDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/GroundMovement/ScheduledStandStartDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(8)ScheduledStandEndDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/GroundMovement/ScheduledStandEndDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(8)ActualStandStartDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/GroundMovement/ActualStandStartDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)GateID",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/GateID",
+            "type": "String"
+          },
+          {
+            "destination": "(9)GateStatus",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/GateStatus",
+            "type": "String"
+          },
+          {
+            "destination": "(9)ScheduledGateStartDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/ScheduledGateStartDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)ScheduledGateEndDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/ScheduledGateEndDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)ActualGateStartDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/ActualGateStartDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)ActualGateEndDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/ActualGateEndDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)BoardingStartDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/BoardingStartDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)LastCallDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/LastCallDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(9)BoardingEndDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/Gate/BoardingEndDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(10)CheckInDeskID",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/CheckInDeskID",
+            "type": "String"
+          },
+          {
+            "destination": "(10)CheckInType",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/CheckInType",
+            "type": "String"
+          },
+          {
+            "destination": "(10)CheckInStatus",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/CheckInStatus",
+            "type": "String"
+          },
+          {
+            "destination": "(10)CheckInClassService",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/CheckInClassService",
+            "type": "String"
+          },
+          {
+            "destination": "(10)ScheduledCheckInBeginDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/ScheduledCheckInBeginDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(10)ScheduledCheckInEndDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/ScheduledCheckInEndDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(10)ActualCheckInBeginDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/ActualCheckInBeginDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(10)ActualCheckInEndDateTime",
+            "sourcePath": "/IMFRoot/Data/FlightData/Airport/CheckInDesk/ActualCheckInEndDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(11)BasicData_AirlineIATACode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airline/AirlineIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(11)BasicData_AirlineICAOCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airline/AirlineICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(11)BasicData_AirlineName",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airline/AirlineName",
+            "type": "String"
+          },
+          {
+            "destination": "(11)BasicData_AirlineAllianceGroup",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airline/AirlineAllianceGroup",
+            "type": "String"
+          },
+          {
+            "destination": "(11)BasicData_TerminalCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Terminal/TerminalCode",
+            "type": "String"
+          },
+          {
+            "destination": "(11)BasicData_TerminalDescription",
+            "sourcePath": "/IMFRoot/Data/BasicData/Terminal/TerminalDescription",
+            "type": "String"
+          },
+          {
+            "destination": "(12)BasicData_TerminalCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Terminal/TerminalCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)_AirportIATACode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportIATACode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportICAOCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportICAOCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportChineseShortName",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportChineseShortName",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportChineseFullName",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportChineseFullName",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportEnglishShortName",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportEnglishShortName",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportEnglishFullName",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportEnglishFullName",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportRoutingName",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportRoutingName",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportCountry",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportCountry",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportCountryType",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportCountryType",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportCity",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportCity",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportTimezone",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportTimezone",
+            "type": "String"
+          },
+          {
+            "destination": "(1)AirportDescription",
+            "sourcePath": "/IMFRoot/Data/BasicData/Airport/AirportDescription",
+            "type": "String"
+          },
+          {
+            "destination": "(1)GateCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/Gate/GateCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)GateTerminal",
+            "sourcePath": "/IMFRoot/Data/BasicData/Gate/GateTerminal",
+            "type": "String"
+          },
+          {
+            "destination": "(1)GateType",
+            "sourcePath": "/IMFRoot/Data/BasicData/Gate/GateType",
+            "type": "String"
+          },
+          {
+            "destination": "(1)GateCountryType",
+            "sourcePath": "/IMFRoot/Data/BasicData/Gate/GateCountryType",
+            "type": "String"
+          },
+          {
+            "destination": "(1)GateDescription",
+            "sourcePath": "/IMFRoot/Data/BasicData/Gate/GateDescription",
+            "type": "String"
+          },
+          {
+            "destination": "(1)CheckInDeskCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/CheckInDesk/CheckInDeskCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)CheckInDeskTerminal",
+            "sourcePath": "/IMFRoot/Data/BasicData/CheckInDesk/CheckInDeskTerminal",
+            "type": "String"
+          },
+          {
+            "destination": "(1)CheckInDeskType",
+            "sourcePath": "/IMFRoot/Data/BasicData/CheckInDesk/CheckInDeskType",
+            "type": "String"
+          },
+          {
+            "destination": "(1)CheckInDeskCapacity",
+            "sourcePath": "/IMFRoot/Data/BasicData/CheckInDesk/CheckInDeskCapacity",
+            "type": "String"
+          },
+          {
+            "destination": "(1)CheckInDeskDescription",
+            "sourcePath": "/IMFRoot/Data/BasicData/CheckInDesk/CheckInDeskDescription",
+            "type": "String"
+          },
+          {
+            "destination": "(1)BaggageReclaimCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/BaggageReclaim/BaggageReclaimCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)BaggageReclaimTerminal",
+            "sourcePath": "/IMFRoot/Data/BasicData/BaggageReclaim/BaggageReclaimTerminal",
+            "type": "String"
+          },
+          {
+            "destination": "(1)BaggageReclaimDescription",
+            "sourcePath": "/IMFRoot/Data/BasicData/BaggageReclaim/BaggageReclaimDescription",
+            "type": "String"
+          },
+          {
+            "destination": "(1)DelayCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/DelayCode/DelayCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)DelayReason",
+            "sourcePath": "/IMFRoot/Data/BasicData/DelayCode/DelayReason",
+            "type": "String"
+          },
+          {
+            "destination": "(1)DelaySubCode",
+            "sourcePath": "/IMFRoot/Data/BasicData/DelayCode/DelaySubCode",
+            "type": "String"
+          },
+          {
+            "destination": "(1)DelaySubReason",
+            "sourcePath": "/IMFRoot/Data/BasicData/DelayCode/DelaySubReason",
+            "type": "String"
+          },
+          {
+            "destination": "(2)CommonCheckInDesk",
+            "sourcePath": "/IMFRoot/Data/ResourceData/CommonCheckInDesk",
+            "type": "String"
+          },
+          {
+            "destination": "(2)CheckInGroupName",
+            "sourcePath": "/IMFRoot/Data/ResourceData/CheckInGroupName",
+            "type": "String"
+          },
+          {
+            "destination": "(2)CheckInDeskID",
+            "sourcePath": "/IMFRoot/Data/ResourceData/CheckInDeskID",
+            "type": "String"
+          },
+          {
+            "destination": "(2)CheckInClassService",
+            "sourcePath": "/IMFRoot/Data/ResourceData/CheckInClassService",
+            "type": "String"
+          },
+          {
+            "destination": "(2)ScheduledStartAvailableDateTime",
+            "sourcePath": "/IMFRoot/Data/ResourceData/ScheduledStartAvailableDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(2)ScheduledEndAvailableDateTime",
+            "sourcePath": "/IMFRoot/Data/ResourceData/ScheduledEndAvailableDateTime",
+            "type": "String"
+          },
+          {
+            "destination": "(2)ResourceKey",
+            "sourcePath": "/IMFRoot/Data/ResourceData/ResourceKey",
+            "type": "String"
+          },
+          {
+            "destination": "(2)ResourceCategory",
+            "sourcePath": "/IMFRoot/Data/ResourceData/ResourceCategory",
+            "type": "String"
+          },
+          {
+            "destination": "(2)ResourceID",
+            "sourcePath": "/IMFRoot/Data/ResourceData/ResourceID",
+            "type": "String"
+          }
+        ]
+      }
+    }
+  ],
+  "sink": {
+    "type": "jdbc",
+    "name": "jdbc",
+    "input": "xml-output",
+    "options": {
+      "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+      "username": "root",
+      "password": "bigdata321",
+      "driver": "com.mysql.cj.jdbc.Driver",
+      "database": "test",
+      "table": "test-pulsar",
+      "batchSize": 1000,
+      "mode": "INSERT",
+      "fields": [
+        "(3)FlightScheduledDate",
+        "(3)FlightIdentity",
+        "(3)FlightDirection",
+        "(3)AirportIATACode",
+        "(3)AirportICAOCode",
+        "(3)AirlineIATACode",
+        "(3)AirlineICAOCode",
+        "(3)InternalID",
+        "(4)FlightScheduledDateTime",
+        "(4)Registration",
+        "(4)CallSign",
+        "(4)AircraftIATACode",
+        "(4)AircraftICAOCode",
+        "(4)FlightCAACServiceType",
+        "(4)FlightIATAServiceType",
+        "(4)AirportIATACode",
+        "(4)IATANextAirport",
+        "(4)IATADestinationAirport",
+        "(5)AirportICAOCode",
+        "(5)ICAONextAirport",
+        "(5)ICAODestinationAirport",
+        "(5)FlightCountryType",
+        "(5)FlightScheduledDate",
+        "(5)FlightIdentity",
+        "(5)FlightDirection",
+        "(6)AirportIATACode",
+        "(6)AirportICAOCode",
+        "(6)AirlineIATACode",
+        "(6)AirlineICAOCode",
+        "(6)InternalID",
+        "(6)ScheduledOffBlockDateTime",
+        "(6)EstimatedOffBlockDateTime",
+        "(6)ScheduledTakeOffDateTime",
+        "(6)FlightStatus",
+        "(7)FlightTerminalID",
+        "(7)StandID",
+        "(8)StandID",
+        "(8)ScheduledStandStartDateTime",
+        "(8)ScheduledStandEndDateTime",
+        "(8)ActualStandStartDateTime",
+        "(9)GateID",
+        "(9)GateStatus",
+        "(9)ScheduledGateStartDateTime",
+        "(9)ScheduledGateEndDateTime",
+        "(9)ActualGateStartDateTime",
+        "(9)ActualGateEndDateTime",
+        "(9)BoardingStartDateTime",
+        "(9)LastCallDateTime",
+        "(9)BoardingEndDateTime",
+        "(10)CheckInDeskID",
+        "(10)CheckInType",
+        "(10)CheckInStatus",
+        "(10)CheckInClassService",
+        "(10)ScheduledCheckInBeginDateTime",
+        "(10)ScheduledCheckInEndDateTime",
+        "(10)ActualCheckInBeginDateTime",
+        "(10)ActualCheckInEndDateTime",
+        "(11)BasicData_AirlineIATACode",
+        "(11)BasicData_AirlineICAOCode",
+        "(11)BasicData_AirlineName",
+        "(11)BasicData_AirlineAllianceGroup",
+        "(11)BasicData_TerminalCode",
+        "(11)BasicData_TerminalDescription",
+        "(12)BasicData_TerminalCode",
+        "(1)_AirportIATACode",
+        "(1)AirportICAOCode",
+        "(1)AirportChineseShortName",
+        "(1)AirportChineseFullName",
+        "(1)AirportEnglishShortName",
+        "(1)AirportEnglishFullName",
+        "(1)AirportRoutingName",
+        "(1)AirportCountry",
+        "(1)AirportCountryType",
+        "(1)AirportCity",
+        "(1)AirportTimezone",
+        "(1)AirportDescription",
+        "(1)GateCode",
+        "(1)GateTerminal",
+        "(1)GateType",
+        "(1)GateCountryType",
+        "(1)GateDescription",
+        "(1)CheckInDeskCode",
+        "(1)CheckInDeskTerminal",
+        "(1)CheckInDeskType",
+        "(1)CheckInDeskCapacity",
+        "(1)CheckInDeskDescription",
+        "(1)BaggageReclaimCode",
+        "(1)BaggageReclaimTerminal",
+        "(1)BaggageReclaimDescription",
+        "(1)DelayCode",
+        "(1)DelayReason",
+        "(1)DelaySubCode",
+        "(1)DelaySubReason",
+        "(2)CommonCheckInDesk",
+        "(2)CheckInGroupName",
+        "(2)CheckInDeskID",
+        "(2)CheckInClassService",
+        "(2)ScheduledStartAvailableDateTime",
+        "(2)ScheduledEndAvailableDateTime",
+        "(2)ResourceKey",
+        "(2)ResourceCategory",
+        "(2)ResourceID"
+      ]
+    }
+  }
+}

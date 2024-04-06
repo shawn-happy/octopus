@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cares.data.workflow.executor.web.dao.StepAttributeDao">
+
+    <select id="insertBatch" parameterType="com.cares.data.workflow.executor.web.entity.StepAttributeEntity">
+        insert into t_step_attribute
+        (`id`, `job_id`, `step_id`, `code`,`value`, `version`, `create_time`, `update_time`)
+        values
+        <foreach collection="attributes" item="attribute" separator=",">
+            (#{attribute.id}, #{attribute.jobId}, #{attribute.stepId},
+            #{attribute.code}, #{attribute.value},
+            #{attribute.version}, #{attribute.createTime}, #{attribute.updateTime})
+        </foreach>
+    </select>
+
+</mapper>

@@ -1,0 +1,40 @@
+{
+  "type": "jdbc",
+  "name": "jdbc",
+  "output": "jdbc-output",
+  "options": {
+    "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+    "username": "root",
+    "password": "bigdata321",
+    "driver": "com.mysql.cj.jdbc.Driver",
+    "query": "select * from user where age > 10",
+    "table": "",
+    "limit": 1000
+  },
+  "columns": [
+    {
+      "name": "id",
+      "type": "long",
+      "nullable": false,
+      "length": 100,
+      "comment": "主键",
+      "defaultValue": -1
+    },
+    {
+      "name": "name",
+      "type": "varchar",
+      "nullable": true,
+      "length": 100,
+      "comment": "用户名",
+      "defaultValue": null
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "jdbc",
+  "name": "jdbc",
+  "input": "jdbc-input",
+  "options": {
+    "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+    "username": "root",
+    "password": "bigdata321",
+    "driver": "com.mysql.cj.jdbc.Driver",
+    "database": "test",
+    "table": "user",
+    "batchSize": 1000,
+    "mode": "INSERT",
+    "fields": [
+      "name",
+      "password"
+    ]
+  }
+}

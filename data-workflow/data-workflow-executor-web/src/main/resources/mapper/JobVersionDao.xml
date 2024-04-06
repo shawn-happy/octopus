@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cares.data.workflow.executor.web.dao.JobVersionDao">
+
+    <delete id="deleteByJobDefId" parameterType="java.lang.String">
+        delete from t_job_version where job_id = #{jobDefId}
+    </delete>
+
+    <select id="selectOneByNameAndVersion">
+        select *
+        from t_job_version
+        where name = #{name}
+          and version = #{version}
+    </select>
+
+</mapper>

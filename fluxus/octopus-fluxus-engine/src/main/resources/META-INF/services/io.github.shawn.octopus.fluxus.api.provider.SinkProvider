@@ -1,0 +1,5 @@
+io.github.shawn.octopus.fluxus.engine.connector.sink.console.ConsoleSinkProvider
+io.github.shawn.octopus.fluxus.engine.connector.sink.jdbc.JdbcSinkProvider
+io.github.shawn.octopus.fluxus.engine.connector.sink.doris.DorisSinkProvider
+io.github.shawn.octopus.fluxus.engine.connector.sink.file.FileSinkProvider
+io.github.shawn.octopus.fluxus.engine.connector.sink.pulsar.PulsarSinkProvider

@@ -1,0 +1,113 @@
+{
+  "jobName": "rabbitmq-job-200w",
+  "jobMode": "STREAMING",
+  "sources": [
+    {
+      "type": "rabbitmq",
+      "name": "rabbitmq",
+      "output": "rabbitmq-output",
+      "options": {
+        "host": "192.168.53.133",
+        "port": 5672,
+        "userName": "admin",
+        "password": "admin",
+        "queueName": "topic-200w-1"
+      },
+      "columns": [
+        {
+          "name": "sendTime",
+          "type": "varchar",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "eventTime",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "operate",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "data",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "xml-parse",
+      "name": "xml-parse",
+      "inputs": [
+        "rabbitmq-output"
+      ],
+      "output": "xml-output",
+      "options": {
+        "valueField": "data",
+        "xmlParseFields": [
+          {
+            "destination": "id",
+            "sourcePath": "/Body/Record/id",
+            "type": "int"
+          },
+          {
+            "destination": "name",
+            "sourcePath": "/Body/Record/name",
+            "type": "String"
+          },
+          {
+            "destination": "age",
+            "sourcePath": "/Body/Record/age",
+            "type": "int"
+          },
+          {
+            "destination": "createTime",
+            "sourcePath": "/Body/Record/createTime",
+            "type": "DateTime"
+          },
+          {
+            "destination": "updateTime",
+            "sourcePath": "/Body/Record/updateTime",
+            "type": "DateTime"
+          }
+        ]
+      }
+    }
+  ],
+  "sink": {
+    "type": "jdbc",
+    "name": "jdbc",
+    "input": "xml-output",
+    "options": {
+      "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+      "username": "root",
+      "password": "bigdata321",
+      "driver": "com.mysql.cj.jdbc.Driver",
+      "database": "test",
+      "table": "test_rabbitmq_200w",
+      "batchSize": 1000,
+      "mode": "INSERT",
+      "fields": [
+        "name",
+        "age",
+        "createTime",
+        "updateTime"
+      ]
+    }
+  }
+}

@@ -1,0 +1,5 @@
+com.cares.data.workflow.engine.connector.source.pulsar.PulsarSourceProvider
+com.cares.data.workflow.engine.connector.source.jdbc.JdbcSourceProvider
+com.cares.data.workflow.engine.connector.source.rabbitmq.RabbitmqSourceProvider
+com.cares.data.workflow.engine.connector.source.activemq.ActivemqSourceProvider
+com.cares.data.workflow.engine.connector.source.file.FileSourceProvider

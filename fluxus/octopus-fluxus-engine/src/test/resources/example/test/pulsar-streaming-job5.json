@@ -1,0 +1,153 @@
+{
+  "env": {
+    "flushInterval": 5
+  },
+  "jobName": "321wxg_200w_1",
+  "jobMode": "STREAMING",
+  "sources": [
+    {
+      "type": "pulsar",
+      "name": "pulsar",
+      "output": "pulsar-output",
+      "options": {
+        "clientUrl": "pulsar://192.168.54.206:6650,192.168.54.207:6650,192.168.54.208:6650",
+        "adminUrl": "http://192.168.54.206:8080,192.168.54.207:8080,192.168.54.208:8080",
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.yY2MSTBSEk3WkL3yEfSUdyq-EbeO1Lyg5EG1KiuGO4M",
+        "topic": "321wxg_200w_1",
+        "subscription": "wxg_321_5",
+        "subscriptionType": "Earliest",
+        "commitSize": 1000
+      },
+      "columns": [
+        {
+          "name": "sendTime",
+          "type": "varchar",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "eventTime",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "operate",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "data",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "xml-parse",
+      "name": "xml-parse",
+      "inputs": [
+        "pulsar-output"
+      ],
+      "output": "xml-output",
+      "options": {
+        "valueField": "data",
+        "xmlParseFields": [
+          {
+            "destination": "MessageType",
+            "sourcePath": "//SysInfo/MessageType",
+            "type": "String"
+          },
+          {
+            "destination": "FlightScheduledDate",
+            "sourcePath": "//Data/PrimaryKey/FlightKey/FlightScheduledDate",
+            "type": "String"
+          },
+          {
+            "destination": "ServiceType",
+            "sourcePath": "//SysInfo/ServiceType",
+            "type": "String"
+          },
+          {
+            "destination": "OperationMode",
+            "sourcePath": "//SysInfo/OperationMode",
+            "type": "String"
+          },
+          {
+            "destination": "FlightIdentity",
+            "sourcePath": "//Data/PrimaryKey/FlightKey/FlightIdentity",
+            "type": "String"
+          },
+          {
+            "destination": "FlightDirection",
+            "sourcePath": "//Data/PrimaryKey/FlightKey/FlightDirection",
+            "type": "String"
+          },
+          {
+            "destination": "Registration",
+            "sourcePath": "//Data/FlightData/General/Registration",
+            "type": "String"
+          }
+        ]
+      }
+    },
+    {
+      "type": "generated-field",
+      "name": "generated-field",
+      "inputs": [
+        "xml-output"
+      ],
+      "output": "generated-field-output",
+      "options": {
+        "fields": [
+          {
+            "generateType": "currentTime",
+            "destName": "now"
+          },
+          {
+            "generateType": "uuid",
+            "destName": "uuid"
+          }
+        ]
+      }
+    }
+  ],
+  "sink": {
+    "type": "jdbc",
+    "name": "jdbc",
+    "input": "generated-field-output",
+    "options": {
+      "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+      "username": "root",
+      "password": "bigdata321",
+      "driver": "com.mysql.cj.jdbc.Driver",
+      "database": "test",
+      "table": "ods_bag_aodb_flight_321wxg_200w",
+      "batchSize": 1000,
+      "mode": "INSERT",
+      "fields": [
+        "FlightScheduledDate",
+        "MessageType",
+        "uuid",
+        "now",
+        "ServiceType",
+        "OperationMode",
+        "FlightIdentity",
+        "FlightDirection",
+        "Registration"
+      ]
+    }
+  }
+}

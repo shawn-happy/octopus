@@ -1,0 +1,6 @@
+io.github.shawn.octopus.fluxus.engine.connector.transform.jsonParse.JsonParseTransformProvider
+io.github.shawn.octopus.data.fluxus.engine.connector.transform.desensitizeParse.DesensitizeParseTransformProvider
+io.github.shawn.octopus.fluxus.engine.connector.transform.xmlParse.XmlParseTransformProvider
+io.github.shawn.octopus.fluxus.engine.connector.transform.expression.ExpressionTransformProvider
+io.github.shawn.octopus.fluxus.engine.connector.transform.valueMapper.MapTransformProvider
+io.github.shawn.octopus.fluxus.engine.connector.transform.generatedField.GeneratedFieldTransformProvider

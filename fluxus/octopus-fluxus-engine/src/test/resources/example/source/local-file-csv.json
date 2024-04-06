@@ -1,0 +1,38 @@
+{
+  "type": "file",
+  "name": "file",
+  "output": "file-output",
+  "options": {
+    "path": "D:\\dev\\workspaces\\data-workflow\\data-workflow-engine\\src\\test\\resources\\example\\source\\user.csv",
+    "format": "CSV"
+  },
+  "columns": [
+    {
+      "name": "id",
+      "type": "int",
+      "nullable": false,
+      "length": 100,
+      "comment": "主键",
+      "defaultValue": -1
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "nullable": true,
+      "length": 100,
+      "comment": "用户名",
+      "defaultValue": null
+    },
+    {
+      "name": "array",
+      "type": "array<int>",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    }
+  ],
+  "fileSystemConfig": {
+    "type": "LOCAL"
+  }
+}

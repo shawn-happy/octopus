@@ -1,0 +1,8 @@
+{
+  "type": "console",
+  "name": "console",
+  "input": "console-input",
+  "options": {
+    "line": 100
+  }
+}

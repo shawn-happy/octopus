@@ -1,0 +1,1 @@
+mvn clean spotless:apply package -Dmaven.test.skip

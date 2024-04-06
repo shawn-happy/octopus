@@ -1,0 +1,17 @@
+{
+  "type": "file",
+  "name": "file",
+  "input": "file-input",
+  "options": {
+    "path": "D:\\dev\\workspaces\\data-workflow\\data-workflow-engine\\src\\test\\resources\\example\\sink\\file\\result.csv",
+    "sinkColumns": [
+      "id",
+      "name",
+      "age"
+    ],
+    "format": "CSV"
+  },
+  "fileSystemConfig": {
+    "type": "LOCAL"
+  }
+}

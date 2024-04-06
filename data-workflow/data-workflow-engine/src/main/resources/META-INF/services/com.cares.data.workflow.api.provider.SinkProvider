@@ -1,0 +1,5 @@
+com.cares.data.workflow.engine.connector.sink.console.ConsoleSinkProvider
+com.cares.data.workflow.engine.connector.sink.jdbc.JdbcSinkProvider
+com.cares.data.workflow.engine.connector.sink.doris.DorisSinkProvider
+com.cares.data.workflow.engine.connector.sink.file.FileSinkProvider
+com.cares.data.workflow.engine.connector.sink.pulsar.PulsarSinkProvider

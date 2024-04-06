@@ -1,0 +1,5 @@
+io.github.shawn.octopus.fluxus.engine.connector.source.pulsar.PulsarSourceProvider
+io.github.shawn.octopus.fluxus.engine.connector.source.jdbc.JdbcSourceProvider
+io.github.shawn.octopus.fluxus.engine.connector.source.rabbitmq.RabbitmqSourceProvider
+io.github.shawn.octopus.fluxus.engine.connector.source.activemq.ActivemqSourceProvider
+io.github.shawn.octopus.fluxus.engine.connector.source.file.FileSourceProvider

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cares.data.workflow.executor.web.dao.JobDao">
+
+    <select id="selectOneByNameAndVersion">
+        select *
+        from t_job
+        where name = #{name}
+          and version = #{version}
+    </select>
+
+    <select id="selectByName" resultType="com.cares.data.workflow.executor.web.entity.JobEntity">
+        select *
+        from t_job
+        where name = #{name}
+    </select>
+
+</mapper>

@@ -1,0 +1,77 @@
+{
+  "jobName": "simple-job",
+  "jobMode": "BATCH",
+  "sources": [
+    {
+      "type": "jdbc",
+      "name": "jdbc",
+      "output": "jdbc-output",
+      "options": {
+        "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+        "username": "root",
+        "password": "bigdata321",
+        "driver": "com.mysql.cj.jdbc.Driver",
+        "query": "select * from xml_item",
+        "table": "",
+        "limit": 1000
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "long",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "xml",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "xml字段",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "xml-parse",
+      "name": "xml-parse",
+      "inputs": [
+        "jdbc-output"
+      ],
+      "output": "xml-output",
+      "options": {
+        "valueField": "xml",
+        "xmlParseFields": [
+          {
+            "destination": "data_id",
+            "sourcePath": "/data/a",
+            "type": "int"
+          },
+          {
+            "destination": "data_name",
+            "sourcePath": "/data/b",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "sink": {
+    "type": "console",
+    "name": "console",
+    "input": "xml-output",
+    "options": {}
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "pulsar",
+  "name": "pulsar",
+  "input": "pulsar-input",
+  "options": {
+    "clientUrl": "pulsar://192.168.54.206:6650,192.168.54.207:6650,192.168.54.208:6650",
+    "adminUrl": "http://pulsar.batch.e2e:8080",
+    "token": "http://192.168.54.206:8080,192.168.54.207:8080,192.168.54.208:8080",
+    "topic": "test-pulsar-sink",
+    "producer": "test-pulsar-sink",
+    "format": "JSON"
+  }
+}

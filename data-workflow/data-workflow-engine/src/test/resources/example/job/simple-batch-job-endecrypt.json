@@ -1,0 +1,73 @@
+{
+  "jobName": "simple-job",
+  "jobMode": "BATCH",
+  "sources": [
+    {
+      "type": "jdbc",
+      "name": "jdbc",
+      "output": "jdbc-output",
+      "options": {
+        "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+        "username": "root",
+        "password": "bigdata321",
+        "driver": "com.mysql.cj.jdbc.Driver",
+        "query": "select * from item",
+        "table": "",
+        "limit": 1000
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "long",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "goods",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "en-decry",
+      "name": "en-decry",
+      "inputs": [
+        "jdbc-output"
+      ],
+      "output": "json-output",
+      "options": {
+        "enDecryptFields": [
+          {
+            "sourceFileds": "name",
+            "destColName": "good_name",
+            "algorithm": "MD5",
+            "operationType": "1",
+            "key": ""
+          }
+        ]
+      }
+    }
+  ],
+  "sink": {
+    "type": "console",
+    "name": "console",
+    "input": "json-output",
+    "options": {}
+  }
+}

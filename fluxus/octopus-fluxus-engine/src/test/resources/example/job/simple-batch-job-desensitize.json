@@ -1,0 +1,91 @@
+{
+  "jobName": "simple-job",
+  "jobMode": "BATCH",
+  "sources": [
+    {
+      "type": "jdbc",
+      "name": "jdbc",
+      "output": "jdbc-output",
+      "options": {
+        "url": "jdbc:mysql://192.168.54.206:3306/test?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true",
+        "username": "root",
+        "password": "bigdata321",
+        "driver": "com.mysql.cj.jdbc.Driver",
+        "query": "select * from item",
+        "table": "",
+        "limit": 1000
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "long",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "goods",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "json-parse",
+      "name": "json-parse",
+      "inputs": [
+        "jdbc-output"
+      ],
+      "output": "json-output",
+      "options": {
+        "valueField": "goods",
+        "jsonParseFields": [
+          {
+            "destination": "good_id",
+            "sourcePath": "$.*.id",
+            "type": "string"
+          },
+          {
+            "destination": "good_name",
+            "sourcePath": "$.*.name",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "type": "desensitize-parse",
+      "name": "desensitize-parse",
+      "inputs": [
+        "json-output"
+      ],
+      "output": "desensitize-output",
+      "options": {
+        "field": "good_name",
+        "dataType": "VARCHAR",
+        "rule":  "GENERAL",
+        "config": "{\"start\":0,\"end\":2,\"ch\":\"*\"}"
+      }
+    }
+  ],
+  "sink": {
+    "type": "console",
+    "name": "console",
+    "input": "desensitize-output",
+    "options": {}
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "jobName": "simple-job",
+  "jobMode": "STREAMING",
+  "sources": [
+    {
+      "type": "pulsar",
+      "name": "pulsar",
+      "output": "pulsar-output",
+      "options": {
+        "clientUrl": "pulsar://192.168.53.133:6650,192.168.53.134:6650,192.168.53.135:6650",
+        "adminUrl": "http://192.168.53.133:8080,192.168.53.134:8080,192.168.53.135:8080",
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.yY2MSTBSEk3WkL3yEfSUdyq-EbeO1Lyg5EG1KiuGO4M",
+        "topic": "simple-test",
+        "subscription": "shawn-test",
+        "subscriptionType": "Earliest",
+        "commitSize": 1000
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "long",
+          "nullable": false,
+          "length": 100,
+          "comment": "主键",
+          "defaultValue": -1
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        },
+        {
+          "name": "goods",
+          "type": "varchar",
+          "nullable": true,
+          "length": 100,
+          "comment": "用户名",
+          "defaultValue": null
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "type": "json-parse",
+      "name": "json-parse",
+      "inputs": [
+        "pulsar-output"
+      ],
+      "output": "json-output",
+      "options": {
+        "valueField": "goods",
+        "jsonParseFields": [
+          {
+            "destination": "good_id",
+            "sourcePath": "$.*.id",
+            "type": "string"
+          },
+          {
+            "destination": "good_name",
+            "sourcePath": "$.*.name",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "sink": {
+    "type": "console",
+    "name": "console",
+    "input": "json-output",
+    "options": {}
+  }
+}

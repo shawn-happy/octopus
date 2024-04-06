@@ -1,0 +1,118 @@
+{
+  "type": "file",
+  "name": "file",
+  "output": "file-output",
+  "options": {
+    "path": "D:\\dev\\workspaces\\data-workflow\\data-workflow-engine\\src\\test\\resources\\example\\source\\local-file-data.json",
+    "format": "JSON"
+  },
+  "columns": [
+    {
+      "name": "c_map",
+      "type": "map<string, string>",
+      "nullable": false,
+      "length": 100,
+      "comment": "主键",
+      "defaultValue": -1
+    },
+    {
+      "name": "c_array",
+      "type": "array<int>",
+      "nullable": true,
+      "length": 100,
+      "comment": "用户名",
+      "defaultValue": null
+    },
+    {
+      "name": "c_string",
+      "type": "string",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_boolean",
+      "type": "boolean",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_tinyint",
+      "type": "tinyint",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_smallint",
+      "type": "smallint",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_int",
+      "type": "int",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_bigint",
+      "type": "bigint",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_float",
+      "type": "float",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_double",
+      "type": "double",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_date",
+      "type": "date",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_decimal",
+      "type": "decimal<38, 18>",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    },
+    {
+      "name": "c_timestamp",
+      "type": "timestamp",
+      "nullable": true,
+      "length": 10,
+      "comment": "年龄",
+      "defaultValue": 0
+    }
+  ],
+  "fileSystemConfig": {
+    "type": "LOCAL"
+  }
+}
