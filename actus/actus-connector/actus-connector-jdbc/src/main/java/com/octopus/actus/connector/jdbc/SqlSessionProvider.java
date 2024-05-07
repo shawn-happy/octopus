@@ -19,14 +19,16 @@ import com.octopus.actus.connector.jdbc.entity.Privilege;
 import com.octopus.actus.connector.jdbc.entity.Table;
 import com.octopus.actus.connector.jdbc.entity.TableMeta;
 import com.octopus.actus.connector.jdbc.entity.User;
-import com.zaxxer.hikari.HikariDataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionManager;
 import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
@@ -35,10 +37,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class SqlSessionProvider {
 
-  private static final Map<String, Configuration> CONFIG_MAP = new HashMap<>(2 << 8);
+  private static final Map<String, SqlSessionManager> SQL_SESSION_MANAGER_MAP =
+      new HashMap<>(2 << 4);
   private static final TransactionFactory TX_FACTORY = new JdbcTransactionFactory();
 
-  public static SqlSession createSqlSession(JDBCDataSourceProperties properties) {
+  public static SqlSession createSqlSession(DataSource dataSource) {
+    return createSqlSession(createConfiguration(dataSource));
+  }
+
+  public static SqlSession createSqlSession(JdbcProperties properties) {
     return createSqlSession(createConfiguration(properties));
   }
 
@@ -46,62 +53,60 @@ public class SqlSessionProvider {
     return new DefaultSqlSessionFactory(configuration).openSession();
   }
 
-  public static Configuration createConfiguration(JDBCDataSourceProperties properties) {
-    return createConfiguration(properties, false);
+  public static SqlSessionManager createSqlSessionManager(JdbcProperties properties) {
+    SqlSessionManager sqlSessionManager = SQL_SESSION_MANAGER_MAP.get(properties.getName());
+    if (sqlSessionManager != null) {
+      return sqlSessionManager;
+    }
+    sqlSessionManager = createSqlSessionManager(createConfiguration(properties));
+    SQL_SESSION_MANAGER_MAP.put(properties.getName(), sqlSessionManager);
+    return sqlSessionManager;
   }
 
-  public static Configuration createConfiguration(
-      JDBCDataSourceProperties properties, boolean override) {
-    Configuration configuration;
-    String configName = getConfigName(properties.getName());
-    if ((configuration = CONFIG_MAP.get(configName)) != null) {
-      // 如果不需要覆盖
-      if (!override) {
-        return configuration;
-      }
+  public static SqlSessionManager createSqlSessionManager(String name, DataSource dataSource) {
+    SqlSessionManager sqlSessionManager = SQL_SESSION_MANAGER_MAP.get(name);
+    if (sqlSessionManager != null) {
+      return sqlSessionManager;
     }
-    DataSource dataSource =
+    sqlSessionManager = createSqlSessionManager(createConfiguration(dataSource));
+    SQL_SESSION_MANAGER_MAP.put(name, sqlSessionManager);
+    return sqlSessionManager;
+  }
+
+  public static SqlSessionManager createSqlSessionManager(Configuration configuration) {
+    return SqlSessionManager.newInstance(new DefaultSqlSessionFactory(configuration));
+  }
+
+  public static Configuration createConfiguration(JdbcProperties properties) {
+    return createConfiguration(
         createJDBCDataSource(
             properties.getUrl(),
             properties.getUsername(),
             properties.getPassword(),
-            properties.getDriverClassName());
+            properties.getDriverClassName()));
+  }
+
+  public static Configuration createConfiguration(DataSource dataSource) {
+    Configuration configuration;
     Environment environment =
-        new Environment.Builder(getEnvId(properties.getName()))
+        new Environment.Builder(UUID.randomUUID().toString())
             .dataSource(dataSource)
             .transactionFactory(TX_FACTORY)
             .build();
 
     configuration = new Configuration(environment);
     configuration.setMapUnderscoreToCamelCase(true);
-    TypeAliasRegistry typeAliasRegistry = configuration.getTypeAliasRegistry();
-    typeAliasRegistry.registerAlias("table", Table.class);
-    typeAliasRegistry.registerAlias("column", Column.class);
-    typeAliasRegistry.registerAlias("index", Index.class);
-    typeAliasRegistry.registerAlias("databaseMeta", DatabaseMeta.class);
-    typeAliasRegistry.registerAlias("tableMeta", TableMeta.class);
-    typeAliasRegistry.registerAlias("columnMeta", ColumnMeta.class);
-    typeAliasRegistry.registerAlias("user", User.class);
-    typeAliasRegistry.registerAlias("privilege", Privilege.class);
-    PageAutoDialect.registerDialectAlias("doris", MySqlDialect.class);
-    configuration.addInterceptor(new PageInterceptor());
-    configuration.addMapper(DorisDDLDao.class);
-    configuration.addMapper(MySQLDDLDao.class);
-    configuration.addMapper(DorisMetaDataDao.class);
-    configuration.addMapper(MySQLMetaDataDao.class);
-    configuration.addMapper(DorisDCLDao.class);
-    configuration.addMapper(MySQLDCLDao.class);
-    configuration.addMapper(DorisDQLDao.class);
-    configuration.addMapper(MySQLDQLDao.class);
-    CONFIG_MAP.put(configName, configuration);
+    registerTypeAliasInternal(configuration);
+    addInterceptors(configuration);
+    addMappers(configuration);
     return configuration;
   }
 
   public static DataSource createJDBCDataSource(
       @NotNull String url, String username, String password, @NotNull String driverClassName) {
-    HikariDataSource ds = new HikariDataSource();
-    ds.setJdbcUrl(url);
-    ds.setDriverClassName(driverClassName);
+    PooledDataSource ds = new PooledDataSource();
+    ds.setUrl(url);
+    ds.setDriver(driverClassName);
     if (StringUtils.isNotBlank(username)) {
       ds.setUsername(username);
     }
@@ -111,11 +116,31 @@ public class SqlSessionProvider {
     return ds;
   }
 
-  public static String getConfigName(String name) {
-    return String.format("sql_session_config_%s", name);
+  private static void registerTypeAliasInternal(Configuration configuration) {
+    TypeAliasRegistry typeAliasRegistry = configuration.getTypeAliasRegistry();
+    typeAliasRegistry.registerAlias("table", Table.class);
+    typeAliasRegistry.registerAlias("column", Column.class);
+    typeAliasRegistry.registerAlias("index", Index.class);
+    typeAliasRegistry.registerAlias("databaseMeta", DatabaseMeta.class);
+    typeAliasRegistry.registerAlias("tableMeta", TableMeta.class);
+    typeAliasRegistry.registerAlias("columnMeta", ColumnMeta.class);
+    typeAliasRegistry.registerAlias("user", User.class);
+    typeAliasRegistry.registerAlias("privilege", Privilege.class);
   }
 
-  public static String getEnvId(String name) {
-    return String.format("sql_session_env_%s", name);
+  private static void addMappers(Configuration configuration) {
+    configuration.addMapper(DorisDDLDao.class);
+    configuration.addMapper(MySQLDDLDao.class);
+    configuration.addMapper(DorisMetaDataDao.class);
+    configuration.addMapper(MySQLMetaDataDao.class);
+    configuration.addMapper(DorisDCLDao.class);
+    configuration.addMapper(MySQLDCLDao.class);
+    configuration.addMapper(DorisDQLDao.class);
+    configuration.addMapper(MySQLDQLDao.class);
+  }
+
+  private static void addInterceptors(Configuration configuration) {
+    PageAutoDialect.registerDialectAlias("doris", MySqlDialect.class);
+    configuration.addInterceptor(new PageInterceptor());
   }
 }

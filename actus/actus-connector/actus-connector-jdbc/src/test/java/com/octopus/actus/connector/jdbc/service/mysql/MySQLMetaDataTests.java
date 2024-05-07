@@ -29,7 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
+//@Disabled
 public class MySQLMetaDataTests extends MySQLTestsCommon {
 
   private static final List<String> internalSchemas =
