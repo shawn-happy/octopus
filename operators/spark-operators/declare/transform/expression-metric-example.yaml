@@ -1,8 +1,0 @@
-type: expression
-name: expression-trans
-input:
-  input_name: input_name_alias
-output: expression_trans_output
-repartition: 2
-options:
-  expression: count == 0

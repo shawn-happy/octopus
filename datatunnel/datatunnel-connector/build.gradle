@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'com.octopus.datatunnel'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor libs_lombok
+    compileOnly libs_lombok
+    testAnnotationProcessor libs_lombok
+    testCompileOnly libs_lombok
+
+    implementation project(":datatunnel-api")
+
+    implementation libs_jacksonDataformatYaml
+    implementation libs_commonsCollections4
+    implementation libs_commonsLang3
+
+
+    testImplementation libs_icebergSparkRuntime
+    testImplementation libs_sparkSql
+    testImplementation libs_junitJupiterApi
+    testRuntimeOnly libs_junitJupiterEngine
+}
+
+test {
+    useJUnitPlatform()
+}

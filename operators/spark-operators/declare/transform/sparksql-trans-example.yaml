@@ -1,8 +1,0 @@
-type: sparkSQL
-name: sparkSQL-trans
-input:
-  input_name: input_name_alias
-output: sparkSQL_trans_output
-repartition: 2
-options:
-  sql: select case gender when 'male' then '男' else 'female' end as gender_chn from user
