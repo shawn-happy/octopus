@@ -1,8 +1,9 @@
 package com.octopus.datatunnel.connector.source;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.octopus.datatunnel.connector.source.CSVSourceConfig.CSVSourceOptions;
-import com.octopus.operators.engine.config.step.SourceConfig;
-import com.octopus.operators.engine.config.step.StepConfig;
+import com.octopus.operators.engine.config.CheckResult;
+import com.octopus.operators.engine.config.step.AbstractSourceConfig;
 import com.octopus.operators.engine.config.step.StepOptions;
 import com.octopus.operators.engine.table.catalog.Column;
 import java.util.List;
@@ -16,19 +17,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CSVSourceConfig implements SourceConfig<CSVSourceOptions> {
+public class CSVSourceConfig extends AbstractSourceConfig<CSVSourceOptions> {
 
-  private String id;
-  private String name;
   @Default private final String type = "csv";
-  private String description;
   private CSVSourceOptions options;
-  private String resultTable;
-  private List<Column> columns;
-  private Integer parallelism;
 
   @Override
-  public StepConfig<CSVSourceOptions> loadYaml(String yaml) {
+  protected CSVSourceOptions loadOptions(JsonNode options) {
     return null;
   }
 
@@ -48,6 +43,11 @@ public class CSVSourceConfig implements SourceConfig<CSVSourceOptions> {
 
     @Override
     public StepOptions loadYaml(String yaml) {
+      return null;
+    }
+
+    @Override
+    public List<CheckResult> check() {
       return null;
     }
   }

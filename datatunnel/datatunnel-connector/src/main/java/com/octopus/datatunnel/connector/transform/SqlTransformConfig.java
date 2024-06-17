@@ -1,9 +1,10 @@
 package com.octopus.datatunnel.connector.transform;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.octopus.datatunnel.connector.transform.SqlTransformConfig.SqlTransformOptions;
-import com.octopus.operators.engine.config.step.StepConfig;
+import com.octopus.operators.engine.config.CheckResult;
+import com.octopus.operators.engine.config.step.AbstractTransformConfig;
 import com.octopus.operators.engine.config.step.StepOptions;
-import com.octopus.operators.engine.config.step.TransformConfig;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,19 +16,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SqlTransformConfig implements TransformConfig<SqlTransformOptions> {
+public class SqlTransformConfig extends AbstractTransformConfig<SqlTransformOptions> {
 
-  private String id;
-  private String name;
   @Default private String type = "sql";
-  private String description;
   private SqlTransformOptions options;
-  private Integer parallelism;
-  private List<String> sourceTables;
-  private String resultTable;
 
   @Override
-  public StepConfig<SqlTransformOptions> loadYaml(String yaml) {
+  protected SqlTransformOptions loadOptions(JsonNode options) {
     return null;
   }
 
@@ -41,6 +36,11 @@ public class SqlTransformConfig implements TransformConfig<SqlTransformOptions> 
 
     @Override
     public StepOptions loadYaml(String yaml) {
+      return null;
+    }
+
+    @Override
+    public List<CheckResult> check() {
       return null;
     }
   }

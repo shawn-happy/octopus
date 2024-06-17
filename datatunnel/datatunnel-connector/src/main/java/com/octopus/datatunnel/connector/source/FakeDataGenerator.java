@@ -1,7 +1,7 @@
 package com.octopus.datatunnel.connector.source;
 
-import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceOptions;
-import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceRow;
+import com.octopus.datatunnel.connector.source.FakeSourceConfig.FakeSourceOptions;
+import com.octopus.datatunnel.connector.source.FakeSourceConfig.FakeSourceRow;
 import com.octopus.operators.engine.exception.CommonExceptionConstant;
 import com.octopus.operators.engine.exception.EngineException;
 import com.octopus.operators.engine.table.type.ArrayDataType;

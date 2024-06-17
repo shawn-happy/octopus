@@ -3,10 +3,13 @@ package com.octopus.operators.engine.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.octopus.operators.engine.exception.EngineException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +54,16 @@ public final class YamlUtils {
     }
   }
 
+  public static <T> T fromYaml(JsonNode jsonNode, TypeReference<T> typeReference) {
+    try {
+      log.info("yaml content: {}", jsonNode.toPrettyString());
+      return OM_YAML.readValue(jsonNode.toPrettyString(), typeReference);
+    } catch (Exception e) {
+      log.error("read yaml error.", e);
+      throw new EngineException("read yaml error", e);
+    }
+  }
+
   public static JsonNode toJsonNode(String yaml) {
     try {
       log.info("yaml content: {}", yaml);
@@ -63,5 +76,43 @@ public final class YamlUtils {
 
   public static ObjectNode createObjectNode() {
     return OM_YAML.createObjectNode();
+  }
+
+  public static boolean isBlank(JsonNode jsonNode) {
+    return jsonNode == null || jsonNode.isEmpty() || jsonNode.isNull() || jsonNode.isMissingNode();
+  }
+
+  public static boolean isNotBlank(JsonNode jsonNode) {
+    return !isBlank(jsonNode);
+  }
+
+  public static String getTextValue(JsonNode jsonNode, String key) {
+    if (isBlank(jsonNode)) {
+      return null;
+    }
+    JsonNode valueNode = jsonNode.path(key);
+    if (isBlank(valueNode)) {
+      return null;
+    }
+    return valueNode.textValue();
+  }
+
+  public static List<String> getStringArray(JsonNode jsonNode, String key) {
+    if (isBlank(jsonNode)) {
+      return null;
+    }
+    JsonNode valueNode = jsonNode.path(key);
+    if (isBlank(valueNode)) {
+      return null;
+    }
+    List<String> values = null;
+    if (valueNode.isArray()) {
+      ArrayNode arrayNode = (ArrayNode) valueNode;
+      values = new ArrayList<>(arrayNode.size());
+      for (JsonNode node : arrayNode) {
+        values.add(node.asText());
+      }
+    }
+    return values;
   }
 }

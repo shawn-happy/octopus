@@ -1,6 +1,9 @@
 package com.octopus.operators.engine.config.step;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.octopus.operators.engine.config.CheckResult;
 import com.octopus.operators.engine.util.YamlUtils;
+import java.util.List;
 
 /**
  * Step Config
@@ -20,9 +23,9 @@ public interface StepConfig<OPTIONS extends StepOptions> {
 
   OPTIONS getOptions();
 
-  Integer getParallelism();
+  void loadYaml(JsonNode stepNode);
 
-  StepConfig<OPTIONS> loadYaml(String yaml);
+  List<CheckResult> check();
 
   default String toYaml() {
     return YamlUtils.toYaml(this);

@@ -1,11 +1,11 @@
 package com.octopus.datatunnel.connector.source;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.octopus.datatunnel.connector.source.FakeSourceConfig.FakeSourceOptions;
-import com.octopus.operators.engine.config.step.SourceConfig;
-import com.octopus.operators.engine.config.step.StepConfig;
+import com.octopus.operators.engine.config.CheckResult;
+import com.octopus.operators.engine.config.step.AbstractSourceConfig;
 import com.octopus.operators.engine.config.step.StepOptions;
 import com.octopus.operators.engine.exception.ConfigParseException;
-import com.octopus.operators.engine.table.catalog.Column;
 import com.octopus.operators.engine.util.JsonUtils;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -19,18 +19,13 @@ import org.apache.commons.lang3.ArrayUtils;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FakeSourceConfig implements SourceConfig<FakeSourceOptions> {
+public class FakeSourceConfig extends AbstractSourceConfig<FakeSourceOptions> {
   @Default private String type = "fake";
-  private String id;
-  private String name;
-  private String description;
   private FakeSourceOptions options;
-  private String resultTable;
-  private List<Column> columns;
   @Default private Integer parallelism = 1;
 
   @Override
-  public StepConfig<FakeSourceOptions> loadYaml(String yaml) {
+  protected FakeSourceOptions loadOptions(JsonNode options) {
     return null;
   }
 
@@ -77,6 +72,11 @@ public class FakeSourceConfig implements SourceConfig<FakeSourceOptions> {
 
     @Override
     public StepOptions loadYaml(String yaml) {
+      return null;
+    }
+
+    @Override
+    public List<CheckResult> check() {
       return null;
     }
   }
