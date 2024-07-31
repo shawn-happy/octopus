@@ -31,7 +31,7 @@ public class DataSourceServiceImpl implements DataSourceService {
           String.format("datasource [%s] already exists", name));
     }
     DataSourceFactory dataSourceFactory =
-        DataSourceFactoryProvider.getDataSourceFactory(type);
+        DataSourceFactoryProvider.getDataSourceFactory(type.identifier());
     DataSource dataSource =
         dataSourceFactory.createDataSource(type, name, description, dataSourceConfig);
     DataSourceEntity dataSourceEntity = DataSourceMapper.toDsEntity(dataSource);

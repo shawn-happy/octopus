@@ -6,7 +6,9 @@ import io.github.octopus.datos.centro.model.bo.form.FormType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
+@Getter
 public enum JdbcDataSourceFormOptions implements FormOptions {
   URL(
       FormOption.builder()
@@ -55,10 +57,10 @@ public enum JdbcDataSourceFormOptions implements FormOptions {
     this.formOption = formOption;
   }
 
-  @Override
-  public List<FormOption> getFormOptions() {
+  public static List<FormOption> getFormOptions(){
     return Arrays.stream(values())
-        .map(formOptions -> formOptions.formOption)
+        .map(JdbcDataSourceFormOptions::getFormOption)
         .collect(Collectors.toUnmodifiableList());
   }
+
 }
