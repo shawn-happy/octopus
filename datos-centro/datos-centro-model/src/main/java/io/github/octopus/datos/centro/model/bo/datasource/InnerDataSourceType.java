@@ -4,8 +4,7 @@ import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
-public enum InnerDataSourceType implements DataSourceType{
-
+public enum InnerDataSourceType implements DataSourceType {
   MYSQL("jdbc", "mysql"),
   ;
 

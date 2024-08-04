@@ -6,5 +6,4 @@ import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
 public interface DataSourceManager<T extends DataSourceConfig> {
 
   void connect(T config) throws DataCenterServiceException;
-
 }

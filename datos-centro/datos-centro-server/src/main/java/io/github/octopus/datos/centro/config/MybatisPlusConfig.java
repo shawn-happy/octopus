@@ -12,14 +12,14 @@ import org.springframework.context.annotation.Configuration;
 public class MybatisPlusConfig {
 
   @Bean
-  public MybatisPlusInterceptor mybatisPlusInterceptor(){
+  public MybatisPlusInterceptor mybatisPlusInterceptor() {
     MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
     interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
     return interceptor;
   }
 
   @Bean
-  public MetaObjectHandler metaObjectHandler(){
+  public MetaObjectHandler metaObjectHandler() {
     return new MetaObjectHandler() {
       @Override
       public void insertFill(MetaObject metaObject) {
@@ -37,5 +37,4 @@ public class MybatisPlusConfig {
       }
     };
   }
-
 }

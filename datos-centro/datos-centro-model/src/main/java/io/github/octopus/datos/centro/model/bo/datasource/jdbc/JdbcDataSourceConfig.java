@@ -15,5 +15,5 @@ public class JdbcDataSourceConfig implements DataSourceConfig {
   private String driverClassName;
   private String username;
   private String password;
-
+  private String database;
 }

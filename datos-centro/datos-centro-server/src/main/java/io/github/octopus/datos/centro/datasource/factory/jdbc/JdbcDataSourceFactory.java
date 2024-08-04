@@ -2,7 +2,6 @@ package io.github.octopus.datos.centro.datasource.factory.jdbc;
 
 import io.github.octopus.datos.centro.datasource.dynamicForm.JdbcDataSourceFormOptions;
 import io.github.octopus.datos.centro.datasource.factory.DataSourceFactory;
-import io.github.octopus.datos.centro.datasource.manager.DataSourceManager;
 import io.github.octopus.datos.centro.datasource.manager.jdbc.JdbcDataSourceManager;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSource;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
@@ -13,8 +12,8 @@ import java.time.LocalDateTime;
 public abstract class JdbcDataSourceFactory implements DataSourceFactory {
 
   @Override
-  public DataSource createDataSource(DataSourceType dsType, String dataSourceName,
-      String description, DataSourceConfig config) {
+  public DataSource createDataSource(
+      DataSourceType dsType, String dataSourceName, String description, DataSourceConfig config) {
     LocalDateTime now = LocalDateTime.now();
     return DataSource.builder()
         .name(dataSourceName)
@@ -33,7 +32,8 @@ public abstract class JdbcDataSourceFactory implements DataSourceFactory {
 
   @Override
   public FormStructure createDataSourceDynamicForm() {
-    return FormStructure.builder().name(factoryIdentifier())
+    return FormStructure.builder()
+        .name(factoryIdentifier())
         .options(JdbcDataSourceFormOptions.getFormOptions())
         .build();
   }

@@ -63,14 +63,13 @@ public class GlobalExceptionHandler {
     return ApiResponse.error(builder.toString());
   }
 
-  /**
-   * @return 处理 form data方式调用接口对象参数校验失败抛出的异常
-   */
+  /** @return 处理 form data方式调用接口对象参数校验失败抛出的异常 */
   @ExceptionHandler(BindException.class)
   public ApiResponse<?> formDaraParamsException(BindException e) {
     List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
     String msg =
-        fieldErrors.stream()
+        fieldErrors
+            .stream()
             .map(o -> o.getField() + o.getDefaultMessage())
             .collect(Collectors.toList())
             .toString();

@@ -1,9 +1,8 @@
 package io.github.octopus.datos.centro.common.exception;
 
-public class DataCenterServiceException extends RuntimeException{
+public class DataCenterServiceException extends RuntimeException {
 
-  public DataCenterServiceException() {
-  }
+  public DataCenterServiceException() {}
 
   public DataCenterServiceException(String message) {
     super(message);
@@ -17,8 +16,8 @@ public class DataCenterServiceException extends RuntimeException{
     super(cause);
   }
 
-  public DataCenterServiceException(String message, Throwable cause, boolean enableSuppression,
-      boolean writableStackTrace) {
+  public DataCenterServiceException(
+      String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }
 }

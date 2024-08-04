@@ -10,13 +10,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("dc_datasource")
-public class DataSourceEntity extends BaseEntity{
+public class DataSourceEntity extends BaseEntity {
 
   @TableId(type = IdType.AUTO)
   private Long id;
+
   private String name;
   private String description;
   private DataSourceType type;
   private String config;
-
 }

@@ -12,5 +12,4 @@ public class BaseEntity {
   private String updater;
   private LocalDateTime createTime;
   private LocalDateTime updateTime;
-
 }

@@ -8,13 +8,12 @@ import io.github.octopus.datos.centro.model.bo.form.FormStructure;
 
 public interface DataSourceFactory {
 
-  DataSource createDataSource(
-      DataSourceType dsType, String dataSourceName, String description, DataSourceConfig config);
+  <T extends DataSourceConfig> DataSource createDataSource(
+      DataSourceType dsType, String dataSourceName, String description, T config);
 
   String factoryIdentifier();
 
-  DataSourceManager createDataSourceManager();
+  <T extends DataSourceConfig> DataSourceManager<T> createDataSourceManager();
 
   FormStructure createDataSourceDynamicForm();
-
 }

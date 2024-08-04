@@ -57,10 +57,9 @@ public enum JdbcDataSourceFormOptions implements FormOptions {
     this.formOption = formOption;
   }
 
-  public static List<FormOption> getFormOptions(){
+  public static List<FormOption> getFormOptions() {
     return Arrays.stream(values())
         .map(JdbcDataSourceFormOptions::getFormOption)
         .collect(Collectors.toUnmodifiableList());
   }
-
 }
