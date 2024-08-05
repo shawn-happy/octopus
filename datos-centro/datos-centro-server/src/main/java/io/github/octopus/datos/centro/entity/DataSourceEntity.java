@@ -15,6 +15,7 @@ public class DataSourceEntity extends BaseEntity {
   @TableId(type = IdType.AUTO)
   private Long id;
 
+  private String code;
   private String name;
   private String description;
   private DataSourceType type;

@@ -7,6 +7,7 @@ import io.github.octopus.datos.centro.model.bo.datasource.DataSource;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSourceType;
 import io.github.octopus.datos.centro.model.bo.form.FormStructure;
+import io.github.octopus.datos.centro.util.CodeGenerateUtils;
 import java.time.LocalDateTime;
 
 public abstract class JdbcDataSourceFactory implements DataSourceFactory {
@@ -16,6 +17,7 @@ public abstract class JdbcDataSourceFactory implements DataSourceFactory {
       DataSourceType dsType, String dataSourceName, String description, DataSourceConfig config) {
     LocalDateTime now = LocalDateTime.now();
     return DataSource.builder()
+        .code(CodeGenerateUtils.getInstance().genCode(factoryIdentifier()))
         .name(dataSourceName)
         .description(description)
         .config(config)

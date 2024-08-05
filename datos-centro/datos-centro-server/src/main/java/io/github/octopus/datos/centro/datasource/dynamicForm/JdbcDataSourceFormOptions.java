@@ -49,6 +49,16 @@ public enum JdbcDataSourceFormOptions implements FormOptions {
           .required(true)
           .defaultValue(null)
           .build()),
+
+  DATABASE(
+      FormOption.builder()
+          .label("database")
+          .chName("数据库")
+          .formType(FormType.TEXT)
+          .hint("数据库")
+          .required(false)
+          .defaultValue(null)
+          .build()),
   ;
 
   private final FormOption formOption;

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class DataSource {
 
   private long id;
+  private String code;
   private String name;
   private String description;
   private DataSourceType type;
