@@ -4,17 +4,20 @@ import io.github.octopus.datos.centro.datasource.dynamicForm.JdbcDataSourceFormO
 import io.github.octopus.datos.centro.datasource.factory.DataSourceFactory;
 import io.github.octopus.datos.centro.datasource.manager.jdbc.JdbcDataSourceManager;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSource;
-import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSourceType;
+import io.github.octopus.datos.centro.model.bo.datasource.jdbc.JdbcDataSourceConfig;
 import io.github.octopus.datos.centro.model.bo.form.FormStructure;
 import io.github.octopus.datos.centro.util.CodeGenerateUtils;
 import java.time.LocalDateTime;
 
-public abstract class JdbcDataSourceFactory implements DataSourceFactory {
+public abstract class JdbcDataSourceFactory implements DataSourceFactory<JdbcDataSourceConfig> {
 
   @Override
   public DataSource createDataSource(
-      DataSourceType dsType, String dataSourceName, String description, DataSourceConfig config) {
+      DataSourceType dsType,
+      String dataSourceName,
+      String description,
+      JdbcDataSourceConfig config) {
     LocalDateTime now = LocalDateTime.now();
     return DataSource.builder()
         .code(CodeGenerateUtils.getInstance().genCode(factoryIdentifier()))
@@ -38,5 +41,10 @@ public abstract class JdbcDataSourceFactory implements DataSourceFactory {
         .name(factoryIdentifier())
         .options(JdbcDataSourceFormOptions.getFormOptions())
         .build();
+  }
+
+  @Override
+  public Class<JdbcDataSourceConfig> dataSourceConfigClass() {
+    return JdbcDataSourceConfig.class;
   }
 }

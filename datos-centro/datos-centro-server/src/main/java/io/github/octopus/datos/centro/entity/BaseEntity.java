@@ -1,6 +1,7 @@
 package io.github.octopus.datos.centro.entity;
 
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,15 @@ import lombok.Setter;
 @Setter
 public class BaseEntity {
 
+  @TableField(fill = FieldFill.INSERT)
   private String creator;
+
+  @TableField(fill = FieldFill.INSERT_UPDATE)
   private String updater;
-  private LocalDateTime createTime;
-  private LocalDateTime updateTime;
+
+  @TableField(fill = FieldFill.INSERT, value = "create_time")
+  private Long createTime;
+
+  @TableField(fill = FieldFill.INSERT_UPDATE, value = "update_time")
+  private Long updateTime;
 }

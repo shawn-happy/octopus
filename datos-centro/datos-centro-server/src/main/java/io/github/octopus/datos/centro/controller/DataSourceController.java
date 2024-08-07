@@ -5,8 +5,7 @@ import io.github.octopus.datos.centro.mapper.DataSourceMapper;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSource;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
 import io.github.octopus.datos.centro.model.bo.form.FormStructure;
-import io.github.octopus.datos.centro.model.request.datasource.CheckDataSourceRequest;
-import io.github.octopus.datos.centro.model.request.datasource.EditDataSourceRequest;
+import io.github.octopus.datos.centro.model.request.datasource.DataSourceRequest;
 import io.github.octopus.datos.centro.model.request.datasource.QueryDataSourceRequest;
 import io.github.octopus.datos.centro.model.response.ApiResponse;
 import io.github.octopus.datos.centro.model.response.datasource.CheckResult;
@@ -34,13 +33,13 @@ public class DataSourceController {
 
   @PostMapping("/check/connect")
   public ApiResponse<CheckResult> checkDataSourceConnect(
-      @RequestBody CheckDataSourceRequest<?> request) {
+      @RequestBody DataSourceRequest<?> request) {
     return ApiResponse.success(
         dataSourceService.checkDataSourceConnection(request.getType(), request.getConfig()));
   }
 
   @PostMapping("/create")
-  public ApiResponse<Long> createDataSource(@RequestBody EditDataSourceRequest<?> request) {
+  public ApiResponse<Long> createDataSource(@RequestBody DataSourceRequest<?> request) {
     DataSource dataSource =
         dataSourceService.crateDataSource(
             request.getType(), request.getName(), request.getDescription(), request.getConfig());
@@ -50,7 +49,7 @@ public class DataSourceController {
   @PutMapping("/{id}")
   public ApiResponse<Boolean> editDataSource(
       @PathVariable("id") long dataSourceId,
-      @RequestBody EditDataSourceRequest<? extends DataSourceConfig> updateDSReq) {
+      @RequestBody DataSourceRequest<? extends DataSourceConfig> updateDSReq) {
     return ApiResponse.success(
         dataSourceService.updateDataSource(
             dataSourceId,
@@ -87,7 +86,7 @@ public class DataSourceController {
   }
 
   @GetMapping("/dynamic-form")
-  public ApiResponse<FormStructure> getDataSourceForm(@RequestParam("dsType") String dsType) {
+  public ApiResponse<FormStructure> getDataSourceForm(@RequestParam("type") String dsType) {
     return ApiResponse.success(dataSourceService.getDataSourceDynamicForm(dsType));
   }
 }

@@ -6,14 +6,16 @@ import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSourceType;
 import io.github.octopus.datos.centro.model.bo.form.FormStructure;
 
-public interface DataSourceFactory {
+public interface DataSourceFactory<T extends DataSourceConfig> {
 
-  <T extends DataSourceConfig> DataSource createDataSource(
+  DataSource createDataSource(
       DataSourceType dsType, String dataSourceName, String description, T config);
 
   String factoryIdentifier();
 
-  <T extends DataSourceConfig> DataSourceManager<T> createDataSourceManager();
+  DataSourceManager<T> createDataSourceManager();
 
   FormStructure createDataSourceDynamicForm();
+
+  Class<T> dataSourceConfigClass();
 }

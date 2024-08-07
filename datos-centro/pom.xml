@@ -12,6 +12,7 @@
     <module>datos-centro-common</module>
     <module>datos-centro-server</module>
     <module>datos-centro-model</module>
+    <module>datos-centro-sql</module>
   </modules>
 
   <properties>
@@ -26,6 +27,7 @@
     <spring-cloud-oauth2.version>2.2.5.RELEASE</spring-cloud-oauth2.version>
     <spring-security.version>5.7.3</spring-security.version>
 
+    <druid.version>1.2.20</druid.version>
     <mysql.version>8.0.30</mysql.version>
     <mybatis-plus.version>3.5.2</mybatis-plus.version>
 
@@ -147,6 +149,16 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus</artifactId>
+        <version>${mybatis-plus.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>${druid.version}</version>
       </dependency>
 
       <dependency>

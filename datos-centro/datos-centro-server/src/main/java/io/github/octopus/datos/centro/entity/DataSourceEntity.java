@@ -3,7 +3,6 @@ package io.github.octopus.datos.centro.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.github.octopus.datos.centro.model.bo.datasource.DataSourceType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +17,6 @@ public class DataSourceEntity extends BaseEntity {
   private String code;
   private String name;
   private String description;
-  private DataSourceType type;
+  private String type;
   private String config;
 }

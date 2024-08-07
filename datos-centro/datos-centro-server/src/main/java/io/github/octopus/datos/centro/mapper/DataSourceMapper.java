@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.octopus.datos.centro.common.exception.DataCenterServiceException;
 import io.github.octopus.datos.centro.common.utils.JsonUtil;
+import io.github.octopus.datos.centro.datasource.factory.DataSourceFactoryProvider;
 import io.github.octopus.datos.centro.entity.DataSourceEntity;
 import io.github.octopus.datos.centro.model.bo.datasource.DataSource;
-import io.github.octopus.datos.centro.model.bo.datasource.DataSourceConfig;
+import io.github.octopus.datos.centro.model.bo.datasource.DataSourceTypeProvider;
 import io.github.octopus.datos.centro.model.response.datasource.DataSourceDetailsVO;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,12 +24,17 @@ public class DataSourceMapper {
     return Optional.ofNullable(ds)
         .map(
             datasource -> {
-              DataSourceEntity dataSourceEntity = new DataSourceEntity();
-              dataSourceEntity.setName(datasource.getName());
-              dataSourceEntity.setType(datasource.getType());
-              dataSourceEntity.setDescription(dataSourceEntity.getDescription());
-              dataSourceEntity.setConfig(null);
-              return dataSourceEntity;
+              try {
+                DataSourceEntity dataSourceEntity = new DataSourceEntity();
+                dataSourceEntity.setCode(datasource.getCode());
+                dataSourceEntity.setName(datasource.getName());
+                dataSourceEntity.setType(datasource.getType().identifier());
+                dataSourceEntity.setDescription(dataSourceEntity.getDescription());
+                dataSourceEntity.setConfig(JsonUtil.toJson(datasource.getConfig()));
+                return dataSourceEntity;
+              } catch (JsonProcessingException e) {
+                throw new DataCenterServiceException("json serialize error.", e);
+              }
             })
         .orElse(null);
   }
@@ -37,14 +46,25 @@ public class DataSourceMapper {
               try {
                 return DataSource.builder()
                     .name(datasource.getName())
+                    .code(datasource.getCode())
                     .id(datasource.getId())
-                    .type(datasource.getType())
+                    .type(DataSourceTypeProvider.getDataSourceType(datasource.getType()))
                     .description(datasource.getDescription())
-                    .config(JsonUtil.fromJson(datasource.getConfig(), DataSourceConfig.class))
-                    .createTime(datasource.getCreateTime())
+                    .config(
+                        JsonUtil.fromJson(
+                            datasource.getConfig(),
+                            DataSourceFactoryProvider.getDataSourceFactory(datasource.getType())
+                                .dataSourceConfigClass()))
+                    .createTime(
+                        LocalDateTime.ofInstant(
+                            Instant.ofEpochMilli(datasource.getCreateTime()),
+                            ZoneId.systemDefault()))
                     .creator(datasource.getCreator())
                     .updater(datasource.getUpdater())
-                    .updateTime(datasource.getUpdateTime())
+                    .updateTime(
+                        LocalDateTime.ofInstant(
+                            Instant.ofEpochMilli(datasource.getUpdateTime()),
+                            ZoneId.systemDefault()))
                     .build();
               } catch (JsonProcessingException e) {
                 throw new DataCenterServiceException("datasource config json parse error", e);
