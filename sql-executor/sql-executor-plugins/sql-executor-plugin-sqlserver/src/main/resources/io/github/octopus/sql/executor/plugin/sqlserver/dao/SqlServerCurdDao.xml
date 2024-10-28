@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.octopus.sql.executor.plugin.sqlserver.dao.SqlServerCurdDao">
+
+    <insert id="save" parameterType="insert">
+        insert into <if test="database != null">${database}.</if>${table}
+        <foreach collection="columns" item="column" open="(" close=")" separator=",">
+            ${column}
+        </foreach>
+        values
+        <foreach collection="params" item="value" open="(" close=")" separator=",">
+            #{value}
+        </foreach>
+    </insert>
+
+    <insert id="upsert" parameterType="upsert">
+        MERGE INTO <if test="database != null">${database}.</if>${table} AS [TARGET] USING
+        SELECT
+        <foreach collection="params" item="value" index="column" separator=",">
+            #{value} as ${column}
+        </foreach>
+         AS [SOURCE] ON
+        <foreach collection="uniqueColumns" item="column" separator=",">
+            [TARGET].${column} = [SOURCE].${column}
+        </foreach>
+        WHEN MATCHED THEN UPDATE SET
+        <foreach collection="nonUniqueColumns" item="column" separator=",">
+            [TARGET].${column} = [SOURCE].${column}
+        </foreach>
+        WHEN NOT MATCHED THEN INSERT
+        <foreach collection="columns" item="column" open="(" close=")" separator=",">
+            ${column}
+        </foreach>
+        VALUES
+        <foreach collection="columns" item="column" open="(" close=")" separator=",">
+            [SOURCE].${column}
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="update">
+        update <if test="update.database != null">${update.database}.</if>${update.table}
+        set
+        <foreach collection="update.updateParams" item="value" index="column" separator=",">
+            ${column} = #{value}
+        </foreach>
+        <if test="update.whereParams != null">
+            where ${update.whereParams}
+        </if>
+    </update>
+
+    <delete id="delete" parameterType="delete">
+        delete from <if test="delete.database != null">${delete.database}.</if>${delete.table}
+        <if test="delete.whereParams != null">
+            where ${delete.whereParams}
+        </if>
+    </delete>
+
+    <select id="queryList" resultType="java.util.Map" parameterType="select">
+        ${sql}
+    </select>
+
+    <select id="queryPage" resultType="java.util.Map" parameterType="select">
+        ${sql}
+    </select>
+
+    <select id="queryListByLimit" resultType="java.util.Map" parameterType="select">
+        ${sql}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from ${database}.${table}
+        <if test="where != null and where != ''">
+            where ${where}
+        </if>
+    </select>
+
+</mapper>
