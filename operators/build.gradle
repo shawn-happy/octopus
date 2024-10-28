@@ -30,9 +30,10 @@ ext {
     annotationVersion = '20.1.0'
     slf4jVersion = '1.7.30'
     log4jVersion = '2.17.1'
-    flinkVersion = '1.16.0'
+    flinkVersion = '1.17.2'
     flinkOperatorVersion = '1.2.0'
-    flinkJacksonVersion = '2.13.4-16.0'
+    flinkJacksonVersion = '2.14.2-17.0'
+    flinkDorisConnector = '1.6.1'
 
     // tools
     libs_guava = [group: 'com.google.guava', name: 'guava', version: guavaVersion]
@@ -76,6 +77,7 @@ ext {
     libs_flinkConnFile = [group: 'org.apache.flink', name: 'flink-connector-files', version: flinkVersion]
     libs_flinkConnHDFS = [group: 'org.apache.flink', name: 'flink-hadoop-compatibility_2.12', version: flinkVersion]
     libs_flinkConnBase = [group: 'org.apache.flink', name: 'flink-connector-base', version: flinkVersion]
+    libs_flinkDorisConnector = [group: 'org.apache.doris', name: 'flink-doris-connector-1.17', version: flinkDorisConnector]
     libs_flinkCep = [group: 'org.apache.flink', name: 'flink-cep', version: flinkVersion]
     libs_flinkJson = [group: 'org.apache.flink', name: 'flink-json', version: flinkVersion]
     libs_flinkOperator = [group: 'org.apache.flink', name: 'flink-kubernetes-operator', version: flinkOperatorVersion]
