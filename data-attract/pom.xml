@@ -12,7 +12,6 @@
     <module>data-attract-common</module>
     <module>data-attract-server</module>
     <module>data-attract-model</module>
-    <module>datos-centro-sql</module>
   </modules>
 
   <properties>

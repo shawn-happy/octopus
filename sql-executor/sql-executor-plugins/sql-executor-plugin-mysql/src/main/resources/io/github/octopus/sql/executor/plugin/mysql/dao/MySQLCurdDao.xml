@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.octopus.sql.executor.plugin.mysql.dao.MySQLCurdDao">
+
+    <insert id="save" parameterType="insert">
+        insert into <if test="database != null">${database}.</if>${table}
+        <foreach collection="columns" item="column" open="(" close=")" separator=",">
+            `${column}`
+        </foreach>
+        values
+        <foreach collection="params" item="value" open="(" close=")" separator=",">
+            #{value}
+        </foreach>
+    </insert>
+
+    <insert id="saveBatch" parameterType="insert">
+        insert into <if test="database != null">${database}.</if>${table}
+        <foreach collection="columns" item="column" open="(" close=")" separator=",">
+            `${column}`
+        </foreach>
+        values
+        <foreach collection="batchParams" item="params" separator=",">
+            <foreach collection="params.entrySet()" item="value" index="key" open="(" close=")" separator=",">
+                #{value}
+            </foreach>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="update">
+        update <if test="update.database != null">`${update.database}`.</if>`${update.table}`
+        set
+        <foreach collection="update.updateParams" item="value" index="column" separator=",">
+            `${column}` = #{value}
+        </foreach>
+        <if test="update.whereParams != null">
+            where ${update.whereParams}
+        </if>
+    </update>
+
+    <delete id="delete" parameterType="delete">
+        delete from <if test="delete.database != null">`${delete.database}`.</if>`${delete.table}`
+        <if test="delete.whereParams != null">
+            where ${delete.whereParams}
+        </if>
+    </delete>
+
+    <select id="queryList" resultType="java.util.Map" parameterType="select">
+        ${sql}
+    </select>
+
+    <select id="queryPage" resultType="java.util.Map" parameterType="select">
+        ${sql}
+    </select>
+
+    <select id="queryListByLimit" resultType="java.util.Map" parameterType="select">
+        ${sql}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from `${database}`.`${table}`
+        <if test="where != null and where != ''">
+            where ${where}
+        </if>
+    </select>
+
+</mapper>
