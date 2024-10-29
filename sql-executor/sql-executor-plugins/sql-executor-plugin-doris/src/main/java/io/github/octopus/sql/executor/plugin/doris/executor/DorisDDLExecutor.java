@@ -1,34 +1,56 @@
 package io.github.octopus.sql.executor.plugin.doris.executor;
 
-import io.github.octopus.sql.executor.plugin.api.dao.CurdDao;
+import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.plugin.api.dao.DDLDao;
-import io.github.octopus.sql.executor.plugin.api.dao.MetaDataDao;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
-import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.doris.dao.DorisDDLDao;
 import javax.sql.DataSource;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class DorisDDLExecutor extends DDLExecutor {
+@Getter
+public class DorisDDLExecutor extends AbstractDDLExecutor {
+
+  private final Class<? extends DDLDao> dDLDaoClass = DorisDDLDao.class;
+
   public DorisDDLExecutor(String name, DataSource dataSource) {
     super(name, dataSource);
   }
 
   @Override
-  protected JdbcType getJdbcType() {
-    return null;
+  public void addColumnComment(
+      @Nullable String database,
+      @Nullable String schema,
+      @NotNull String table,
+      ColumnDefinition columnInfo) {
+    executeDDL(
+        ddlDao ->
+            ddlDao.modifyColumnComment(
+                database, schema, table, columnInfo.getColumn(), columnInfo.getComment()));
   }
 
   @Override
-  protected Class<? extends CurdDao> getCurdDaoClass() {
-    return null;
+  public void modifyColumnComment(
+      @Nullable String database,
+      @Nullable String schema,
+      @NotNull String table,
+      ColumnDefinition columnInfo) {
+    executeDDL(
+        ddlDao ->
+            ddlDao.modifyColumnComment(
+                database, schema, table, columnInfo.getColumn(), columnInfo.getComment()));
   }
 
   @Override
-  protected Class<? extends DDLDao> getDDLDaoClass() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends MetaDataDao> getMetaDataDaoClass() {
-    return null;
+  public void removeColumnComment(
+      @Nullable String database,
+      @Nullable String schema,
+      @NotNull String table,
+      ColumnDefinition columnInfo) {
+    executeDDL(
+        ddlDao ->
+            ddlDao.modifyColumnComment(
+                database, schema, table, columnInfo.getColumn(), BLANK_COMMENT));
   }
 }

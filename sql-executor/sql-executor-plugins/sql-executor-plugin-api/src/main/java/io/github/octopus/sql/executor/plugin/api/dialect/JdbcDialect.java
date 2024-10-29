@@ -1,12 +1,13 @@
 package io.github.octopus.sql.executor.plugin.api.dialect;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.exception.SqlException;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.TableEngine;
-import io.github.octopus.sql.executor.plugin.api.executor.CurdExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.MetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -15,19 +16,19 @@ public interface JdbcDialect {
 
   String getDialectName();
 
-  JdbcType getJdbcType();
+  DbType getMybatisDbType();
 
-  CurdExecutor createCurdExecutor(String name, DataSource dataSource);
+  AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource);
 
-  DDLExecutor createDDLExecutor(String name, DataSource dataSource);
+  AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource);
 
-  MetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource);
+  AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource);
 
   List<FieldType> getSupportedFieldTypes();
 
   default List<TableEngine> getSupportedTableEngines() {
     throw new UnsupportedOperationException(
-        String.format("The [%s] does not support storage engines", getJdbcType().getType()));
+        String.format("The [%s] does not support storage engines", getDialectName()));
   }
 
   default TableEngine toTableEngine(String tableEngine) {
@@ -44,7 +45,7 @@ public interface JdbcDialect {
                 new SqlException(
                     String.format(
                         "The [%s] does not support the [%s] table engine",
-                        getJdbcType().getType(), tableEngine)));
+                        getDialectName(), tableEngine)));
   }
 
   default FieldType toFieldType(String fieldType) {
@@ -57,7 +58,7 @@ public interface JdbcDialect {
                 new SqlException(
                     String.format(
                         "field type [%s] not supported with jdbc type [%s]",
-                        fieldType, getJdbcType().getType())));
+                        fieldType, getDialectName())));
   }
 
   default String quoteIdentifier(String identifier) {

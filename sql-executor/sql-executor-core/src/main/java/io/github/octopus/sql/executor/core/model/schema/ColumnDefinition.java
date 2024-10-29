@@ -7,20 +7,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ColumnInfo {
-  private String name;
-  private String comment;
-  private Object defaultValue;
-
+@NoArgsConstructor
+public class ColumnDefinition {
+  private String column;
   private FieldType fieldType;
   private Integer precision;
   private Integer scale;
-
-  // Constraints
-  @Builder.Default private boolean nullable = true;
+  private String comment;
+  private Object defaultValue;
+  private boolean nullable;
   private boolean autoIncrement;
-  private boolean uniqueKey;
-  private boolean primaryKey;
 }

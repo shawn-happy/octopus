@@ -1,6 +1,6 @@
-package io.github.octopus.sql.executor.plugin.api.exception;
+package io.github.octopus.sql.executor.core.exception;
 
-public class SqlExecuteException extends RuntimeException {
+public class SqlExecuteException extends SqlException {
   public SqlExecuteException() {
     this("sql execute error...");
   }

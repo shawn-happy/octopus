@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class IndexInfo {
-  private String name;
+@NoArgsConstructor
+public class AggregateModelDefinition {
+  private AggregateModelType type;
   private List<String> columns;
-  private String comment;
-  private IndexAlgo indexAlgo;
 }

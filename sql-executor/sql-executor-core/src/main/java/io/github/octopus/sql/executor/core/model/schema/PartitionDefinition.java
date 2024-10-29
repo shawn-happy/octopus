@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class PartitionInfo {
+@NoArgsConstructor
+public class PartitionDefinition {
+  private String name;
   private List<String> columns;
-  private List<String> names;
   private PartitionAlgo partitionAlgo;
   private PartitionOperator partitionOperator;
   private List<Object[]> lefts;

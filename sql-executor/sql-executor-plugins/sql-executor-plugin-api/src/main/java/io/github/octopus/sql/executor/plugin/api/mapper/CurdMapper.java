@@ -14,8 +14,11 @@ import io.github.octopus.sql.executor.core.model.expression.LogicalExpression;
 import io.github.octopus.sql.executor.core.model.expression.RelationExpression;
 import io.github.octopus.sql.executor.core.model.op.InternalRelationalOp;
 import io.github.octopus.sql.executor.core.model.op.RelationalOp;
-import io.github.octopus.sql.executor.core.model.schema.ColumnInfo;
+import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
+import io.github.octopus.sql.executor.core.model.schema.ConstraintDefinition;
+import io.github.octopus.sql.executor.core.model.schema.ConstraintType;
 import io.github.octopus.sql.executor.core.model.schema.ParamValue;
+import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -55,28 +58,44 @@ public class CurdMapper {
     return builder.build();
   }
 
-  public static Upsert toUpsert(List<ColumnInfo> columnInfos, UpsertStatement upsertStatement) {
+  public static Upsert toUpsert(TableDefinition definition, UpsertStatement upsertStatement) {
     if (upsertStatement == null) {
       return null;
     }
+    List<ConstraintDefinition> constraints = definition.getConstraints();
+    if (CollectionUtils.isEmpty(constraints)) {
+      throw new SqlException("upsert constraint cannot be empty");
+    }
+
+    List<String> uniqueColumns =
+        constraints
+            .stream()
+            .filter(
+                constraintDefinition ->
+                    constraintDefinition.getConstraintType() == ConstraintType.PRIMARY_KEY
+                        || constraintDefinition.getConstraintType() == ConstraintType.UNIQUE_KEY)
+            .flatMap(ukCol -> ukCol.getColumns().stream())
+            .distinct()
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(uniqueColumns)) {
+      throw new SqlException("upsert need unique column");
+    }
+    List<ColumnDefinition> columnDefinitions = definition.getColumns();
+    List<String> nonUniqueColumns =
+        columnDefinitions
+            .stream()
+            .map(ColumnDefinition::getColumn)
+            .filter(column -> !uniqueColumns.contains(column))
+            .collect(Collectors.toList());
+
     List<String> columns = upsertStatement.getColumns();
     Upsert.UpsertBuilder upsertBuilder =
         Upsert.builder()
             .database(upsertStatement.getDatabase())
             .table(upsertStatement.getTable())
             .columns(upsertStatement.getColumns())
-            .uniqueColumns(
-                columnInfos
-                    .stream()
-                    .filter(col -> col.isUniqueKey() || col.isPrimaryKey())
-                    .map(ColumnInfo::getName)
-                    .collect(Collectors.toList()))
-            .nonUniqueColumns(
-                columnInfos
-                    .stream()
-                    .filter(col -> !col.isUniqueKey() && !col.isPrimaryKey())
-                    .map(ColumnInfo::getName)
-                    .collect(Collectors.toList()));
+            .uniqueColumns(uniqueColumns)
+            .nonUniqueColumns(nonUniqueColumns);
     List<Object[]> values = upsertStatement.getValues();
     if (CollectionUtils.isEmpty(values)) {
       return null;

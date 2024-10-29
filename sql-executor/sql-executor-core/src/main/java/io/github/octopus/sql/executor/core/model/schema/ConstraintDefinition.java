@@ -12,14 +12,13 @@ import org.apache.commons.collections4.CollectionUtils;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ConstraintInfo {
-
-  private String constraintName;
-  private ConstraintType constraintType;
+@AllArgsConstructor
+public class ConstraintDefinition {
+  private String name;
   private List<String> columns;
-
+  private ConstraintType constraintType;
+  private String comment;
   // for constraint type is check
   private List<Expression> expressions;
 

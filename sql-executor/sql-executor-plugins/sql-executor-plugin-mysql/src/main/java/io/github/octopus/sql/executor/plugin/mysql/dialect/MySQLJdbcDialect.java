@@ -1,16 +1,16 @@
 package io.github.octopus.sql.executor.plugin.mysql.dialect;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.TableEngine;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
-import io.github.octopus.sql.executor.plugin.api.executor.CurdExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.MetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLCurdExecutor;
-import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLDDLExecutor;
+import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLDDLExecutorAbstract;
 import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.mysql.model.MySQLFieldType;
 import io.github.octopus.sql.executor.plugin.mysql.model.MySQLTableEngine;
@@ -26,7 +26,7 @@ public class MySQLJdbcDialect implements JdbcDialect {
   private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
 
   private final String dialectName = DatabaseIdentifier.MYSQL;
-  private final JdbcType jdbcType = getJdbcType();
+  private final DbType mybatisDbType = DbType.MYSQL;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(MySQLFieldType.values());
   private final List<TableEngine> supportedTableEngines = Arrays.asList(MySQLTableEngine.values());
 
@@ -37,17 +37,17 @@ public class MySQLJdbcDialect implements JdbcDialect {
   }
 
   @Override
-  public CurdExecutor createCurdExecutor(String name, DataSource dataSource) {
+  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
     return new MySQLCurdExecutor(name, dataSource);
   }
 
   @Override
-  public DDLExecutor createDDLExecutor(String name, DataSource dataSource) {
-    return new MySQLDDLExecutor(name, dataSource);
+  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
+    return new MySQLDDLExecutorAbstract(name, dataSource);
   }
 
   @Override
-  public MetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
+  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
     return new MySQLMetaDataExecutor(name, dataSource);
   }
 

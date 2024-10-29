@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class PrimaryKeyInfo {
-  private List<String> columns;
+@NoArgsConstructor
+public class IndexDefinition {
   private String name;
+  private List<String> columns;
+  private String comment;
+  private IndexAlgo indexAlgo;
 }

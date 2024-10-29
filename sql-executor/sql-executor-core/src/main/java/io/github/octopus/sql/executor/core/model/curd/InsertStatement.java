@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InsertStatement {
   private String database;
+  // for sqlserver
+  private String schema;
   private String table;
   private List<String> columns;
   private List<Object[]> values;

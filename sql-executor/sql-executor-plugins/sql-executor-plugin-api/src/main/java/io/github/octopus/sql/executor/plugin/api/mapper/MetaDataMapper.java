@@ -4,11 +4,10 @@ import io.github.octopus.sql.executor.core.entity.ColumnMeta;
 import io.github.octopus.sql.executor.core.entity.DatabaseMeta;
 import io.github.octopus.sql.executor.core.entity.TableMeta;
 import io.github.octopus.sql.executor.core.model.metadata.ColumnMetaInfo;
+import io.github.octopus.sql.executor.core.model.metadata.DatabaseMetaInfo;
 import io.github.octopus.sql.executor.core.model.metadata.TableMetaInfo;
-import io.github.octopus.sql.executor.core.model.schema.DatabaseInfo;
 import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,19 +16,19 @@ import org.apache.commons.lang3.StringUtils;
 
 public class MetaDataMapper {
 
-  public static DatabaseInfo fromDatabaseMeta(DatabaseMeta databaseMeta) {
+  public static DatabaseMetaInfo fromDatabaseMeta(DatabaseMeta databaseMeta) {
     return Optional.ofNullable(databaseMeta)
         .map(
             meta ->
-                DatabaseInfo.builder()
-                    .name(databaseMeta.getName())
-                    .charsetName(meta.getCharacterSet())
-                    .collationName(meta.getCollation())
+                DatabaseMetaInfo.builder()
+                    .database(databaseMeta.getName())
+                    .charset(meta.getCharacterSet())
+                    .sortBy(meta.getCollation())
                     .build())
         .orElse(null);
   }
 
-  public static List<DatabaseInfo> fromDatabaseMetas(List<DatabaseMeta> databaseMetas) {
+  public static List<DatabaseMetaInfo> fromDatabaseMetas(List<DatabaseMeta> databaseMetas) {
     if (CollectionUtils.isEmpty(databaseMetas)) {
       return null;
     }
@@ -39,8 +38,8 @@ public class MetaDataMapper {
         .collect(Collectors.toList());
   }
 
-  public static TableMetaInfo fromTableMeta(JdbcType dbType, TableMeta tableMeta) {
-    JdbcDialect dialect = DialectRegistry.getDialect(dbType.getType());
+  public static TableMetaInfo fromTableMeta(String dbType, TableMeta tableMeta) {
+    JdbcDialect dialect = DialectRegistry.getDialect(dbType);
     return Optional.ofNullable(tableMeta)
         .map(
             meta ->
@@ -58,7 +57,7 @@ public class MetaDataMapper {
         .orElse(null);
   }
 
-  public static List<TableMetaInfo> fromTableMetas(JdbcType dbType, List<TableMeta> tableMetas) {
+  public static List<TableMetaInfo> fromTableMetas(String dbType, List<TableMeta> tableMetas) {
     if (CollectionUtils.isEmpty(tableMetas)) {
       return null;
     }
@@ -68,8 +67,8 @@ public class MetaDataMapper {
         .collect(Collectors.toList());
   }
 
-  public static ColumnMetaInfo fromColumnMeta(JdbcType dbType, ColumnMeta columnMeta) {
-    JdbcDialect dialect = DialectRegistry.getDialect(dbType.getType());
+  public static ColumnMetaInfo fromColumnMeta(String dbType, ColumnMeta columnMeta) {
+    JdbcDialect dialect = DialectRegistry.getDialect(dbType);
     return Optional.ofNullable(columnMeta)
         .map(
             meta ->
@@ -93,8 +92,7 @@ public class MetaDataMapper {
         .orElse(null);
   }
 
-  public static List<ColumnMetaInfo> fromColumnMetas(
-      JdbcType dbType, List<ColumnMeta> columnMetas) {
+  public static List<ColumnMetaInfo> fromColumnMetas(String dbType, List<ColumnMeta> columnMetas) {
     if (CollectionUtils.isEmpty(columnMetas)) {
       return null;
     }

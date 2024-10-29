@@ -1,34 +1,17 @@
 package io.github.octopus.sql.executor.plugin.oracle.executor;
 
-import io.github.octopus.sql.executor.plugin.api.dao.CurdDao;
-import io.github.octopus.sql.executor.plugin.api.dao.DDLDao;
 import io.github.octopus.sql.executor.plugin.api.dao.MetaDataDao;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
-import io.github.octopus.sql.executor.plugin.api.executor.MetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.oracle.dao.OracleMetaDataDao;
 import javax.sql.DataSource;
+import lombok.Getter;
 
-public class OracleMetaDataExecutor extends MetaDataExecutor {
+@Getter
+public class OracleMetaDataExecutor extends AbstractMetaDataExecutor {
+
+  private final Class<? extends MetaDataDao> metaDataDaoClass = OracleMetaDataDao.class;
+
   public OracleMetaDataExecutor(String name, DataSource dataSource) {
     super(name, dataSource);
-  }
-
-  @Override
-  protected JdbcType getJdbcType() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends CurdDao> getCurdDaoClass() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends DDLDao> getDDLDaoClass() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends MetaDataDao> getMetaDataDaoClass() {
-    return null;
   }
 }

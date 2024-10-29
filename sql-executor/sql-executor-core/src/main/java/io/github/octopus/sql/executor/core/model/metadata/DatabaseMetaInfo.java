@@ -1,4 +1,4 @@
-package io.github.octopus.sql.executor.core.model.curd;
+package io.github.octopus.sql.executor.core.model.metadata;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpsertStatement {
+public class DatabaseMetaInfo {
   private String database;
   // for sqlserver
-  private String schema;
-  private String table;
-  private List<String> columns;
-  private List<Object[]> values;
+  private List<String> schemas;
+
+  // for mysql
+  private String charset;
+  private String sortBy;
 }

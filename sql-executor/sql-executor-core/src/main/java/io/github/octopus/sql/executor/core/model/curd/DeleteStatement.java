@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DeleteStatement {
   private String database;
+  // for sqlserver
+  private String schema;
   private String table;
   private Expression expression;
 }

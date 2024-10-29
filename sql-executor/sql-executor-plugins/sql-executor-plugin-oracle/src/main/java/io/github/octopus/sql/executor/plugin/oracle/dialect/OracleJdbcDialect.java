@@ -1,13 +1,13 @@
 package io.github.octopus.sql.executor.plugin.oracle.dialect;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
-import io.github.octopus.sql.executor.plugin.api.executor.CurdExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.MetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.oracle.executor.OracleCurdExecutor;
 import io.github.octopus.sql.executor.plugin.oracle.executor.OracleDDLExecutor;
 import io.github.octopus.sql.executor.plugin.oracle.executor.OracleMetaDataExecutor;
@@ -24,7 +24,7 @@ public class OracleJdbcDialect implements JdbcDialect {
   private String fieldIde = FieldIdeEnum.UPPERCASE.getValue();
 
   private final String dialectName = DatabaseIdentifier.ORACLE;
-  private final JdbcType jdbcType = OracleJdbcType.getJdbcType();
+  private final DbType mybatisDbType = DbType.ORACLE;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(OracleFieldType.values());
 
   public OracleJdbcDialect() {}
@@ -34,17 +34,17 @@ public class OracleJdbcDialect implements JdbcDialect {
   }
 
   @Override
-  public CurdExecutor createCurdExecutor(String name, DataSource dataSource) {
+  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
     return new OracleCurdExecutor(name, dataSource);
   }
 
   @Override
-  public DDLExecutor createDDLExecutor(String name, DataSource dataSource) {
+  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
     return new OracleDDLExecutor(name, dataSource);
   }
 
   @Override
-  public MetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
+  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
     return new OracleMetaDataExecutor(name, dataSource);
   }
 

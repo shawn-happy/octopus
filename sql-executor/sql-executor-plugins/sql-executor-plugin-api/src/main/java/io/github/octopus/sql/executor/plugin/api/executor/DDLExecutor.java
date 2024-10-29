@@ -1,189 +1,109 @@
 package io.github.octopus.sql.executor.plugin.api.executor;
 
-import io.github.octopus.sql.executor.core.entity.Table;
-import io.github.octopus.sql.executor.core.exception.SqlException;
-import io.github.octopus.sql.executor.core.model.schema.ColumnInfo;
-import io.github.octopus.sql.executor.core.model.schema.DatabaseInfo;
-import io.github.octopus.sql.executor.core.model.schema.IndexInfo;
-import io.github.octopus.sql.executor.core.model.schema.TableInfo;
-import io.github.octopus.sql.executor.plugin.api.mapper.DDLMapper;
-import java.util.Collections;
+import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
+import io.github.octopus.sql.executor.core.model.schema.DatabaseDefinition;
+import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
+import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
 import java.util.List;
-import javax.sql.DataSource;
-import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class DDLExecutor extends AbstractSqlExecutor {
+public interface DDLExecutor {
+  void createDatabase(DatabaseDefinition databaseInfo);
 
-  protected DDLExecutor(String name, DataSource dataSource) {
-    super(name, dataSource);
-  }
+  void dropDatabase(@NotNull String database);
 
-  public void createDatabase(DatabaseInfo databaseInfo) {
-    executeDDL(ddlDao -> ddlDao.createDatabase(databaseInfo.getName()));
-  }
+  void createTable(TableDefinition tableInfo);
 
-  public void dropDatabase(@NotNull String database) {
-    executeDDL(ddlDao -> ddlDao.dropDatabase(database));
-  }
+  void dropTable(@Nullable String database, @Nullable String schema, @NotNull String table);
 
-  public void createTable(TableInfo tableInfo) {
-    executeDDL(ddlDao -> ddlDao.createTable(DDLMapper.toTableEntity(tableInfo)));
-  }
-
-  public void dropTable(@Nullable String database, @Nullable String schema, @NotNull String table) {
-    executeDDL(ddlDao -> ddlDao.dropTable(database, schema, table));
-  }
-
-  public void renameTable(
+  void renameTable(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String oldTable,
-      @NotNull String newTable) {
-    executeDDL(ddlDao -> ddlDao.renameTable(database, schema, oldTable, newTable));
-  }
+      @NotNull String newTable);
 
-  public void addTableComment(
-      @Nullable String database, @Nullable String schema, @NotNull String table, String comment) {
+  void addTableComment(
+      @Nullable String database, @Nullable String schema, @NotNull String table, String comment);
 
-    executeDDL(ddlDao -> ddlDao.modifyTableComment(database, schema, table, comment));
-  }
+  void modifyTableComment(
+      @Nullable String database, @Nullable String schema, @NotNull String table, String comment);
 
-  public void modifyTableComment(
-      @Nullable String database, @Nullable String schema, @NotNull String table, String comment) {
-    executeDDL(ddlDao -> ddlDao.modifyTableComment(database, schema, table, comment));
-  }
+  void removeTableComment(
+      @Nullable String database, @Nullable String schema, @NotNull String table);
 
-  public void removeTableComment(
-      @Nullable String database, @Nullable String schema, @NotNull String table) {
-
-    executeDDL(ddlDao -> ddlDao.modifyTableComment(database, schema, table, BLANK_COMMENT));
-  }
-
-  public void addColumn(
+  void addColumn(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      ColumnInfo columnInfo) {
-    addColumns(database, schema, table, Collections.singletonList(columnInfo));
-  }
+      ColumnDefinition columnInfo);
 
-  public void addColumns(
+  void addColumns(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      List<ColumnInfo> columnInfos) {
-    executeDDL(
-        ddlDao ->
-            ddlDao.addColumn(
-                Table.builder()
-                    .databaseName(database)
-                    .tableName(table)
-                    .columnDefinitions(DDLMapper.toColumnEntities(columnInfos))
-                    .build()));
-  }
+      List<ColumnDefinition> columnInfos);
 
-  public void modifyColumn(
+  void modifyColumn(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      ColumnInfo newColumn) {
-    executeDDL(
-        ddlDao ->
-            ddlDao.modifyColumn(database, schema, table, DDLMapper.toColumnEntity(newColumn)));
-  }
+      ColumnDefinition newColumn);
 
-  public void renameColumn(
+  void renameColumn(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
       @NotNull String oldColumn,
-      @NotNull String newColumn) {
-    executeDDL(ddlDao -> ddlDao.renameColumn(database, schema, table, oldColumn, newColumn));
-  }
+      @NotNull String newColumn);
 
-  public void dropColumn(
+  void dropColumn(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      @NotNull String column) {
-    executeDDL(ddlDao -> ddlDao.removeColumn(database, schema, table, column));
-  }
+      @NotNull String column);
 
-  public void addColumnComment(
+  void addColumnComment(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      ColumnInfo columnInfo) {
-    executeDDL(
-        ddlDao ->
-            ddlDao.modifyColumnComment(
-                database, schema, table, columnInfo.getName(), columnInfo.getComment()));
-  }
+      ColumnDefinition columnInfo);
 
-  public void modifyColumnComment(
+  void modifyColumnComment(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      ColumnInfo columnInfo) {
-    executeDDL(
-        ddlDao ->
-            ddlDao.modifyColumnComment(
-                database, schema, table, columnInfo.getName(), columnInfo.getComment()));
-  }
+      ColumnDefinition columnInfo);
 
-  public void removeColumnComment(
+  void removeColumnComment(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      ColumnInfo columnInfo) {
-    executeDDL(
-        ddlDao ->
-            ddlDao.modifyColumnComment(
-                database, schema, table, columnInfo.getName(), columnInfo.getComment()));
-  }
+      ColumnDefinition columnInfo);
 
-  public void createIndex(
+  void createIndex(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      IndexInfo indexInfo) {
-    executeDDL(
-        ddlDao -> ddlDao.createIndex(database, schema, table, DDLMapper.toIndexEntity(indexInfo)));
-  }
+      IndexDefinition indexInfo);
 
-  public void createIndexes(
+  void createIndexes(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      List<IndexInfo> indexInfos) {
-    if (CollectionUtils.isEmpty(indexInfos)) {
-      throw new SqlException("no index need create");
-    }
-    indexInfos.forEach(indexInfo -> createIndex(database, schema, table, indexInfo));
-  }
+      List<IndexDefinition> indexInfos);
 
-  public void dropIndex(
+  void dropIndex(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      @NotNull String index) {
-    executeDDL(ddlDao -> ddlDao.dropIndex(database, schema, table, index));
-  }
+      @NotNull String index);
 
-  public void dropIndexes(
+  void dropIndexes(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String table,
-      @NotNull List<String> indexes) {
-    if (CollectionUtils.isEmpty(indexes)) {
-      return;
-    }
-    indexes.forEach(index -> dropIndex(database, schema, table, index));
-  }
+      @NotNull List<String> indexes);
 
-  public void execute(@NotNull String sql) {
-    executeDDL(ddlDao -> ddlDao.executeSQL(sql));
-  }
+  void execute(@NotNull String sql);
 }

@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateStatement {
   private String database;
+  // for sqlserver
+  private String schema;
   private String table;
   private UpdateParams updateParams;
   private Expression expression;

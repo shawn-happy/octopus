@@ -1,34 +1,17 @@
 package io.github.octopus.sql.executor.plugin.sqlserver.executor;
 
-import io.github.octopus.sql.executor.plugin.api.dao.CurdDao;
 import io.github.octopus.sql.executor.plugin.api.dao.DDLDao;
-import io.github.octopus.sql.executor.plugin.api.dao.MetaDataDao;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
-import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.sqlserver.dao.SqlServerDDLDao;
 import javax.sql.DataSource;
+import lombok.Getter;
 
-public class SqlServerDDLExecutor extends DDLExecutor {
+@Getter
+public class SqlServerDDLExecutor extends AbstractDDLExecutor {
+
+  private final Class<? extends DDLDao> dDLDaoClass = SqlServerDDLDao.class;
+
   public SqlServerDDLExecutor(String name, DataSource dataSource) {
     super(name, dataSource);
-  }
-
-  @Override
-  protected JdbcType getJdbcType() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends CurdDao> getCurdDaoClass() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends DDLDao> getDDLDaoClass() {
-    return null;
-  }
-
-  @Override
-  protected Class<? extends MetaDataDao> getMetaDataDaoClass() {
-    return null;
   }
 }

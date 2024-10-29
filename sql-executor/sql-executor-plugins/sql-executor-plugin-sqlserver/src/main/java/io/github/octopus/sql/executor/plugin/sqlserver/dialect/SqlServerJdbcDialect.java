@@ -1,13 +1,16 @@
 package io.github.octopus.sql.executor.plugin.sqlserver.dialect;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
-import io.github.octopus.sql.executor.plugin.api.dialect.JdbcType;
-import io.github.octopus.sql.executor.plugin.api.executor.CurdExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.MetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.sqlserver.executor.SqlServerCurdExecutor;
+import io.github.octopus.sql.executor.plugin.sqlserver.executor.SqlServerDDLExecutor;
+import io.github.octopus.sql.executor.plugin.sqlserver.executor.SqlServerMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.sqlserver.model.SqlServerFieldType;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +23,7 @@ public class SqlServerJdbcDialect implements JdbcDialect {
   private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
 
   private final String dialectName = DatabaseIdentifier.SQLSERVER;
-  private final JdbcType jdbcType = SqlServerJdbcType.getJdbcType();
+  private final DbType mybatisDbType = DbType.SQL_SERVER;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(SqlServerFieldType.values());
 
   public SqlServerJdbcDialect() {}
@@ -30,18 +33,18 @@ public class SqlServerJdbcDialect implements JdbcDialect {
   }
 
   @Override
-  public CurdExecutor createCurdExecutor(String name, DataSource dataSource) {
-    return null;
+  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
+    return new SqlServerCurdExecutor(name, dataSource);
   }
 
   @Override
-  public DDLExecutor createDDLExecutor(String name, DataSource dataSource) {
-    return null;
+  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
+    return new SqlServerDDLExecutor(name, dataSource);
   }
 
   @Override
-  public MetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
-    return null;
+  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
+    return new SqlServerMetaDataExecutor(name, dataSource);
   }
 
   @Override
