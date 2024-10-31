@@ -29,5 +29,5 @@ public class TableDefinition {
   private TableEngine engine;
 
   // for doris 高级参数
-  private Map<String, Object> options;
+  private Map<String, String> options;
 }

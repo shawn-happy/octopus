@@ -26,6 +26,8 @@ public interface JdbcDialect {
 
   List<FieldType> getSupportedFieldTypes();
 
+  String buildPageSql(String sql, long offset, long limit);
+
   default List<TableEngine> getSupportedTableEngines() {
     throw new UnsupportedOperationException(
         String.format("The [%s] does not support storage engines", getDialectName()));

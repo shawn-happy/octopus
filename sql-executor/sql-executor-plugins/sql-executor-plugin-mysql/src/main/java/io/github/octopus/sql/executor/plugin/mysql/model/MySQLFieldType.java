@@ -2,12 +2,14 @@ package io.github.octopus.sql.executor.plugin.mysql.model;
 
 import com.google.common.collect.ImmutableList;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
+
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
 public enum MySQLFieldType implements FieldType {
   BIT(
-      "BIT",
+      "BIT", Types.BIT,
       FieldDescriptor.builder()
           .chName("位值类型")
           .description("bit类型，用于存储位值")
@@ -16,7 +18,7 @@ public enum MySQLFieldType implements FieldType {
           .build()),
 
   TINYINT(
-      "TINYINT",
+      "TINYINT",Types.TINYINT,
       FieldDescriptor.builder()
           .chName("极小整数型")
           .description("tinyInt类型，有符号范围：-128 to 127，无符号范围：0 to 255")
@@ -24,13 +26,13 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   BOOLEAN(
-      "BOOLEAN",
+      "BOOLEAN",Types.BOOLEAN,
       FieldDescriptor.builder()
           .chName("布尔类型")
           .description("BOOLEAN类型，相当于TINYINT(1)，0表示False，非0表示true")
           .build()),
   SMALLINT(
-      "SMALLINT",
+      "SMALLINT", Types.SMALLINT,
       FieldDescriptor.builder()
           .chName("短整数型")
           .description("SmallInt类型，有符号范围：-32768 to 32767，无符号范围：0 to 65535")
@@ -38,7 +40,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   INT(
-      "INT",
+      "INT", Types.INTEGER,
       FieldDescriptor.builder()
           .chName("整数类型")
           .description("Int类型，有符号范围：-2147483648 to 2147483647，无符号范围：0 to 4294967295")
@@ -46,7 +48,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   MEDIUMINT(
-      "MEDIUMINT",
+      "MEDIUMINT", Types.INTEGER,
       FieldDescriptor.builder()
           .chName("较小整数类型")
           .description("MEDIUMINT，有符号范围：-8388608 to 8388607，无符号范围：0 to 16777215")
@@ -54,7 +56,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   BIGINT(
-      "BIGINT",
+      "BIGINT",Types.BIGINT,
       FieldDescriptor.builder()
           .chName("长整数型")
           .description(
@@ -63,7 +65,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   DECIMAL(
-      "DECIMAL",
+      "DECIMAL", Types.DECIMAL,
       FieldDescriptor.builder()
           .chName("数值类型")
           .description("DECIMAL类型，例如：DECIMAL(5,2)，范围：-999.99 to 999.99")
@@ -73,7 +75,7 @@ public enum MySQLFieldType implements FieldType {
           .maxScale(30)
           .build()),
   FLOAT(
-      "FLOAT",
+      "FLOAT", Types.FLOAT,
       FieldDescriptor.builder()
           .chName("单精度浮点类型")
           .description("Float类型，单精度")
@@ -83,7 +85,7 @@ public enum MySQLFieldType implements FieldType {
           .maxScale(30)
           .build()),
   DOUBLE(
-      "DOUBLE",
+      "DOUBLE", Types.DOUBLE,
       FieldDescriptor.builder()
           .chName("双精度浮点类型")
           .description("Double类型，双精度")
@@ -93,13 +95,13 @@ public enum MySQLFieldType implements FieldType {
           .maxScale(30)
           .build()),
   DATE(
-      "DATE",
+      "DATE", Types.DATE,
       FieldDescriptor.builder()
           .chName("日期类型")
           .description("Date类型，格式：YYYY-MM-DD，范围：'1000-01-01' to '9999-12-31'")
           .build()),
   DATETIME(
-      "DATETIME",
+      "DATETIME", Types.TIMESTAMP,
       FieldDescriptor.builder()
           .chName("日期时间类型")
           .description(
@@ -108,7 +110,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   TIME(
-      "TIME",
+      "TIME", Types.TIME,
       FieldDescriptor.builder()
           .chName("时间类型")
           .description(
@@ -117,7 +119,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   TIMESTAMP(
-      "TIMESTAMP",
+      "TIMESTAMP",Types.TIMESTAMP,
       FieldDescriptor.builder()
           .chName("时间戳类型")
           .description(
@@ -126,7 +128,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   VARCHAR(
-      "VARCHAR",
+      "VARCHAR",Types.VARCHAR,
       FieldDescriptor.builder()
           .chName("字符串类型")
           .description("Varchar类型，变长字符串")
@@ -134,7 +136,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   CHAR(
-      "CHAR",
+      "CHAR",Types.CHAR,
       FieldDescriptor.builder()
           .chName("字符类型")
           .description("字符类型，固定长度")
@@ -142,7 +144,7 @@ public enum MySQLFieldType implements FieldType {
           .minPrecision(0)
           .build()),
   TINYTEXT(
-      "TINYTEXT", FieldDescriptor.builder().chName("短文本类型").description("TEXT类型，长文本字符串").build()),
+      "TINYTEXT", Types., FieldDescriptor.builder().chName("短文本类型").description("TEXT类型，长文本字符串").build()),
   TEXT("TEXT", FieldDescriptor.builder().chName("文本类型").description("TEXT类型，长文本字符串").build()),
   MEDIUMTEXT(
       "MEDIUMTEXT",
@@ -170,6 +172,7 @@ public enum MySQLFieldType implements FieldType {
   ENUM("ENUM", FieldDescriptor.builder().chName("枚举类型").description("枚举类型").build()),
   ;
   private final String dataType;
+  private final int sqlType;
   private final FieldDescriptor fieldDescriptor;
 
   private static final List<FieldType> NUMERIC_TYPES =
@@ -178,8 +181,9 @@ public enum MySQLFieldType implements FieldType {
   private static final List<FieldType> DATE_TIME_TYPES =
       ImmutableList.of(DATE, DATETIME, TIMESTAMP);
 
-  MySQLFieldType(String dataType, FieldDescriptor fieldDescriptor) {
+  MySQLFieldType(String dataType, int sqlType, FieldDescriptor fieldDescriptor) {
     this.dataType = dataType;
+    this.sqlType = sqlType;
     this.fieldDescriptor = fieldDescriptor;
   }
 
@@ -196,6 +200,11 @@ public enum MySQLFieldType implements FieldType {
   @Override
   public String getDescription() {
     return fieldDescriptor.getDescription();
+  }
+
+  @Override
+  public int getSqlType(){
+    return sqlType;
   }
 
   @Override

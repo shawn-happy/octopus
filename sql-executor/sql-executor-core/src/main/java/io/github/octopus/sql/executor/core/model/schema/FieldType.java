@@ -16,6 +16,8 @@ public interface FieldType {
 
   String toString();
 
+  int getSqlType();
+
   /** 是否是数字类型 */
   boolean isNumeric();
 

@@ -52,6 +52,11 @@ public class MySQLJdbcDialect implements JdbcDialect {
   }
 
   @Override
+  public String buildPageSql(String sql, long offset, long limit) {
+    return "";
+  }
+
+  @Override
   public String quoteIdentifier(String identifier) {
     return "`" + getFieldIde(identifier, fieldIde) + "`";
   }
