@@ -1,5 +1,6 @@
 package io.github.octopus.sql.executor.core.model.curd;
 
+import io.github.octopus.sql.executor.core.model.schema.TablePath;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InsertStatement {
-  private String database;
-  // for sqlserver
-  private String schema;
-  private String table;
+  private TablePath tablePath;
   private List<String> columns;
   private List<Object[]> values;
 }
