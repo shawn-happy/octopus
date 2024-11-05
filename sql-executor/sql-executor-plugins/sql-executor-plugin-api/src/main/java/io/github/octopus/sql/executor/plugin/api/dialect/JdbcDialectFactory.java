@@ -1,5 +1,7 @@
 package io.github.octopus.sql.executor.plugin.api.dialect;
 
+import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
+
 public interface JdbcDialectFactory {
   /**
    * Get the name of jdbc dialect.
@@ -16,7 +18,7 @@ public interface JdbcDialectFactory {
    *
    * @return a new instance of {@link JdbcDialect}
    */
-  default JdbcDialect create(String fieldId) {
+  default JdbcDialect create(FieldIdeEnum fieldIde) {
     return create();
   }
 }

@@ -1,6 +1,7 @@
 package io.github.octopus.sql.executor.plugin.mysql.dialect;
 
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
+import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.TableEngine;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
@@ -8,7 +9,7 @@ import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLCurdExecutor;
-import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLDDLExecutorAbstract;
+import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLDDLExecutor;
 import io.github.octopus.sql.executor.plugin.mysql.executor.MySQLMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.mysql.model.MySQLFieldType;
 import io.github.octopus.sql.executor.plugin.mysql.model.MySQLTableEngine;
@@ -22,24 +23,31 @@ import org.apache.commons.lang3.StringUtils;
 public class MySQLJdbcDialect implements JdbcDialect {
 
   private final String dialectName = DatabaseIdentifier.MYSQL;
+  private final FieldIdeEnum fieldIde;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(MySQLFieldType.values());
   private final List<TableEngine> supportedTableEngines = Arrays.asList(MySQLTableEngine.values());
 
-  public MySQLJdbcDialect() {}
+  public MySQLJdbcDialect() {
+    this.fieldIde = FieldIdeEnum.ORIGINAL;
+  }
 
-  @Override
-  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
-    return new MySQLCurdExecutor(name, dataSource);
+  public MySQLJdbcDialect(FieldIdeEnum fieldIde) {
+    this.fieldIde = fieldIde;
   }
 
   @Override
-  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
-    return new MySQLDDLExecutorAbstract(name, dataSource);
+  public AbstractCurdExecutor createCurdExecutor(DataSource dataSource) {
+    return new MySQLCurdExecutor(dataSource);
   }
 
   @Override
-  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
-    return new MySQLMetaDataExecutor(name, dataSource);
+  public AbstractDDLExecutor createDDLExecutor(DataSource dataSource) {
+    return new MySQLDDLExecutor(dataSource);
+  }
+
+  @Override
+  public AbstractMetaDataExecutor createMetaDataExecutor(DataSource dataSource) {
+    return new MySQLMetaDataExecutor(dataSource);
   }
 
   @Override

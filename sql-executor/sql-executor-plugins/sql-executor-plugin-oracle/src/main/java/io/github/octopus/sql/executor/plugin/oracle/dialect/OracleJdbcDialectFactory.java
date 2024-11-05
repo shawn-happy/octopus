@@ -1,6 +1,7 @@
 package io.github.octopus.sql.executor.plugin.oracle.dialect;
 
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
+import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialectFactory;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class OracleJdbcDialectFactory implements JdbcDialectFactory {
   }
 
   @Override
-  public JdbcDialect create(String fieldId) {
-    return new OracleJdbcDialect(fieldId);
+  public JdbcDialect create(FieldIdeEnum fieldIde) {
+    return new OracleJdbcDialect(fieldIde);
   }
 }

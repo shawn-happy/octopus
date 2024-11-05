@@ -19,30 +19,32 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 public class SqlServerJdbcDialect implements JdbcDialect {
-  private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
 
   private final String dialectName = DatabaseIdentifier.SQLSERVER;
+  private final FieldIdeEnum fieldIde;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(SqlServerFieldType.values());
 
-  public SqlServerJdbcDialect() {}
+  public SqlServerJdbcDialect() {
+    this.fieldIde = FieldIdeEnum.ORIGINAL;
+  }
 
-  public SqlServerJdbcDialect(final String fieldIde) {
+  public SqlServerJdbcDialect(FieldIdeEnum fieldIde) {
     this.fieldIde = fieldIde;
   }
 
   @Override
-  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
-    return new SqlServerCurdExecutor(name, dataSource);
+  public AbstractCurdExecutor createCurdExecutor(DataSource dataSource) {
+    return new SqlServerCurdExecutor(dataSource);
   }
 
   @Override
-  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
-    return new SqlServerDDLExecutor(name, dataSource);
+  public AbstractDDLExecutor createDDLExecutor(DataSource dataSource) {
+    return new SqlServerDDLExecutor(dataSource);
   }
 
   @Override
-  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
-    return new SqlServerMetaDataExecutor(name, dataSource);
+  public AbstractMetaDataExecutor createMetaDataExecutor(DataSource dataSource) {
+    return new SqlServerMetaDataExecutor(dataSource);
   }
 
   @Override

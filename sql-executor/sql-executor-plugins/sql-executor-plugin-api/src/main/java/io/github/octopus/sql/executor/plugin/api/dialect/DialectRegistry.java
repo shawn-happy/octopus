@@ -1,6 +1,7 @@
 package io.github.octopus.sql.executor.plugin.api.dialect;
 
 import io.github.octopus.sql.executor.core.exception.SqlException;
+import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public final class DialectRegistry {
    *     unambiguously process the given database URL.
    * @return The loaded dialect.
    */
-  public static JdbcDialect load(String dialectName, String fieldIde) {
+  public static JdbcDialect load(String dialectName, FieldIdeEnum fieldIde) {
     JdbcDialect jdbcDialect = JDBC_DIALECT_FACTORY.get(dialectName).create(fieldIde);
     JDBC_DIALECT_MAP.put(dialectName, jdbcDialect);
     return jdbcDialect;

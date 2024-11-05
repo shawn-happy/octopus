@@ -7,6 +7,7 @@ import io.github.octopus.sql.executor.core.model.curd.UpdateStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
+import io.github.octopus.sql.executor.plugin.sqlserver.dialect.SqlServerCurdStatement;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -15,8 +16,8 @@ import lombok.Getter;
 @Getter
 public class SqlServerCurdExecutor extends AbstractCurdExecutor {
 
-  public SqlServerCurdExecutor(String name, DataSource dataSource) {
-    super(name, dataSource);
+  public SqlServerCurdExecutor(DataSource dataSource) {
+    super(dataSource, SqlServerCurdStatement.getCurdStatement());
   }
 
   @Override

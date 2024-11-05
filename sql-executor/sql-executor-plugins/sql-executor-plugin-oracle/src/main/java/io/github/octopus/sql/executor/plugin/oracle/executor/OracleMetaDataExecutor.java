@@ -4,6 +4,7 @@ import io.github.octopus.sql.executor.core.model.metadata.ColumnMetaInfo;
 import io.github.octopus.sql.executor.core.model.metadata.DatabaseMetaInfo;
 import io.github.octopus.sql.executor.core.model.metadata.TableMetaInfo;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.oracle.dialect.OracleMetaDataStatement;
 import java.util.List;
 import javax.sql.DataSource;
 import lombok.Getter;
@@ -11,8 +12,8 @@ import lombok.Getter;
 @Getter
 public class OracleMetaDataExecutor extends AbstractMetaDataExecutor {
 
-  public OracleMetaDataExecutor(String name, DataSource dataSource) {
-    super(name, dataSource);
+  public OracleMetaDataExecutor(DataSource dataSource) {
+    super(dataSource, OracleMetaDataStatement.getMetaDataStatement());
   }
 
   @Override

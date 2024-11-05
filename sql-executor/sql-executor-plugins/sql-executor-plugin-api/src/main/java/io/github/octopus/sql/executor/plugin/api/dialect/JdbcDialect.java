@@ -4,9 +4,9 @@ import io.github.octopus.sql.executor.core.exception.SqlException;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.TableEngine;
-import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
-import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.CurdExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.DDLExecutor;
+import io.github.octopus.sql.executor.plugin.api.executor.MetaDataExecutor;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -15,11 +15,11 @@ public interface JdbcDialect {
 
   String getDialectName();
 
-  AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource);
+  CurdExecutor createCurdExecutor(DataSource dataSource);
 
-  AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource);
+  DDLExecutor createDDLExecutor(DataSource dataSource);
 
-  AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource);
+  MetaDataExecutor createMetaDataExecutor(DataSource dataSource);
 
   List<FieldType> getSupportedFieldTypes();
 

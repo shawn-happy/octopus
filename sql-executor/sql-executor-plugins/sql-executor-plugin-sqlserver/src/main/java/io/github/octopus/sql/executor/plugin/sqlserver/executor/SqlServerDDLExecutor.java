@@ -5,6 +5,7 @@ import io.github.octopus.sql.executor.core.model.schema.DatabaseDefinition;
 import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
+import io.github.octopus.sql.executor.plugin.sqlserver.dialect.SqlServerDDLStatement;
 import java.util.List;
 import javax.sql.DataSource;
 import lombok.Getter;
@@ -14,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public class SqlServerDDLExecutor extends AbstractDDLExecutor {
 
-  public SqlServerDDLExecutor(String name, DataSource dataSource) {
-    super(name, dataSource);
+  public SqlServerDDLExecutor(DataSource dataSource) {
+    super(dataSource, SqlServerDDLStatement.getDDLStatement());
   }
 
   @Override

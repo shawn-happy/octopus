@@ -20,30 +20,31 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 public class OracleJdbcDialect implements JdbcDialect {
 
-  private String fieldIde = FieldIdeEnum.UPPERCASE.getValue();
-
   private final String dialectName = DatabaseIdentifier.ORACLE;
+  private final FieldIdeEnum fieldIde;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(OracleFieldType.values());
 
-  public OracleJdbcDialect() {}
+  public OracleJdbcDialect() {
+    this.fieldIde = FieldIdeEnum.UPPERCASE;
+  }
 
-  public OracleJdbcDialect(String fieldIde) {
+  public OracleJdbcDialect(FieldIdeEnum fieldIde) {
     this.fieldIde = fieldIde;
   }
 
   @Override
-  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
-    return new OracleCurdExecutor(name, dataSource);
+  public AbstractCurdExecutor createCurdExecutor(DataSource dataSource) {
+    return new OracleCurdExecutor(dataSource);
   }
 
   @Override
-  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
-    return new OracleDDLExecutor(name, dataSource);
+  public AbstractDDLExecutor createDDLExecutor(DataSource dataSource) {
+    return new OracleDDLExecutor(dataSource);
   }
 
   @Override
-  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
-    return new OracleMetaDataExecutor(name, dataSource);
+  public AbstractMetaDataExecutor createMetaDataExecutor(DataSource dataSource) {
+    return new OracleMetaDataExecutor(dataSource);
   }
 
   @Override

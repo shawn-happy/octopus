@@ -8,9 +8,9 @@ import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
-import io.github.octopus.sql.executor.plugin.doris.executor.DorisAbstractMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.doris.executor.DorisCurdExecutor;
 import io.github.octopus.sql.executor.plugin.doris.executor.DorisDDLExecutor;
+import io.github.octopus.sql.executor.plugin.doris.executor.DorisMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.doris.model.DorisFieldType;
 import io.github.octopus.sql.executor.plugin.doris.model.DorisTableEngine;
 import java.util.Arrays;
@@ -22,31 +22,32 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 public class DorisJdbcDialect implements JdbcDialect {
 
-  private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
-
   private final String dialectName = DatabaseIdentifier.DORIS;
+  private final FieldIdeEnum fieldIde;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(DorisFieldType.values());
   private final List<TableEngine> supportedTableEngines = Arrays.asList(DorisTableEngine.values());
 
-  public DorisJdbcDialect() {}
+  public DorisJdbcDialect() {
+    this.fieldIde = FieldIdeEnum.ORIGINAL;
+  }
 
-  public DorisJdbcDialect(String fieldIde) {
+  public DorisJdbcDialect(FieldIdeEnum fieldIde) {
     this.fieldIde = fieldIde;
   }
 
   @Override
-  public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {
-    return new DorisCurdExecutor(name, dataSource);
+  public AbstractCurdExecutor createCurdExecutor(DataSource dataSource) {
+    return new DorisCurdExecutor(dataSource);
   }
 
   @Override
-  public AbstractDDLExecutor createDDLExecutor(String name, DataSource dataSource) {
-    return new DorisDDLExecutor(name, dataSource);
+  public AbstractDDLExecutor createDDLExecutor(DataSource dataSource) {
+    return new DorisDDLExecutor(dataSource);
   }
 
   @Override
-  public AbstractMetaDataExecutor createMetaDataExecutor(String name, DataSource dataSource) {
-    return new DorisAbstractMetaDataExecutor(name, dataSource);
+  public AbstractMetaDataExecutor createMetaDataExecutor(DataSource dataSource) {
+    return new DorisMetaDataExecutor(dataSource);
   }
 
   @Override
