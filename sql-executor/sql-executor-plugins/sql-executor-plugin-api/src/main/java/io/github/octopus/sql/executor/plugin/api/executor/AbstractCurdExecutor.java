@@ -10,7 +10,6 @@ import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
 import io.github.octopus.sql.executor.plugin.api.mapper.CurdMapper;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,30 +17,24 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractCurdExecutor implements CurdExecutor {
 
   private final String name;
-  private final CurdDao curdDao;
 
   protected AbstractCurdExecutor(String name, DataSource dataSource) {
     this.name = name;
-    SqlSessionManager sqlSession = SqlSessionProvider.createSqlSession(name, dataSource);
-    sqlSession.getConfiguration().addMapper(getCurdDaoClass());
-    this.curdDao = sqlSession.getMapper(getCurdDaoClass());
-  }
 
-  protected abstract Class<? extends CurdDao> getCurdDaoClass();
+  }
 
   @Override
   public int save(InsertStatement insertStatement) {
-    return executeCurd(curd -> curd.save(CurdMapper.toInsert(insertStatement)));
   }
 
   @Override
   public int saveBatch(InsertStatement insertStatement) {
-    return executeCurd(curd -> curd.saveBatch(CurdMapper.toInsert(insertStatement)));
+    return ;
   }
 
   @Override
   public int upsert(TableDefinition definition, UpsertStatement upsertStatement) {
-    return executeCurd(curd -> curd.upsert(CurdMapper.toUpsert(definition, upsertStatement)));
+    return ;
   }
 
   @Override
