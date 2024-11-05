@@ -1,6 +1,6 @@
 package io.github.octopus.sql.executor.plugin.api.executor;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.github.octopus.sql.executor.core.model.Page;
 import io.github.octopus.sql.executor.core.model.curd.DeleteStatement;
 import io.github.octopus.sql.executor.core.model.curd.InsertStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpdateStatement;
@@ -39,7 +39,7 @@ public interface CurdExecutor {
    * @param params
    * @return
    */
-  IPage<Map<String, Object>> queryPageBySQL(
+  Page<Map<String, Object>> queryPageBySQL(
       String sql, Map<String, Object> params, Integer pageNum, Integer pageSize);
 
   /**

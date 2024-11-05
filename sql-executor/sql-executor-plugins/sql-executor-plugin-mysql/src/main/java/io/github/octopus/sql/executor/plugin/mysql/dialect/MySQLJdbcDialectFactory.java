@@ -17,6 +17,6 @@ public class MySQLJdbcDialectFactory implements JdbcDialectFactory {
 
   @Override
   public JdbcDialect create(String fieldId) {
-    return new MySQLJdbcDialect(fieldId);
+    return new MySQLJdbcDialect();
   }
 }

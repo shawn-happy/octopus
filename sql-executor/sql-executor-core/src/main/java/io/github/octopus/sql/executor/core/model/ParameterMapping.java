@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParameterMapping {
-    private int i;
-    private String param;
-    private Object value;
-
+  private int i;
+  private String param;
+  private Object value;
 }

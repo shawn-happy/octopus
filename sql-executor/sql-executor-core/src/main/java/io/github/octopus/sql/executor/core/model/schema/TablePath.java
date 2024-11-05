@@ -1,12 +1,10 @@
 package io.github.octopus.sql.executor.core.model.schema;
 
+import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @RequiredArgsConstructor

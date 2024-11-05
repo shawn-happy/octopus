@@ -9,14 +9,13 @@ import io.github.octopus.sql.executor.core.model.curd.UpdateStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
 import io.github.octopus.sql.executor.core.model.expression.Expression;
 import io.github.octopus.sql.executor.core.model.schema.TablePath;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public interface CurdStatement extends SqlStatement {
 
@@ -35,7 +34,8 @@ public interface CurdStatement extends SqlStatement {
     LinkedHashMap<String, Object> updateParams = updateStatement.getUpdateParams();
     Set<String> fieldNames = updateParams.keySet();
     String setClause =
-        fieldNames.stream()
+        fieldNames
+            .stream()
             .map(fieldName -> format("%s = :%s", quoteIdentifier(fieldName), fieldName))
             .collect(Collectors.joining(", "));
     TablePath tablePath = updateStatement.getTablePath();

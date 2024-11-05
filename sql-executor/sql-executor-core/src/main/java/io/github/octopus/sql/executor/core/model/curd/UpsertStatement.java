@@ -1,12 +1,11 @@
 package io.github.octopus.sql.executor.core.model.curd;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.core.model.schema.ConstraintDefinition;
 import io.github.octopus.sql.executor.core.model.schema.ConstraintType;
 import io.github.octopus.sql.executor.core.model.schema.TablePath;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +24,8 @@ public class UpsertStatement {
 
   public List<String> uniqueColumns() {
     if (CollectionUtils.isNotEmpty(constraints)) {
-      return constraints.stream()
+      return constraints
+          .stream()
           .filter(
               constraint ->
                   constraint.getConstraintType() == ConstraintType.PRIMARY_KEY
@@ -39,7 +39,8 @@ public class UpsertStatement {
 
   public List<String> nonUniqueColumns() {
     List<String> uniqueColumns = uniqueColumns();
-    return columns.stream()
+    return columns
+        .stream()
         .map(ColumnDefinition::getColumn)
         .filter(col -> !uniqueColumns.contains(col))
         .collect(Collectors.toList());

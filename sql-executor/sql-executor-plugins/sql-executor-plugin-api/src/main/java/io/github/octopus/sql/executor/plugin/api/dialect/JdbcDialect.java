@@ -35,7 +35,8 @@ public interface JdbcDialect {
       return null;
     }
     List<TableEngine> supportedTableEngines = getSupportedTableEngines();
-    return supportedTableEngines.stream()
+    return supportedTableEngines
+        .stream()
         .filter(engine -> engine.getEngine().equalsIgnoreCase(tableEngine))
         .findFirst()
         .orElseThrow(
@@ -47,7 +48,8 @@ public interface JdbcDialect {
   }
 
   default FieldType toFieldType(String fieldType) {
-    return getSupportedFieldTypes().stream()
+    return getSupportedFieldTypes()
+        .stream()
         .filter(type -> type.getDataType().equalsIgnoreCase(fieldType))
         .findFirst()
         .orElseThrow(
@@ -66,7 +68,7 @@ public interface JdbcDialect {
     return "`";
   }
 
-  default FieldIdeEnum getFieldIde(){
+  default FieldIdeEnum getFieldIde() {
     return FieldIdeEnum.ORIGINAL;
   }
 

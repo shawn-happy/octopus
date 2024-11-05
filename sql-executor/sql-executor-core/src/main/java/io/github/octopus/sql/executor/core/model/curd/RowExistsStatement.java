@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RowExistsStatement {
-    private TablePath tablePath;
-    private Expression expression;
+  private TablePath tablePath;
+  private Expression expression;
 }

@@ -2,7 +2,6 @@ package io.github.octopus.sql.executor.plugin.mysql.model;
 
 import com.google.common.collect.ImmutableList;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
-
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;

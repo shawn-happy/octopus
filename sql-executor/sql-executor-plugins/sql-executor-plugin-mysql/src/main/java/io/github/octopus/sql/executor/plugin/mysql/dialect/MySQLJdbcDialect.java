@@ -1,7 +1,6 @@
 package io.github.octopus.sql.executor.plugin.mysql.dialect;
 
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
-import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.TableEngine;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
@@ -22,17 +21,11 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 public class MySQLJdbcDialect implements JdbcDialect {
 
-  private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
-
   private final String dialectName = DatabaseIdentifier.MYSQL;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(MySQLFieldType.values());
   private final List<TableEngine> supportedTableEngines = Arrays.asList(MySQLTableEngine.values());
 
   public MySQLJdbcDialect() {}
-
-  public MySQLJdbcDialect(String fieldIde) {
-    this.fieldIde = fieldIde;
-  }
 
   @Override
   public AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource) {

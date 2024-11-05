@@ -2,12 +2,11 @@ package io.github.octopus.sql.executor.core.model.curd;
 
 import io.github.octopus.sql.executor.core.model.expression.Expression;
 import io.github.octopus.sql.executor.core.model.schema.TablePath;
+import java.util.LinkedHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.LinkedHashMap;
 
 @Getter
 @Builder
