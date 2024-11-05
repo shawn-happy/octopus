@@ -1,11 +1,9 @@
 package io.github.octopus.sql.executor.plugin.api.executor;
 
-import io.github.octopus.sql.executor.core.SqlSessionProvider;
 import io.github.octopus.sql.executor.core.exception.SqlExecuteException;
 import io.github.octopus.sql.executor.core.model.metadata.ColumnMetaInfo;
 import io.github.octopus.sql.executor.core.model.metadata.DatabaseMetaInfo;
 import io.github.octopus.sql.executor.core.model.metadata.TableMetaInfo;
-import io.github.octopus.sql.executor.plugin.api.dao.MetaDataDao;
 import io.github.octopus.sql.executor.plugin.api.mapper.MetaDataMapper;
 import java.util.ArrayList;
 import java.util.List;

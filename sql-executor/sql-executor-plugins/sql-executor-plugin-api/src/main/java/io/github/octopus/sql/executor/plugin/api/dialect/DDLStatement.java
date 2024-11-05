@@ -9,19 +9,17 @@ import io.github.octopus.sql.executor.core.model.schema.TablePath;
 public interface DDLStatement extends SqlStatement {
 
   default String getCreateDatabaseSql(DatabaseDefinition definition) {
-    return "CREATE DATABASE IF NOT EXISTS "
-        + getJdbcDialect().quoteDatabaseIdentifier(definition.getDatabase());
+    return "CREATE DATABASE IF NOT EXISTS " + quoteIdentifier(definition.getDatabase());
   }
 
   default String getDropDatabaseSql(String databaseName) {
-    return String.format("DROP DATABASE `%s`;", databaseName);
+    return String.format("DROP DATABASE %s", quoteIdentifier(databaseName));
   }
 
   String getCreateTableSql(TableDefinition tableDefinition);
 
   default String getDropTableSql(TablePath tablePath) {
-    return String.format(
-        "DROP TABLE %s", tablePath.getFullNameWithQuoted(getJdbcDialect().quote()));
+    return String.format("DROP TABLE %s", tableIdentifier(tablePath));
   }
 
   String getRenameTableSql(TablePath oldTablePath, String newTableName);
@@ -51,5 +49,4 @@ public interface DDLStatement extends SqlStatement {
   String getModifyIndexSql(TablePath tablePath, IndexDefinition indexDefinition);
 
   String getDropIndexSql(TablePath tablePath, String index);
-
 }

@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.doris.executor;
 
-import io.github.octopus.sql.executor.plugin.api.dao.MetaDataDao;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractMetaDataExecutor;
 import io.github.octopus.sql.executor.plugin.doris.dao.DorisMetaDataDao;
 import javax.sql.DataSource;

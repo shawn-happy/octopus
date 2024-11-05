@@ -1,7 +1,6 @@
 package io.github.octopus.sql.executor.plugin.doris.executor;
 
 import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
-import io.github.octopus.sql.executor.plugin.api.dao.DDLDao;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
 import io.github.octopus.sql.executor.plugin.doris.dao.DorisDDLDao;
 import javax.sql.DataSource;

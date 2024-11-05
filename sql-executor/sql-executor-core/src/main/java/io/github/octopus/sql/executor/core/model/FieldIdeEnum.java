@@ -13,4 +13,15 @@ public enum FieldIdeEnum {
   FieldIdeEnum(String value) {
     this.value = value;
   }
+
+  public String identifier(String identifier) {
+    switch (this) {
+      case LOWERCASE:
+        return identifier.toLowerCase();
+      case UPPERCASE:
+        return identifier.toUpperCase();
+      default:
+        return identifier;
+    }
+  }
 }

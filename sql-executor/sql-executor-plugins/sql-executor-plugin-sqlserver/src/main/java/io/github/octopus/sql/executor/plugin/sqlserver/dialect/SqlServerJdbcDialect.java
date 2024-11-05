@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.sqlserver.dialect;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
@@ -23,7 +22,6 @@ public class SqlServerJdbcDialect implements JdbcDialect {
   private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
 
   private final String dialectName = DatabaseIdentifier.SQLSERVER;
-  private final DbType mybatisDbType = DbType.SQL_SERVER;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(SqlServerFieldType.values());
 
   public SqlServerJdbcDialect() {}
@@ -48,25 +46,18 @@ public class SqlServerJdbcDialect implements JdbcDialect {
   }
 
   @Override
-  public String quoteIdentifier(String identifier) {
-    if (identifier.contains(".")) {
-      String[] parts = identifier.split("\\.");
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < parts.length - 1; i++) {
-        sb.append("[").append(parts[i]).append("]").append(".");
-      }
-      return sb.append("[")
-          .append(getFieldIde(parts[parts.length - 1], fieldIde))
-          .append("]")
-          .toString();
-    }
-
-    return "[" + getFieldIde(identifier, fieldIde) + "]";
+  public String buildPageSql(String sql, long offset, long limit) {
+    return "";
   }
 
   @Override
-  public String quoteDatabaseIdentifier(String identifier) {
-    return "[" + identifier + "]";
+  public String quoteLeft() {
+    return "[";
+  }
+
+  @Override
+  public String quoteRight() {
+    return "]";
   }
 
   @Override

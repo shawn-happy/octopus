@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.mysql.executor;
 
-import io.github.octopus.sql.executor.plugin.api.dao.DDLDao;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractDDLExecutor;
 import io.github.octopus.sql.executor.plugin.mysql.dao.MySQLDDLDao;
 import javax.sql.DataSource;

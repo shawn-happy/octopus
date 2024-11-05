@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.api.dialect;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.exception.SqlException;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
@@ -15,8 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 public interface JdbcDialect {
 
   String getDialectName();
-
-  DbType getMybatisDbType();
 
   AbstractCurdExecutor createCurdExecutor(String name, DataSource dataSource);
 
@@ -61,35 +58,16 @@ public interface JdbcDialect {
                         fieldType, getDialectName())));
   }
 
-  default String quote() {
+  default String quoteLeft() {
     return "`";
   }
 
-  default String quoteIdentifier(String identifier) {
-    return identifier;
+  default String quoteRight() {
+    return "`";
   }
 
-  /** Quotes the identifier for database name or field name */
-  default String quoteDatabaseIdentifier(String identifier) {
-    return identifier;
-  }
-
-  default String tableIdentifier(String database, String tableName) {
-    return quoteDatabaseIdentifier(database) + "." + quoteIdentifier(tableName);
-  }
-
-  default String getFieldIde(String identifier, String fieldIde) {
-    if (StringUtils.isEmpty(fieldIde)) {
-      return identifier;
-    }
-    switch (FieldIdeEnum.valueOf(fieldIde.toUpperCase())) {
-      case LOWERCASE:
-        return identifier.toLowerCase();
-      case UPPERCASE:
-        return identifier.toUpperCase();
-      default:
-        return identifier;
-    }
+  default FieldIdeEnum getFieldIde(){
+    return FieldIdeEnum.ORIGINAL;
   }
 
   String getUrl(String host, int port, String database, String suffix);

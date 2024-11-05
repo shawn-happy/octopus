@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.doris.dialect;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
@@ -26,7 +25,6 @@ public class DorisJdbcDialect implements JdbcDialect {
   private String fieldIde = FieldIdeEnum.ORIGINAL.getValue();
 
   private final String dialectName = DatabaseIdentifier.DORIS;
-  private final DbType mybatisDbType = DbType.MYSQL;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(DorisFieldType.values());
   private final List<TableEngine> supportedTableEngines = Arrays.asList(DorisTableEngine.values());
 
@@ -52,13 +50,8 @@ public class DorisJdbcDialect implements JdbcDialect {
   }
 
   @Override
-  public String quoteIdentifier(String identifier) {
-    return "`" + getFieldIde(identifier, fieldIde) + "`";
-  }
-
-  @Override
-  public String quoteDatabaseIdentifier(String identifier) {
-    return "`" + identifier + "`";
+  public String buildPageSql(String sql, long offset, long limit) {
+    return "";
   }
 
   @Override

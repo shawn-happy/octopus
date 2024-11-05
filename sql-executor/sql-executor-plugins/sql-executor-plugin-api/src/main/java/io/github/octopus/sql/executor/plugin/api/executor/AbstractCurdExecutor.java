@@ -1,7 +1,5 @@
 package io.github.octopus.sql.executor.plugin.api.executor;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.github.octopus.sql.executor.core.SqlSessionProvider;
 import io.github.octopus.sql.executor.core.entity.Select;
 import io.github.octopus.sql.executor.core.exception.SqlExecuteException;
 import io.github.octopus.sql.executor.core.model.curd.DeleteStatement;
@@ -9,14 +7,12 @@ import io.github.octopus.sql.executor.core.model.curd.InsertStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpdateStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
-import io.github.octopus.sql.executor.plugin.api.dao.CurdDao;
 import io.github.octopus.sql.executor.plugin.api.mapper.CurdMapper;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSessionManager;
 
 @Slf4j
 public abstract class AbstractCurdExecutor implements CurdExecutor {

@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.sqlserver.executor;
 
-import io.github.octopus.sql.executor.plugin.api.dao.CurdDao;
 import io.github.octopus.sql.executor.plugin.api.executor.AbstractCurdExecutor;
 import io.github.octopus.sql.executor.plugin.sqlserver.dao.SqlServerCurdDao;
 import javax.sql.DataSource;

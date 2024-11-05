@@ -1,6 +1,7 @@
 package io.github.octopus.sql.executor.core.model.curd;
 
 import io.github.octopus.sql.executor.core.model.expression.Expression;
+import io.github.octopus.sql.executor.core.model.schema.TablePath;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteStatement {
-  private String database;
-  // for sqlserver
-  private String schema;
-  private String table;
+  private TablePath tablePath;
   private Expression expression;
 }

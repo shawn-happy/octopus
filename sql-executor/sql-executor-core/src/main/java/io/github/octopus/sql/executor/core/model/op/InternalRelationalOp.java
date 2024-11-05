@@ -343,7 +343,7 @@ public enum InternalRelationalOp implements RelationalOp {
               "single op type is [%s], param cannot be null or param's size should be equals 1",
               op));
     }
-    return String.format(" %s %s ", op, "#{params." + paramValues[0].getParam() + "}");
+    return String.format(" %s %s ", op, ":" + paramValues[0].getParam());
   }
 
   protected String toSingleOpSQLValue(String op, ParamValue[] paramValues) {

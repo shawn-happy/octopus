@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.api.executor;
 
-import io.github.octopus.sql.executor.core.SqlSessionProvider;
 import io.github.octopus.sql.executor.core.entity.Table;
 import io.github.octopus.sql.executor.core.exception.SqlException;
 import io.github.octopus.sql.executor.core.exception.SqlExecuteException;
@@ -8,7 +7,6 @@ import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.core.model.schema.DatabaseDefinition;
 import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
-import io.github.octopus.sql.executor.plugin.api.dao.DDLDao;
 import io.github.octopus.sql.executor.plugin.api.mapper.DDLMapper;
 import java.util.Collections;
 import java.util.List;

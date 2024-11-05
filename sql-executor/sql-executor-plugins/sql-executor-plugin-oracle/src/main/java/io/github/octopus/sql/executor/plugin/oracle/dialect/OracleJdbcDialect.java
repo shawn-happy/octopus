@@ -1,6 +1,5 @@
 package io.github.octopus.sql.executor.plugin.oracle.dialect;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
@@ -24,7 +23,6 @@ public class OracleJdbcDialect implements JdbcDialect {
   private String fieldIde = FieldIdeEnum.UPPERCASE.getValue();
 
   private final String dialectName = DatabaseIdentifier.ORACLE;
-  private final DbType mybatisDbType = DbType.ORACLE;
   private final List<FieldType> supportedFieldTypes = Arrays.asList(OracleFieldType.values());
 
   public OracleJdbcDialect() {}
@@ -49,24 +47,18 @@ public class OracleJdbcDialect implements JdbcDialect {
   }
 
   @Override
-  public String quoteIdentifier(String identifier) {
-    if (identifier.contains(".")) {
-      String[] parts = identifier.split("\\.");
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < parts.length - 1; i++) {
-        sb.append("\"").append(parts[i]).append("\"").append(".");
-      }
-      return sb.append("\"")
-          .append(getFieldIde(parts[parts.length - 1], fieldIde))
-          .append("\"")
-          .toString();
-    }
-    return "\"" + getFieldIde(identifier, fieldIde) + "\"";
+  public String quoteLeft() {
+    return "\"";
   }
 
   @Override
-  public String tableIdentifier(String database, String tableName) {
-    return quoteIdentifier(tableName);
+  public String quoteRight() {
+    return "\"";
+  }
+
+  @Override
+  public String buildPageSql(String sql, long offset, long limit) {
+    return "";
   }
 
   @Override

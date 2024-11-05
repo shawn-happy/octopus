@@ -2,8 +2,11 @@ package io.github.octopus.sql.executor.core.model.schema;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.octopus.sql.executor.core.model.FieldIdeEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @RequiredArgsConstructor
@@ -45,28 +48,47 @@ public class TablePath {
     return new TablePath(databaseName, schemaName, tableName);
   }
 
-  public String getSchemaAndTableName() {
-    return getNameCommon(null, schemaName, tableName, null, null);
+  public String getDatabaseNameWithQuoted(FieldIdeEnum fieldIdeEnum) {
+    return getDatabaseNameWithQuoted("`", fieldIdeEnum);
   }
 
-  public String getSchemaAndTableName(String quote) {
-    return getNameCommon(null, schemaName, tableName, quote, quote);
+  public String getDatabaseNameWithQuoted(String quote, FieldIdeEnum fieldIdeEnum) {
+    return getDatabaseNameWithQuoted(quote, quote, fieldIdeEnum);
+  }
+
+  public String getDatabaseNameWithQuoted(
+      String quoteLeft, String quoteRight, FieldIdeEnum fieldIdeEnum) {
+    return getNameCommon(databaseName, null, null, quoteLeft, quoteRight, fieldIdeEnum);
+  }
+
+  public String getSchemaNameWithQuoted(FieldIdeEnum fieldIdeEnum) {
+    return getSchemaNameWithQuoted("`", fieldIdeEnum);
+  }
+
+  public String getSchemaNameWithQuoted(String quote, FieldIdeEnum fieldIdeEnum) {
+    return getSchemaNameWithQuoted(quote, quote, fieldIdeEnum);
+  }
+
+  public String getSchemaNameWithQuoted(
+      String quoteLeft, String quoteRight, FieldIdeEnum fieldIdeEnum) {
+    return getNameCommon(databaseName, schemaName, null, quoteLeft, quoteRight, fieldIdeEnum);
   }
 
   public String getFullName() {
-    return getNameCommon(databaseName, schemaName, tableName, null, null);
+    return getNameCommon(databaseName, schemaName, tableName, null, null, FieldIdeEnum.ORIGINAL);
   }
 
-  public String getFullNameWithQuoted() {
-    return getFullNameWithQuoted("`");
+  public String getFullNameWithQuoted(FieldIdeEnum fieldIdeEnum) {
+    return getFullNameWithQuoted("`", fieldIdeEnum);
   }
 
-  public String getFullNameWithQuoted(String quote) {
-    return getNameCommon(databaseName, schemaName, tableName, quote, quote);
+  public String getFullNameWithQuoted(String quote, FieldIdeEnum fieldIdeEnum) {
+    return getNameCommon(databaseName, schemaName, tableName, quote, quote, fieldIdeEnum);
   }
 
-  public String getFullNameWithQuoted(String quoteLeft, String quoteRight) {
-    return getNameCommon(databaseName, schemaName, tableName, quoteLeft, quoteRight);
+  public String getFullNameWithQuoted(
+      String quoteLeft, String quoteRight, FieldIdeEnum fieldIdeEnum) {
+    return getNameCommon(databaseName, schemaName, tableName, quoteLeft, quoteRight, fieldIdeEnum);
   }
 
   private String getNameCommon(
@@ -74,24 +96,38 @@ public class TablePath {
       String schemaName,
       String tableName,
       String quoteLeft,
-      String quoteRight) {
+      String quoteRight,
+      FieldIdeEnum fieldIde) {
     List<String> joinList = new ArrayList<>();
     quoteLeft = quoteLeft == null ? "" : quoteLeft;
     quoteRight = quoteRight == null ? "" : quoteRight;
 
     if (databaseName != null) {
-      joinList.add(quoteLeft + databaseName + quoteRight);
+      joinList.add(quoteLeft + identifier(databaseName, fieldIde) + quoteRight);
     }
 
     if (schemaName != null) {
-      joinList.add(quoteLeft + schemaName + quoteRight);
+      joinList.add(quoteLeft + identifier(schemaName, fieldIde) + quoteRight);
     }
 
     if (tableName != null) {
-      joinList.add(quoteLeft + tableName + quoteRight);
+      joinList.add(quoteLeft + identifier(tableName, fieldIde) + quoteRight);
     }
-
     return String.join(".", joinList);
+  }
+
+  private static String identifier(String token, FieldIdeEnum fieldIde) {
+    if (fieldIde == null) {
+      return token;
+    }
+    switch (fieldIde) {
+      case LOWERCASE:
+        return token.toLowerCase();
+      case UPPERCASE:
+        return token.toUpperCase();
+      default:
+        return token;
+    }
   }
 
   @Override
