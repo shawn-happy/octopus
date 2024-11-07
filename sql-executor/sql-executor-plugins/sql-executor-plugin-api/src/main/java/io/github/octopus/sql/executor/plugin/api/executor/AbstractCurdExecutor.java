@@ -1,5 +1,6 @@
 package io.github.octopus.sql.executor.plugin.api.executor;
 
+import io.github.octopus.sql.executor.core.PageSqlUtils;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.Page;
 import io.github.octopus.sql.executor.core.model.curd.DeleteStatement;
@@ -78,8 +79,18 @@ public abstract class AbstractCurdExecutor extends AbstractExecutor implements C
 
   @Override
   public Page<Map<String, Object>> queryPageBySQL(
-      String sql, Map<String, Object> params, Integer pageNum, Integer pageSize) {
-    return null;
+      String sql, Map<String, Object> params, long pageNum, long pageSize) {
+    String pageSql = curdStatement.buildPageSql(sql, pageNum * pageSize, pageSize);
+    String countSql = PageSqlUtils.autoCountSql(sql);
+    Long count = getProcessor().executeQueryObject(countSql, null, Long.class);
+    List<Map<String, Object>> maps = getProcessor().executeQueryList(pageSql, params);
+    return Page.<Map<String, Object>>builder()
+        .pageNum(pageNum)
+        .pageSize(pageSize)
+        .total(count)
+        .pageCount(count / pageSize)
+        .records(maps)
+        .build();
   }
 
   @Override
@@ -89,7 +100,7 @@ public abstract class AbstractCurdExecutor extends AbstractExecutor implements C
 
   @Override
   public List<Map<String, Object>> queryLimitBySQL(
-      String sql, Map<String, Object> params, Integer pageNum, Integer pageSize) {
+      String sql, Map<String, Object> params, long pageNum, long pageSize) {
     return List.of();
   }
 }

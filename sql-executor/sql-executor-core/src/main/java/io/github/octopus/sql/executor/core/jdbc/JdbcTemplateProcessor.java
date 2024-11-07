@@ -32,7 +32,11 @@ public class JdbcTemplateProcessor {
     return count == null ? new int[0] : count;
   }
 
-  public List<Map<String, Object>> executeQuery(String sql, Map<String, Object> params) {
+  public List<Map<String, Object>> executeQueryList(String sql, Map<String, Object> params) {
     return jdbcTemplate.queryForList(sql, params);
+  }
+
+  public <T> T executeQueryObject(String sql, Map<String, Object> params, Class<T> tClass) {
+    return jdbcTemplate.queryForObject(sql, params, tClass);
   }
 }

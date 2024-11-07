@@ -24,4 +24,15 @@ public class OracleCurdStatement implements CurdStatement {
   public JdbcDialect getJdbcDialect() {
     return null;
   }
+
+  @Override
+  public String buildPageSql(String originalSql, long offset, long limit) {
+    limit = (offset >= 1) ? (offset + limit) : limit;
+    return "SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( "
+        + originalSql
+        + " ) TMP WHERE ROWNUM <="
+        + limit
+        + ") WHERE ROW_ID > "
+        + offset;
+  }
 }

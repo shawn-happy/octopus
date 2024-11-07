@@ -40,7 +40,7 @@ public interface CurdExecutor {
    * @return
    */
   Page<Map<String, Object>> queryPageBySQL(
-      String sql, Map<String, Object> params, Integer pageNum, Integer pageSize);
+      String sql, Map<String, Object> params, long pageNum, long pageSize);
 
   /**
    * @param sql 暂不支持mybatis的动态sql
@@ -48,7 +48,7 @@ public interface CurdExecutor {
    * @return
    */
   List<Map<String, Object>> queryLimitBySQL(
-      String sql, Map<String, Object> params, Integer pageNum, Integer pageSize);
+      String sql, Map<String, Object> params, long pageNum, long pageSize);
 
   int count(String database, String table, String where);
 }

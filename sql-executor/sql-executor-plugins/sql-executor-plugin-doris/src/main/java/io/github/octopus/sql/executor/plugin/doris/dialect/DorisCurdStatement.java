@@ -1,5 +1,6 @@
 package io.github.octopus.sql.executor.plugin.doris.dialect;
 
+import io.github.octopus.sql.executor.core.StringPool;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
 import io.github.octopus.sql.executor.plugin.api.dialect.CurdStatement;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
@@ -23,5 +24,14 @@ public class DorisCurdStatement implements CurdStatement {
   @Override
   public JdbcDialect getJdbcDialect() {
     return null;
+  }
+
+  @Override
+  public String buildPageSql(String originalSql, long offset, long limit) {
+    StringBuilder sql = new StringBuilder(originalSql).append(" LIMIT ").append(offset);
+    if (offset != 0L) {
+      sql.append(StringPool.COMMA).append(limit);
+    }
+    return sql.toString();
   }
 }
