@@ -63,27 +63,24 @@ public class OracleDDLStatement implements DDLStatement {
   }
 
   @Override
-  public String getAddColumnCommentSql(TablePath tablePath, String column, String comment) {
+  public String getAddColumnCommentSql(
+      TablePath tablePath, ColumnDefinition columnDefinition, String comment) {
     return "";
   }
 
   @Override
-  public String getModifyColumnCommentSql(TablePath tablePath, String column, String comment) {
+  public String getModifyColumnCommentSql(
+      TablePath tablePath, ColumnDefinition columnDefinition, String comment) {
     return "";
   }
 
   @Override
-  public String getDropColumnCommentSql(TablePath tablePath, String column, String comment) {
+  public String getDropColumnCommentSql(TablePath tablePath, ColumnDefinition columnDefinition) {
     return "";
   }
 
   @Override
   public String getCreateIndexSql(TablePath tablePath, IndexDefinition indexDefinition) {
-    return "";
-  }
-
-  @Override
-  public String getModifyIndexSql(TablePath tablePath, IndexDefinition indexDefinition) {
     return "";
   }
 

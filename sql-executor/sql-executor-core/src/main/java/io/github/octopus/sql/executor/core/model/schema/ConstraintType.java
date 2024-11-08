@@ -9,6 +9,7 @@ public enum ConstraintType {
   UNIQUE_KEY("UNIQUE", "UK"),
   FOREIGN_KEY("FOREIGN KEY", "FK"),
   NOT_NULL("NOT NULL", "NOT_NULL"),
+  KEY("KEY", "KEY"),
   ;
 
   private final String type;

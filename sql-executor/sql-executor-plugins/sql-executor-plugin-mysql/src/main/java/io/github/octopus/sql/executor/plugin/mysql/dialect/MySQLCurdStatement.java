@@ -1,6 +1,7 @@
 package io.github.octopus.sql.executor.plugin.mysql.dialect;
 
 import io.github.octopus.sql.executor.core.StringPool;
+import io.github.octopus.sql.executor.core.exception.SqlException;
 import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.curd.InsertStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
@@ -12,6 +13,7 @@ import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class MySQLCurdStatement implements CurdStatement {
 
@@ -26,6 +28,33 @@ public class MySQLCurdStatement implements CurdStatement {
   @Override
   public JdbcDialect getJdbcDialect() {
     return DialectRegistry.getDialect(DatabaseIdentifier.MYSQL);
+  }
+
+  @Override
+  public Optional<String> getInsertBatchSql(InsertStatement insertStatement) {
+    TablePath tablePath = insertStatement.getTablePath();
+    List<String> fieldNames = insertStatement.getColumns();
+    String columns =
+        fieldNames.stream().map(this::quoteIdentifier).collect(Collectors.joining(", "));
+    List<Object[]> values = insertStatement.getValues();
+    if (CollectionUtils.isEmpty(values)) {
+      throw new SqlException("values cannot be empty");
+    }
+    StringBuilder builder = new StringBuilder();
+    String placeholders =
+        fieldNames.stream().map(fieldName -> "?").collect(Collectors.joining(", "));
+    for (int i = 0; i < values.size(); i++) {
+      builder.append("(");
+      builder.append(placeholders);
+      builder.append(")");
+      if (i != values.size() - 1) {
+        builder.append(", ");
+      }
+    }
+
+    return Optional.of(
+        String.format(
+            "INSERT INTO %s (%s) VALUES %s", tableIdentifier(tablePath), columns, builder));
   }
 
   @Override

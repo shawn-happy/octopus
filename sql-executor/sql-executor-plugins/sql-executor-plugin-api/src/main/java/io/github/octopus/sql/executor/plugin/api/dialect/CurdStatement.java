@@ -2,7 +2,6 @@ package io.github.octopus.sql.executor.plugin.api.dialect;
 
 import static java.lang.String.format;
 
-import io.github.octopus.sql.executor.core.exception.SqlException;
 import io.github.octopus.sql.executor.core.model.curd.DeleteStatement;
 import io.github.octopus.sql.executor.core.model.curd.InsertStatement;
 import io.github.octopus.sql.executor.core.model.curd.RowExistsStatement;
@@ -16,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
 
 public interface CurdStatement extends SqlStatement {
 
@@ -31,29 +29,8 @@ public interface CurdStatement extends SqlStatement {
         "INSERT INTO %s (%s) VALUES (%s)", tableIdentifier(tablePath), columns, placeholders);
   }
 
-  default String getInsertBatchSql(InsertStatement insertStatement) {
-    TablePath tablePath = insertStatement.getTablePath();
-    List<String> fieldNames = insertStatement.getColumns();
-    String columns =
-        fieldNames.stream().map(this::quoteIdentifier).collect(Collectors.joining(", "));
-    List<Object[]> values = insertStatement.getValues();
-    if (CollectionUtils.isEmpty(values)) {
-      throw new SqlException("values cannot be empty");
-    }
-    StringBuilder builder = new StringBuilder();
-    String placeholders =
-        fieldNames.stream().map(fieldName -> "?").collect(Collectors.joining(", "));
-    for (int i = 0; i < values.size(); i++) {
-      builder.append("(");
-      builder.append(placeholders);
-      builder.append(")");
-      if (i != values.size() - 1) {
-        builder.append(", ");
-      }
-    }
-
-    return String.format(
-        "INSERT INTO %s (%s) VALUES %s", tableIdentifier(tablePath), columns, builder);
+  default Optional<String> getInsertBatchSql(InsertStatement insertStatement) {
+    return Optional.empty();
   }
 
   default String getUpdateSql(UpdateStatement updateStatement) {

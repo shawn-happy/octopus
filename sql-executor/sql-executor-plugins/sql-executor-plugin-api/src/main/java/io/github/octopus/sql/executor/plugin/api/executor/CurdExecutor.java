@@ -11,44 +11,23 @@ import java.util.Map;
 
 public interface CurdExecutor {
 
-  int save(InsertStatement insertStatement);
+  int insert(InsertStatement insertStatement);
 
-  int saveBatch(InsertStatement insertStatement);
+  int insertBatch(InsertStatement insertStatement);
 
   int upsert(TableDefinition definition, UpsertStatement upsertStatement);
 
-  /**
-   * 如果是Doris 当前 UPDATE 语句仅支持在 UNIQUE KEY 模型上的行更新。
-   *
-   * @param updateStatement
-   * @return
-   */
+  /** 如果是Doris 当前 UPDATE 语句仅支持在 UNIQUE KEY 模型上的行更新。 */
   int update(UpdateStatement updateStatement);
 
   int delete(DeleteStatement deleteStatement);
 
-  /**
-   * @param sql 暂不支持mybatis的动态sql
-   * @param params
-   * @return
-   */
-  List<Map<String, Object>> queryListBySQL(String sql, Map<String, Object> params);
+  Map<String, Object> queryOneBySql(String sql, Map<String, Object> params);
 
-  /**
-   * @param sql 暂不支持mybatis的动态sql
-   * @param params
-   * @return
-   */
-  Page<Map<String, Object>> queryPageBySQL(
+  /** @param sql 暂不支持mybatis的动态sql */
+  List<Map<String, Object>> queryListBySql(String sql, Map<String, Object> params);
+
+  /** @param sql 暂不支持mybatis的动态sql */
+  Page<Map<String, Object>> queryPageBySql(
       String sql, Map<String, Object> params, long pageNum, long pageSize);
-
-  /**
-   * @param sql 暂不支持mybatis的动态sql
-   * @param params
-   * @return
-   */
-  List<Map<String, Object>> queryLimitBySQL(
-      String sql, Map<String, Object> params, long pageNum, long pageSize);
-
-  int count(String database, String table, String where);
 }

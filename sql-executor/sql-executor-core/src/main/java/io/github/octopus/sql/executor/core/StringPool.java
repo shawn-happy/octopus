@@ -2,6 +2,7 @@ package io.github.octopus.sql.executor.core;
 
 public interface StringPool {
 
+  String BLANK_COMMENT = "";
   String AMPERSAND = "&";
   String AND = "and";
   String AT = "@";

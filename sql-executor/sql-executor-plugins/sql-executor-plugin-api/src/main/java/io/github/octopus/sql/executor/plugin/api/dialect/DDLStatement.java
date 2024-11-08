@@ -38,15 +38,15 @@ public interface DDLStatement extends SqlStatement {
 
   String getDropColumnSql(TablePath tablePath, String column);
 
-  String getAddColumnCommentSql(TablePath tablePath, String column, String comment);
+  String getAddColumnCommentSql(
+      TablePath tablePath, ColumnDefinition columnDefinition, String comment);
 
-  String getModifyColumnCommentSql(TablePath tablePath, String column, String comment);
+  String getModifyColumnCommentSql(
+      TablePath tablePath, ColumnDefinition columnDefinition, String comment);
 
-  String getDropColumnCommentSql(TablePath tablePath, String column, String comment);
+  String getDropColumnCommentSql(TablePath tablePath, ColumnDefinition columnDefinition);
 
   String getCreateIndexSql(TablePath tablePath, IndexDefinition indexDefinition);
-
-  String getModifyIndexSql(TablePath tablePath, IndexDefinition indexDefinition);
 
   String getDropIndexSql(TablePath tablePath, String index);
 }

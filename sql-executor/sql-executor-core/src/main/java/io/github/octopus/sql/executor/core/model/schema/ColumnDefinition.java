@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -14,7 +15,7 @@ public class ColumnDefinition {
   private FieldType fieldType;
   private Integer precision;
   private Integer scale;
-  private String comment;
+  @Setter private String comment;
   private Object defaultValue;
   private boolean nullable;
   private boolean autoIncrement;
