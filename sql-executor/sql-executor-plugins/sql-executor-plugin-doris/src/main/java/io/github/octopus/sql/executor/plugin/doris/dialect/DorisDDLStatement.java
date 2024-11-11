@@ -1,10 +1,12 @@
 package io.github.octopus.sql.executor.plugin.doris.dialect;
 
+import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
 import io.github.octopus.sql.executor.core.model.schema.TablePath;
 import io.github.octopus.sql.executor.plugin.api.dialect.DDLStatement;
+import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
 
 public class DorisDDLStatement implements DDLStatement {
@@ -91,6 +93,6 @@ public class DorisDDLStatement implements DDLStatement {
 
   @Override
   public JdbcDialect getJdbcDialect() {
-    return null;
+    return DialectRegistry.getDialect(DatabaseIdentifier.DORIS);
   }
 }

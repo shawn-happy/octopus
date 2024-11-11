@@ -22,6 +22,8 @@ public interface CurdExecutor {
 
   int delete(DeleteStatement deleteStatement);
 
+  void truncate(String database, String schema, String table);
+
   Map<String, Object> queryOneBySql(String sql, Map<String, Object> params);
 
   /** @param sql 暂不支持mybatis的动态sql */

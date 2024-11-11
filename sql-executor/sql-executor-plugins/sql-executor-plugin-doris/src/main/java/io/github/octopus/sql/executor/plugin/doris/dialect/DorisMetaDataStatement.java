@@ -1,5 +1,7 @@
 package io.github.octopus.sql.executor.plugin.doris.dialect;
 
+import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
+import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
 import io.github.octopus.sql.executor.plugin.api.dialect.MetaDataStatement;
 import java.util.List;
@@ -41,6 +43,6 @@ public class DorisMetaDataStatement implements MetaDataStatement {
 
   @Override
   public JdbcDialect getJdbcDialect() {
-    return null;
+    return DialectRegistry.getDialect(DatabaseIdentifier.DORIS);
   }
 }

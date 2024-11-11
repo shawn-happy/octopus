@@ -8,6 +8,7 @@ import io.github.octopus.sql.executor.core.model.curd.RowExistsStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpdateStatement;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
+import io.github.octopus.sql.executor.core.model.schema.TablePath;
 import io.github.octopus.sql.executor.plugin.api.dialect.CurdStatement;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,6 +89,13 @@ public abstract class AbstractCurdExecutor extends AbstractExecutor implements C
       String insertSql = curdStatement.getInsertSql(insertStatement);
       return getProcessor().update(insertSql, null);
     }
+  }
+
+  @Override
+  public void truncate(String database, String schema, String table) {
+    String truncateTableSql =
+        curdStatement.getTruncateTableSql(TablePath.of(database, schema, table));
+    getProcessor().update(truncateTableSql, null);
   }
 
   @Override
