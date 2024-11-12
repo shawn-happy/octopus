@@ -19,4 +19,7 @@ public class ColumnDefinition {
   private Object defaultValue;
   private boolean nullable;
   private boolean autoIncrement;
+
+  // for doris
+  private AggregateAlgo aggregateAlgo;
 }

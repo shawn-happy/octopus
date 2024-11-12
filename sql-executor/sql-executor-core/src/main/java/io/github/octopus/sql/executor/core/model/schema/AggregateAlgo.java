@@ -1,4 +1,4 @@
-package io.github.octopus.sql.executor.plugin.doris.model;
+package io.github.octopus.sql.executor.core.model.schema;
 
 import java.util.Arrays;
 

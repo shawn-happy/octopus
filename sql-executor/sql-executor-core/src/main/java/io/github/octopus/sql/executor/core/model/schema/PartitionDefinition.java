@@ -11,13 +11,36 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PartitionDefinition {
-  private String name;
   private List<String> columns;
   private PartitionAlgo partitionAlgo;
-  private PartitionOperator partitionOperator;
-  private List<Object[]> lefts;
-  private List<Object[]> rights;
-  private List<Object[]> maxValues;
-  private int[] interval;
-  private IntervalType[] intervalType;
+  private List<RangePartitionDef> rangePartitions;
+  private List<ListPartitionDef> listPartitionDefs;
+
+  // partition p1 values less than MAXVALUE|()
+  // partition p2 values [("", ""), (), ()]
+  // FROM () to () INTERVAL 1 YEAR
+  // FROM () to () INTERVAL 1
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  public static class RangePartitionDef {
+    private final PartitionOperator partitionOperator;
+    private final String name;
+    private final boolean maxValue;
+    private final Object[] lefts;
+    private final Object[] rights;
+    private final Object[] maxValues;
+    private final int interval;
+    private final IntervalType intervalType;
+  }
+
+  // partition p1 values in ("","")
+  // partition p2 values in (("", ""), ("",""))
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  public static class ListPartitionDef {
+    private final String name;
+    private final List<Object[]> values;
+  }
 }

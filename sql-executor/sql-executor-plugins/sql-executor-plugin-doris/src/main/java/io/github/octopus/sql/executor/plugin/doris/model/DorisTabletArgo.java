@@ -1,13 +1,14 @@
 package io.github.octopus.sql.executor.plugin.doris.model;
 
-public enum DorisDistributionArgo implements DistributionAlgo {
+import io.github.octopus.sql.executor.core.model.schema.TabletAlgo;
+
+public enum DorisTabletArgo implements TabletAlgo {
   Hash("HASH"),
-  Random("RANDOM"),
   ;
 
   private final String algo;
 
-  DorisDistributionArgo(String algo) {
+  DorisTabletArgo(String algo) {
     this.algo = algo;
   }
 

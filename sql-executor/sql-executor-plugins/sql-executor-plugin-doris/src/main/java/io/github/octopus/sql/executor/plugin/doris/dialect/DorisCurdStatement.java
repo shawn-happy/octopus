@@ -10,11 +10,10 @@ import io.github.octopus.sql.executor.core.model.schema.TablePath;
 import io.github.octopus.sql.executor.plugin.api.dialect.CurdStatement;
 import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class DorisCurdStatement implements CurdStatement {
 
@@ -31,14 +30,14 @@ public class DorisCurdStatement implements CurdStatement {
     TablePath tablePath = insertStatement.getTablePath();
     List<String> fieldNames = insertStatement.getColumns();
     String columns =
-            fieldNames.stream().map(this::quoteIdentifier).collect(Collectors.joining(", "));
+        fieldNames.stream().map(this::quoteIdentifier).collect(Collectors.joining(", "));
     List<Object[]> values = insertStatement.getValues();
     if (CollectionUtils.isEmpty(values)) {
       throw new SqlException("values cannot be empty");
     }
     StringBuilder builder = new StringBuilder();
     String placeholders =
-            fieldNames.stream().map(fieldName -> "?").collect(Collectors.joining(", "));
+        fieldNames.stream().map(fieldName -> "?").collect(Collectors.joining(", "));
     for (int i = 0; i < values.size(); i++) {
       builder.append("(");
       builder.append(placeholders);
@@ -49,18 +48,21 @@ public class DorisCurdStatement implements CurdStatement {
     }
 
     return Optional.of(
-            String.format(
-                    "INSERT INTO %s (%s) VALUES %s", tableIdentifier(tablePath), columns, builder));
+        String.format(
+            "INSERT INTO %s (%s) VALUES %s", tableIdentifier(tablePath), columns, builder));
   }
 
   @Override
   public Optional<String> getUpsertSql(UpsertStatement upsertStatement) {
     List<String> columns =
-        upsertStatement.getColumns().stream()
+        upsertStatement
+            .getColumns()
+            .stream()
             .map(ColumnDefinition::getColumn)
             .collect(Collectors.toList());
     String updateClause =
-        columns.stream()
+        columns
+            .stream()
             .map(
                 fieldName ->
                     quoteIdentifier(fieldName) + "=VALUES(" + quoteIdentifier(fieldName) + ")")

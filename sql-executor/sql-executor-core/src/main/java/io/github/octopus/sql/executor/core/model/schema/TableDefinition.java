@@ -19,7 +19,7 @@ public class TableDefinition {
   private List<ColumnDefinition> columns;
   private List<IndexDefinition> indices;
   private List<ConstraintDefinition> constraints;
-  private List<PartitionDefinition> partitions;
+  private PartitionDefinition partition;
 
   // for doris
   private TabletDefinition tablet;
@@ -30,4 +30,8 @@ public class TableDefinition {
 
   // for doris 高级参数
   private Map<String, String> options;
+
+  public TablePath getTablePath() {
+    return TablePath.of(database, schema, table);
+  }
 }

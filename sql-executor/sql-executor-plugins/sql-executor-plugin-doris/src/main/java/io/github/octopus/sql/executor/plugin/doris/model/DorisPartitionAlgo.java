@@ -4,7 +4,8 @@ import io.github.octopus.sql.executor.core.model.schema.PartitionAlgo;
 import java.util.Arrays;
 
 public enum DorisPartitionAlgo implements PartitionAlgo {
-  Range("RANGE"),
+  RANGE("RANGE"),
+  LIST("LIST"),
   ;
 
   private final String algo;
