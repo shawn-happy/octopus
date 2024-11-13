@@ -1,9 +1,14 @@
 package io.github.octopus.sql.executor.plugin.oracle.dialect;
 
+import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
+import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.plugin.api.dialect.CurdStatement;
+import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OracleCurdStatement implements CurdStatement {
 
@@ -17,12 +22,69 @@ public class OracleCurdStatement implements CurdStatement {
 
   @Override
   public Optional<String> getUpsertSql(UpsertStatement upsertStatement) {
-    return Optional.empty();
+    List<String> fieldNames =
+        upsertStatement
+            .getColumns()
+            .stream()
+            .map(ColumnDefinition::getColumn)
+            .collect(Collectors.toList());
+    List<String> uniqueKeyFields = upsertStatement.uniqueColumns();
+    List<String> nonUniqueKeyFields = upsertStatement.nonUniqueColumns();
+    String valuesBinding =
+        fieldNames
+            .stream()
+            .map(fieldName -> ":" + fieldName + " " + quoteIdentifier(fieldName))
+            .collect(Collectors.joining(", "));
+
+    String usingClause = String.format("SELECT %s FROM DUAL", valuesBinding);
+    String onConditions =
+        uniqueKeyFields
+            .stream()
+            .map(
+                fieldName ->
+                    String.format(
+                        "TARGET.%s=SOURCE.%s",
+                        quoteIdentifier(fieldName), quoteIdentifier(fieldName)))
+            .collect(Collectors.joining(" AND "));
+    String updateSetClause =
+        nonUniqueKeyFields
+            .stream()
+            .map(
+                fieldName ->
+                    String.format(
+                        "TARGET.%s=SOURCE.%s",
+                        quoteIdentifier(fieldName), quoteIdentifier(fieldName)))
+            .collect(Collectors.joining(", "));
+    String insertFields =
+        fieldNames.stream().map(this::quoteIdentifier).collect(Collectors.joining(", "));
+    String insertValues =
+        fieldNames
+            .stream()
+            .map(fieldName -> "SOURCE." + quoteIdentifier(fieldName))
+            .collect(Collectors.joining(", "));
+
+    String upsertSQL =
+        String.format(
+            " MERGE INTO %s TARGET"
+                + " USING (%s) SOURCE"
+                + " ON (%s) "
+                + " WHEN MATCHED THEN"
+                + " UPDATE SET %s"
+                + " WHEN NOT MATCHED THEN"
+                + " INSERT (%s) VALUES (%s)",
+            tableIdentifier(upsertStatement.getTablePath()),
+            usingClause,
+            onConditions,
+            updateSetClause,
+            insertFields,
+            insertValues);
+
+    return Optional.of(upsertSQL);
   }
 
   @Override
   public JdbcDialect getJdbcDialect() {
-    return null;
+    return DialectRegistry.getDialect(DatabaseIdentifier.ORACLE);
   }
 
   @Override
