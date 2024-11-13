@@ -22,7 +22,10 @@ public abstract class AbstractDDLExecutor extends AbstractExecutor implements DD
   }
 
   @Override
-  public void createDatabase(DatabaseDefinition databaseInfo) {}
+  public void createDatabase(DatabaseDefinition databaseInfo) {
+    String createDatabaseSql = ddlStatement.getCreateDatabaseSql(databaseInfo);
+    getProcessor().execute(createDatabaseSql);
+  }
 
   @Override
   public void dropDatabase(@NotNull String database) {}

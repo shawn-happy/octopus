@@ -26,6 +26,10 @@ public class JdbcTemplateProcessor {
     this.transactionTemplate = new TransactionTemplate(platformTransactionManager);
   }
 
+  public void execute(String sql) {
+    jdbcTemplate.getJdbcTemplate().execute(sql);
+  }
+
   public <R> R queryOne(String sql, Class<R> returnType) {
     logDebugSql(sql, null);
     return jdbcTemplate.getJdbcTemplate().queryForObject(sql, returnType);

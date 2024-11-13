@@ -1,5 +1,7 @@
 package io.github.octopus.sql.executor.plugin.oracle.dialect;
 
+import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
+import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
 import io.github.octopus.sql.executor.plugin.api.dialect.MetaDataStatement;
 import java.util.ArrayList;
@@ -151,7 +153,21 @@ public class OracleMetaDataStatement implements MetaDataStatement {
 
   @Override
   public String getColumnMetaSql(String database, String schema, String table) {
-    return "";
+    List<String> whereSql = new ArrayList<>();
+    if (StringUtils.isNotBlank(database)) {
+      whereSql.add("cols.OWNER = ?");
+    }
+    if (StringUtils.isNotBlank(table)) {
+      whereSql.add("cols.TABLE_NAME = ?");
+    }
+    String where = CollectionUtils.isEmpty(whereSql) ? null : String.join(" AND ", whereSql);
+    if (StringUtils.isBlank(where)) {
+      return String.format(
+          "%s WHERE cols.OWNER NOT IN (%s)",
+          COLUMN_METADATA_QUERY_SQL,
+          SYS_SCHEMAS.stream().map(this::quoteIdentifier).collect(Collectors.joining(", ")));
+    }
+    return String.format("%s WHERE %s", COLUMN_METADATA_QUERY_SQL, where);
   }
 
   @Override
@@ -161,11 +177,25 @@ public class OracleMetaDataStatement implements MetaDataStatement {
 
   @Override
   public String getConstraintMetaSql(String database, String schema, String table) {
-    return "";
+    List<String> whereSql = new ArrayList<>();
+    if (StringUtils.isNotBlank(database)) {
+      whereSql.add("uc.OWNER = ?");
+    }
+    if (StringUtils.isNotBlank(table)) {
+      whereSql.add("uc.TABLE_NAME = ?");
+    }
+    String where = CollectionUtils.isEmpty(whereSql) ? null : String.join(" AND ", whereSql);
+    if (StringUtils.isBlank(where)) {
+      return String.format(
+          "%s WHERE uc.OWNER NOT IN (%s)",
+          CONSTRAINT_METADATA_QUERY_SQL,
+          SYS_SCHEMAS.stream().map(this::quoteIdentifier).collect(Collectors.joining(", ")));
+    }
+    return String.format("%s WHERE %s", CONSTRAINT_METADATA_QUERY_SQL, where);
   }
 
   @Override
   public JdbcDialect getJdbcDialect() {
-    return null;
+    return DialectRegistry.getDialect(DatabaseIdentifier.ORACLE);
   }
 }
