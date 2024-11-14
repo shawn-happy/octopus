@@ -7,11 +7,10 @@ import io.github.octopus.actus.plugin.api.dialect.JdbcDialect;
 import io.github.octopus.actus.plugin.api.executor.AbstractCurdExecutor;
 import io.github.octopus.actus.plugin.api.executor.AbstractDDLExecutor;
 import io.github.octopus.actus.plugin.api.executor.AbstractMetaDataExecutor;
-import io.github.octopus.actus.plugin.sqlserver.model.SqlServerFieldType;
 import io.github.octopus.actus.plugin.sqlserver.executor.SqlServerCurdExecutor;
 import io.github.octopus.actus.plugin.sqlserver.executor.SqlServerDDLExecutor;
 import io.github.octopus.actus.plugin.sqlserver.executor.SqlServerMetaDataExecutor;
-
+import io.github.octopus.actus.plugin.sqlserver.model.SqlServerFieldType;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;

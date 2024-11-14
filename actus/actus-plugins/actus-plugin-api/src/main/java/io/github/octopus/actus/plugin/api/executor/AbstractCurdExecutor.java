@@ -10,7 +10,6 @@ import io.github.octopus.actus.core.model.curd.UpsertStatement;
 import io.github.octopus.actus.core.model.schema.TableDefinition;
 import io.github.octopus.actus.core.model.schema.TablePath;
 import io.github.octopus.actus.plugin.api.dialect.CurdStatement;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

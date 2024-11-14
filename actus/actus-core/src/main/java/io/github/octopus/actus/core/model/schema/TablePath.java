@@ -1,7 +1,6 @@
 package io.github.octopus.actus.core.model.schema;
 
 import io.github.octopus.actus.core.model.FieldIdeEnum;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

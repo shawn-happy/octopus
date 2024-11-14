@@ -2,9 +2,8 @@ package io.github.octopus.actus.core.model.curd;
 
 import io.github.octopus.actus.core.model.schema.ColumnDefinition;
 import io.github.octopus.actus.core.model.schema.ConstraintDefinition;
-import io.github.octopus.actus.core.model.schema.TablePath;
 import io.github.octopus.actus.core.model.schema.ConstraintType;
-
+import io.github.octopus.actus.core.model.schema.TablePath;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;

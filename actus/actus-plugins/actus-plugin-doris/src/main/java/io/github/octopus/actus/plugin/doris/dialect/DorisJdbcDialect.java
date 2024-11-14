@@ -11,9 +11,8 @@ import io.github.octopus.actus.plugin.api.executor.AbstractMetaDataExecutor;
 import io.github.octopus.actus.plugin.doris.executor.DorisCurdExecutor;
 import io.github.octopus.actus.plugin.doris.executor.DorisDDLExecutor;
 import io.github.octopus.actus.plugin.doris.executor.DorisMetaDataExecutor;
-import io.github.octopus.actus.plugin.doris.model.DorisTableEngine;
 import io.github.octopus.actus.plugin.doris.model.DorisFieldType;
-
+import io.github.octopus.actus.plugin.doris.model.DorisTableEngine;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;

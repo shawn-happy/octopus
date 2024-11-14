@@ -74,7 +74,6 @@ public interface CurdStatement extends SqlStatement {
     if (Objects.isNull(expression)) {
       return format("SELECT 1 FROM %s", tableIdentifier(tablePath));
     }
-    return format(
-        "SELECT 1 FROM %s WHERE %s", tableIdentifier(tablePath), expression.toSQL());
+    return format("SELECT 1 FROM %s WHERE %s", tableIdentifier(tablePath), expression.toSQL());
   }
 }

@@ -1,7 +1,6 @@
 package io.github.octopus.actus.core.handler;
 
 import io.github.octopus.actus.core.model.schema.FieldType;
-
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

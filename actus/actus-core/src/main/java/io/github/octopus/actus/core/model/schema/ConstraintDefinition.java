@@ -2,7 +2,6 @@ package io.github.octopus.actus.core.model.schema;
 
 import io.github.octopus.actus.core.exception.SqlException;
 import io.github.octopus.actus.core.model.expression.Expression;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;

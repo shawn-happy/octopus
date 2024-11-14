@@ -3,7 +3,6 @@ package io.github.octopus.actus.core.model.expression;
 import io.github.octopus.actus.core.exception.SqlException;
 import io.github.octopus.actus.core.model.op.InternalLogicalOp;
 import io.github.octopus.actus.core.model.op.LogicalOp;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

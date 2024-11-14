@@ -2,7 +2,6 @@ package io.github.octopus.actus.core.model.schema;
 
 import io.github.octopus.actus.core.model.op.InternalRelationalOp;
 import io.github.octopus.actus.core.model.op.RelationalOp;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
