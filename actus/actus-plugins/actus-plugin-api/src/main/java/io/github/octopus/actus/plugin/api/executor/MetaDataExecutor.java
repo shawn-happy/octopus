@@ -22,5 +22,6 @@ public interface MetaDataExecutor {
 
   List<ColumnMetaInfo> getColumnInfos(String database, String schemas);
 
-  ColumnMetaInfo getColumnInfo(String database, String schemas, String table, String column);
+  List<ColumnMetaInfo> getColumnInfos(String database, String schemas, String table);
+
 }
