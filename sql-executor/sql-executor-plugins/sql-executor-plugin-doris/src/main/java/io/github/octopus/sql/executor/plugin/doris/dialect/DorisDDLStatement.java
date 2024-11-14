@@ -6,6 +6,7 @@ import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.schema.AggregateAlgo;
 import io.github.octopus.sql.executor.core.model.schema.AggregateModelDefinition;
 import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
+import io.github.octopus.sql.executor.core.model.schema.DatabaseDefinition;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.IndexAlgo;
 import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
@@ -41,6 +42,16 @@ public class DorisDDLStatement implements DDLStatement {
 
   public static DDLStatement getDDLStatement() {
     return DDL_STATEMENT;
+  }
+
+  @Override
+  public String getCreateDatabaseSql(DatabaseDefinition databaseDefinition) {
+    return String.format("CREATE DATABASE IF NOT EXISTS %s", databaseDefinition.getDatabase());
+  }
+
+  @Override
+  public String getDropDatabaseSql(String database) {
+    return String.format("DROP DATABASE IF EXISTS %s", database);
   }
 
   @Override

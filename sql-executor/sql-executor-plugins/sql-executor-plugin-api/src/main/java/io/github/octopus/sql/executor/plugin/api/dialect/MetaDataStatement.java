@@ -6,7 +6,7 @@ public interface MetaDataStatement extends SqlStatement {
 
   String getDatabaseMetaSql(List<String> databases);
 
-  default String getSchemaMetaSql(String database, List<String> Schemas) {
+  default String getSchemaMetaSql(String database, List<String> schemas) {
     throw new UnsupportedOperationException();
   }
 

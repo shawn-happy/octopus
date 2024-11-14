@@ -4,6 +4,7 @@ import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.core.model.schema.DatabaseDefinition;
 import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
 import io.github.octopus.sql.executor.core.model.schema.TableDefinition;
+import io.github.octopus.sql.executor.core.model.schema.TablePath;
 import io.github.octopus.sql.executor.plugin.api.dialect.DDLStatement;
 import java.util.List;
 import javax.sql.DataSource;
@@ -11,8 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractDDLExecutor extends AbstractExecutor implements DDLExecutor {
-
-  protected static final String BLANK_COMMENT = "";
 
   private final DDLStatement ddlStatement;
 
@@ -28,21 +27,30 @@ public abstract class AbstractDDLExecutor extends AbstractExecutor implements DD
   }
 
   @Override
-  public void dropDatabase(@NotNull String database) {}
+  public void dropDatabase(@NotNull String database) {
+    getProcessor().execute(ddlStatement.getDropDatabaseSql(database));
+  }
 
   @Override
-  public void createTable(TableDefinition tableInfo) {}
+  public void createTable(TableDefinition tableInfo) {
+    getProcessor().execute(ddlStatement.getCreateTableSql(tableInfo));
+  }
 
   @Override
-  public void dropTable(
-      @Nullable String database, @Nullable String schema, @NotNull String table) {}
+  public void dropTable(@Nullable String database, @Nullable String schema, @NotNull String table) {
+    getProcessor().execute(ddlStatement.getDropTableSql(TablePath.of(database, schema, table)));
+  }
 
   @Override
   public void renameTable(
       @Nullable String database,
       @Nullable String schema,
       @NotNull String oldTable,
-      @NotNull String newTable) {}
+      @NotNull String newTable) {
+    getProcessor()
+        .execute(
+            ddlStatement.getRenameTableSql(TablePath.of(database, schema, oldTable), newTable));
+  }
 
   @Override
   public void addTableComment(

@@ -1,10 +1,14 @@
 package io.github.octopus.sql.executor.plugin.sqlserver.dialect;
 
 import io.github.octopus.sql.executor.core.StringPool;
+import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.curd.UpsertStatement;
 import io.github.octopus.sql.executor.plugin.api.dialect.CurdStatement;
+import io.github.octopus.sql.executor.plugin.api.dialect.DialectRegistry;
 import io.github.octopus.sql.executor.plugin.api.dialect.JdbcDialect;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 public class SqlServerCurdStatement implements CurdStatement {
@@ -19,7 +23,56 @@ public class SqlServerCurdStatement implements CurdStatement {
 
   @Override
   public Optional<String> getUpsertSql(UpsertStatement upsertStatement) {
-    return Optional.empty();
+    List<String> fieldNames = upsertStatement.fullColumns();
+    List<String> nonUniqueKeyFields = upsertStatement.nonUniqueColumns();
+    String valuesBinding =
+        fieldNames
+            .stream()
+            .map(fieldName -> ":" + fieldName + " " + quoteIdentifier(fieldName))
+            .collect(Collectors.joining(", "));
+    List<String> uniqueKeyFields = upsertStatement.uniqueColumns();
+    String usingClause = String.format("SELECT %s", valuesBinding);
+    String onConditions =
+        uniqueKeyFields
+            .stream()
+            .map(
+                fieldName ->
+                    String.format(
+                        "[TARGET].%s=[SOURCE].%s",
+                        quoteIdentifier(fieldName), quoteIdentifier(fieldName)))
+            .collect(Collectors.joining(" AND "));
+    String updateSetClause =
+        nonUniqueKeyFields
+            .stream()
+            .map(
+                fieldName ->
+                    String.format(
+                        "[TARGET].%s=[SOURCE].%s",
+                        quoteIdentifier(fieldName), quoteIdentifier(fieldName)))
+            .collect(Collectors.joining(", "));
+    String insertFields =
+        fieldNames.stream().map(this::quoteIdentifier).collect(Collectors.joining(", "));
+    String insertValues =
+        fieldNames
+            .stream()
+            .map(fieldName -> "[SOURCE]." + quoteIdentifier(fieldName))
+            .collect(Collectors.joining(", "));
+    String upsertSQL =
+        String.format(
+            "MERGE INTO %s AS [TARGET]"
+                + " USING (%s) AS [SOURCE]"
+                + " ON (%s)"
+                + " WHEN MATCHED THEN"
+                + " UPDATE SET %s"
+                + " WHEN NOT MATCHED THEN"
+                + " INSERT (%s) VALUES (%s);",
+            tableIdentifier(upsertStatement.getTablePath()),
+            usingClause,
+            onConditions,
+            updateSetClause,
+            insertFields,
+            insertValues);
+    return Optional.of(upsertSQL);
   }
 
   @Override
@@ -64,7 +117,7 @@ public class SqlServerCurdStatement implements CurdStatement {
 
   @Override
   public JdbcDialect getJdbcDialect() {
-    return null;
+    return DialectRegistry.getDialect(DatabaseIdentifier.SQLSERVER);
   }
 
   private static String getOrderByPart(String sql) {

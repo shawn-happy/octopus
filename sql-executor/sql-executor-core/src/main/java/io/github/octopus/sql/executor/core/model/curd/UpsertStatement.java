@@ -22,6 +22,10 @@ public class UpsertStatement {
   private List<ConstraintDefinition> constraints;
   private List<Object[]> values;
 
+  public List<String> fullColumns() {
+    return columns.stream().map(ColumnDefinition::getColumn).collect(Collectors.toList());
+  }
+
   public List<String> uniqueColumns() {
     if (CollectionUtils.isNotEmpty(constraints)) {
       return constraints
@@ -39,6 +43,9 @@ public class UpsertStatement {
 
   public List<String> nonUniqueColumns() {
     List<String> uniqueColumns = uniqueColumns();
+    if (CollectionUtils.isEmpty(uniqueColumns)) {
+      return fullColumns();
+    }
     return columns
         .stream()
         .map(ColumnDefinition::getColumn)

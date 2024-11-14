@@ -5,6 +5,7 @@ import io.github.octopus.sql.executor.core.model.DatabaseIdentifier;
 import io.github.octopus.sql.executor.core.model.schema.ColumnDefinition;
 import io.github.octopus.sql.executor.core.model.schema.ConstraintDefinition;
 import io.github.octopus.sql.executor.core.model.schema.ConstraintType;
+import io.github.octopus.sql.executor.core.model.schema.DatabaseDefinition;
 import io.github.octopus.sql.executor.core.model.schema.FieldType;
 import io.github.octopus.sql.executor.core.model.schema.IndexAlgo;
 import io.github.octopus.sql.executor.core.model.schema.IndexDefinition;
@@ -27,6 +28,20 @@ public class MySQLDDLStatement implements DDLStatement {
 
   public static DDLStatement getDDLStatement() {
     return DDL_STATEMENT;
+  }
+
+  @Override
+  public String getCreateDatabaseSql(DatabaseDefinition databaseDefinition) {
+    return String.format(
+        "CREATE DATABASE IF NOT EXISTS %s CHARACTER SET %s COLLATE %s",
+        databaseDefinition.getDatabase(),
+        databaseDefinition.getCharset(),
+        databaseDefinition.getSortBy());
+  }
+
+  @Override
+  public String getDropDatabaseSql(String database) {
+    return String.format("DROP DATABASE IF EXISTS %s", database);
   }
 
   @Override

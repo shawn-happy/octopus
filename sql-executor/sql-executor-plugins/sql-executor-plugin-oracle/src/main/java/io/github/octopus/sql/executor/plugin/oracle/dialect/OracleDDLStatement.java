@@ -45,7 +45,19 @@ public class OracleDDLStatement implements DDLStatement {
     }
     createTableSql.append(String.join(",\n", columnSqls));
     createTableSql.append("\n)");
-    return createTableSql.toString();
+
+    // 保证幂等性
+    String sql =
+        "DECLARE\n"
+            + "    table_count NUMBER;\n"
+            + "BEGIN\n"
+            + "    SELECT COUNT(*) INTO table_count FROM user_tables WHERE table_name = '%s';\n"
+            + "    IF table_count = 0 THEN\n"
+            + "        %s;\n"
+            + "    END IF;\n"
+            + "END";
+
+    return String.format(sql, tableDefinition.getTable(), createTableSql);
   }
 
   @Override

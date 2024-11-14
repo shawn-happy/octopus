@@ -22,4 +22,14 @@ public class ColumnDefinition {
 
   // for doris
   private AggregateAlgo aggregateAlgo;
+
+  public String getColumnType() {
+    String type = fieldType.getDataType();
+    if (precision != null && scale != null) {
+      return String.format("%s(%d, %d)", type, precision, scale);
+    } else if (precision != null) {
+      return String.format("%s(%d)", type, precision);
+    }
+    return type;
+  }
 }

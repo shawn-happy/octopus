@@ -9,11 +9,19 @@ import io.github.octopus.sql.executor.core.model.schema.TablePath;
 public interface DDLStatement extends SqlStatement {
 
   default String getCreateDatabaseSql(DatabaseDefinition definition) {
-    return "CREATE DATABASE IF NOT EXISTS " + quoteIdentifier(definition.getDatabase());
+    throw new UnsupportedOperationException();
   }
 
   default String getDropDatabaseSql(String databaseName) {
-    return String.format("DROP DATABASE %s", quoteIdentifier(databaseName));
+    throw new UnsupportedOperationException();
+  }
+
+  default String getCreateSchemaSql(String database, String schema) {
+    throw new UnsupportedOperationException();
+  }
+
+  default String getDropSchemaSql(String database, String schema) {
+    throw new UnsupportedOperationException();
   }
 
   String getCreateTableSql(TableDefinition tableDefinition);
