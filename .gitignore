@@ -46,3 +46,13 @@ out/
 .DS_Store
 
 application-local.yaml
+
+*.log
+*.xml.versionsBackup
+*.swp
+
+!*/build/*.java
+!*/build/*.html
+!*/build/*.xml
+
+node_modules
