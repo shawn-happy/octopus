@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeptForm {
+  private Long id;
   @Default private Long pid = -1L;
   private String code;
   private String name;

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.octopus.sys.salus.dao.SysDeptDao">
+
+  <select id="selectByCode" parameterType="java.lang.Long">
+    select *
+    from sys_dept
+    where code = #{code}
+  </select>
+
+  <select id="selectByPid" parameterType="java.lang.Long">
+    select *
+    from sys_dept
+    where pid = #{pid}
+  </select>
+
+  <update id="updateDeptChildren" parameterType="java.util.List">
+    update sys_dept set ancestors =
+    <foreach collection="depts" item="item" index="index"
+      separator=" " open="case id" close="end">
+      when #{item.id} then #{item.ancestors}
+    </foreach>
+    where id in
+    <foreach collection="depts" item="item" index="index"
+      separator="," open="(" close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+</mapper>

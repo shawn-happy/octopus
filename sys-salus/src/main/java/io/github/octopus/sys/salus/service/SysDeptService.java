@@ -7,5 +7,9 @@ public interface SysDeptService {
 
   Long createDept(DeptForm deptForm);
 
+  Long updateDept(DeptForm deptForm);
+
+  void updateChildrenDept(Long pid, String newAncestors, String oldAncestors);
+
   Dept getDeptByCode(String code);
 }
