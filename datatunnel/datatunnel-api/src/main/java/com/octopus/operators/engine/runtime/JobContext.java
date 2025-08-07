@@ -1,6 +1,8 @@
 package com.octopus.operators.engine.runtime;
 
 import com.octopus.operators.engine.exception.EngineException;
+import com.octopus.operators.engine.exception.TableAlreadyExistsException;
+import com.octopus.operators.engine.exception.TableNotFoundException;
 import com.octopus.operators.engine.util.IdGenerator;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,14 +25,15 @@ public class JobContext<T> {
     return id;
   }
 
-  public void addSchema(String name, T schema) {
-    if (tableMap.containsKey(name)) {
-      throw new EngineException(String.format("table name [%s] is exists", name));
+  public void addResultSet(String resultTable, T resultSet) {
+    if (tableMap.containsKey(resultTable)) {
+      throw new TableAlreadyExistsException(resultTable);
     }
-    tableMap.put(name, schema);
+    tableMap.put(resultTable, resultSet);
   }
 
-  public Optional<T> getSchema(String name) {
-    return Optional.ofNullable(tableMap.get(name));
+  public T getResultSet(String name) {
+    return Optional.ofNullable(tableMap.get(name))
+        .orElseThrow(() -> new TableNotFoundException(name));
   }
 }

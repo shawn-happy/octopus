@@ -42,4 +42,28 @@ public enum FieldType {
         .orElseThrow(
             () -> new EngineException(CommonExceptionConstant.unsupportedDataType(dataType)));
   }
+
+  public static RowDataType getRowDataType(String dataType) {
+    FieldType fieldType = of(dataType);
+    switch (fieldType) {
+      case TINYINT:
+        return PrimitiveDataType.TINYINT;
+      case SMALLINT:
+        return PrimitiveDataType.SMALLINT;
+      case INT:
+        return PrimitiveDataType.INT;
+      case BIGINT:
+        return PrimitiveDataType.BIGINT;
+      case FLOAT:
+        return PrimitiveDataType.FLOAT;
+      case DOUBLE:
+        return PrimitiveDataType.DOUBLE;
+      case BOOLEAN:
+        return PrimitiveDataType.BOOLEAN;
+      case STRING:
+        return PrimitiveDataType.STRING;
+      default:
+        throw new EngineException("");
+    }
+  }
 }

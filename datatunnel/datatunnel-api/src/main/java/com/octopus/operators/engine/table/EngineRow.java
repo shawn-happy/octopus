@@ -23,16 +23,4 @@ public class EngineRow {
     this.fieldValues = new Object[rowSize];
     this.fieldTypes = new RowDataType[rowSize];
   }
-
-  public String[] getFieldNames() {
-    return fieldNames;
-  }
-
-  public Object[] getFieldValues() {
-    return fieldValues;
-  }
-
-  public RowDataType[] getFieldTypes() {
-    return fieldTypes;
-  }
 }

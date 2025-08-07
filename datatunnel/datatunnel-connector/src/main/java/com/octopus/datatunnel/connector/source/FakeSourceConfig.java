@@ -136,8 +136,7 @@ public class FakeSourceConfig extends AbstractSourceConfig<FakeSourceOptions> {
 
     @Override
     public String toString() {
-      return JsonUtils.toJson(this)
-          .orElseThrow(() -> new ConfigParseException("fake row option parse to json error"));
+      return JsonUtils.toJson(this, ConfigParseException::new);
     }
   }
 }

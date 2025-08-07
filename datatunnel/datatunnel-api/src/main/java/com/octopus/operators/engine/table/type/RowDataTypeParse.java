@@ -1,6 +1,6 @@
 package com.octopus.operators.engine.table.type;
 
-import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceRow;
+//import com.octopus.operators.engine.connector.source.fake.FakeSourceConfig.FakeSourceRow;
 import com.octopus.operators.engine.exception.CommonExceptionConstant;
 import com.octopus.operators.engine.exception.EngineException;
 import com.octopus.operators.engine.table.EngineRow;
@@ -9,15 +9,15 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RowDataTypeParse {
 
-  public static EngineRow toEngineRow(FakeSourceRow[] fakeSourceRows) {
-    String[] fieldNames = new String[fakeSourceRows.length];
-    RowDataType[] rowDataTypes = new RowDataType[fakeSourceRows.length];
-    for (int i = 0; i < fakeSourceRows.length; i++) {
-      fieldNames[i] = fakeSourceRows[i].getFieldName();
-      rowDataTypes[i] = parseDataType(fakeSourceRows[i].getFieldType());
-    }
-    return EngineRow.builder().fieldNames(fieldNames).fieldTypes(rowDataTypes).build();
-  }
+//  public static EngineRow toEngineRow(FakeSourceRow[] fakeSourceRows) {
+//    String[] fieldNames = new String[fakeSourceRows.length];
+//    RowDataType[] rowDataTypes = new RowDataType[fakeSourceRows.length];
+//    for (int i = 0; i < fakeSourceRows.length; i++) {
+//      fieldNames[i] = fakeSourceRows[i].getFieldName();
+//      rowDataTypes[i] = parseDataType(fakeSourceRows[i].getFieldType());
+//    }
+//    return EngineRow.builder().fieldNames(fieldNames).fieldTypes(rowDataTypes).build();
+//  }
 
   public static RowDataType parseDataType(String fieldType) {
     FieldType basicDataType = null;
