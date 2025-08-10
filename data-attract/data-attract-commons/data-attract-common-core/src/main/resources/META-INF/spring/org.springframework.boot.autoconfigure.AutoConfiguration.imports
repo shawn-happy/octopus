@@ -1,5 +1,5 @@
-com.pig4cloud.pig.common.core.config.JacksonConfiguration
-com.pig4cloud.pig.common.core.config.RedisTemplateConfiguration
-com.pig4cloud.pig.common.core.config.RestTemplateConfiguration
-com.pig4cloud.pig.common.core.util.SpringContextHolder
-com.pig4cloud.pig.common.core.config.WebMvcConfiguration
+io.github.octopus.data.attract.common.core.config.JacksonConfiguration
+io.github.octopus.data.attract.common.core.config.RedisTemplateConfiguration
+io.github.octopus.data.attract.common.core.config.RestTemplateConfiguration
+io.github.octopus.data.attract.common.core.util.SpringContextHolder
+io.github.octopus.data.attract.common.core.config.WebMvcConfiguration

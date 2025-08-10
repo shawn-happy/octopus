@@ -1,3 +1,3 @@
-com.pig4cloud.pig.common.feign.PigFeignAutoConfiguration
-com.pig4cloud.pig.common.feign.sentinel.SentinelAutoConfiguration
-com.pig4cloud.pig.common.feign.sentinel.handle.GlobalBizExceptionHandler
+io.github.octopus.data.attract.common.feign.DataAttractFeignAutoConfiguration
+io.github.octopus.data.attract.common.feign.sentinel.SentinelAutoConfiguration
+io.github.octopus.data.attract.common.feign.sentinel.handle.GlobalBizExceptionHandler

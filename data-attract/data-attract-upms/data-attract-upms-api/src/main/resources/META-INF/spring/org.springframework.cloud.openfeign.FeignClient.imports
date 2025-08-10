@@ -1,6 +1,6 @@
-com.pig4cloud.pig.admin.api.feign.RemoteClientDetailsService
-com.pig4cloud.pig.admin.api.feign.RemoteDictService
-com.pig4cloud.pig.admin.api.feign.RemoteLogService
-com.pig4cloud.pig.admin.api.feign.RemoteParamService
-com.pig4cloud.pig.admin.api.feign.RemoteTokenService
-com.pig4cloud.pig.admin.api.feign.RemoteUserService
+io.github.octopus.data.attract.admin.api.feign.RemoteClientDetailsService
+io.github.octopus.data.attract.admin.api.feign.RemoteDictService
+io.github.octopus.data.attract.admin.api.feign.RemoteLogService
+io.github.octopus.data.attract.admin.api.feign.RemoteParamService
+io.github.octopus.data.attract.admin.api.feign.RemoteTokenService
+io.github.octopus.data.attract.admin.api.feign.RemoteUserService

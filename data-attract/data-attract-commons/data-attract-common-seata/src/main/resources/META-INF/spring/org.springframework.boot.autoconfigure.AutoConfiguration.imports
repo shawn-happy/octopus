@@ -1,1 +1,1 @@
- com.pig4cloud.pig.common.seata.config.SeataAutoConfiguration
+ io.github.octopus.data.attract.common.seata.config.SeataAutoConfiguration

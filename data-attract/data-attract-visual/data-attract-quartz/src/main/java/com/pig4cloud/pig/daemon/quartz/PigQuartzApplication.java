@@ -1,6 +1,6 @@
 package com.pig4cloud.pig.daemon.quartz;
 
-import com.pig4cloud.pig.common.feign.annotation.EnablePigFeignClients;
+import io.github.octopus.data.attract.common.feign.annotation.EnablePigFeignClients;
 import com.pig4cloud.pig.common.security.annotation.EnablePigResourceServer;
 import com.pig4cloud.pig.common.swagger.annotation.EnablePigDoc;
 import org.springframework.boot.SpringApplication;

@@ -108,7 +108,7 @@
 		<module>data-attract-auth</module>
 		<module>data-attract-upms</module>
 		<module>data-attract-commons</module>
-		<module>data-attract-visual</module>
+<!--		<module>data-attract-visual</module>-->
 	</modules>
 
 	<dependencyManagement>

@@ -1,3 +1,3 @@
-com.pig4cloud.pig.common.websocket.config.WebSocketAutoConfiguration
-com.pig4cloud.pig.common.websocket.config.RedisMessageDistributorConfiguration
-com.pig4cloud.pig.common.websocket.config.LocalMessageDistributorConfiguration
+io.github.octopus.data.attract.common.websocket.config.WebSocketAutoConfiguration
+io.github.octopus.data.attract.common.websocket.config.RedisMessageDistributorConfiguration
+io.github.octopus.data.attract.common.websocket.config.LocalMessageDistributorConfiguration

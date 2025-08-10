@@ -29,7 +29,7 @@ import com.pig4cloud.pig.codegen.service.GenDatasourceConfService;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.core.util.SpringContextHolder;
 import com.pig4cloud.pig.common.security.annotation.Inner;
-import com.pig4cloud.pig.common.xss.core.XssCleanIgnore;
+import io.github.octopus.data.attract.common.xss.core.XssCleanIgnore;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

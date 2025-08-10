@@ -1,1 +1,1 @@
-com.pig4cloud.pig.common.mybatis.MybatisAutoConfiguration
+io.github.octopus.data.attract.common.mybatis.MybatisAutoConfiguration
