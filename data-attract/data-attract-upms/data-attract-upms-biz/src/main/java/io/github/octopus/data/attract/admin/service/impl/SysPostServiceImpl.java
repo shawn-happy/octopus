@@ -27,7 +27,6 @@ import io.github.octopus.data.attract.admin.service.SysPostService;
 import io.github.octopus.data.attract.common.core.exception.ErrorCodes;
 import io.github.octopus.data.attract.common.core.util.MsgUtils;
 import io.github.octopus.data.attract.common.core.util.R;
-import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -53,7 +52,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 	@Override
 	public R importPost(List<PostExcelVO> excelVOList, BindingResult bindingResult) {
 		// 通用校验获取失败的数据
-		List<ErrorMessage> errorMessageList = (List<ErrorMessage>) bindingResult.getTarget();
+		// List<ErrorMessage> errorMessageList = (List<ErrorMessage>)
+		// bindingResult.getTarget();
 
 		// 个性化校验逻辑
 		List<SysPost> postList = this.list();
@@ -77,12 +77,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 			}
 			else {
 				// 数据不合法
-				errorMessageList.add(new ErrorMessage(excel.getLineNum(), errorMsg));
+				// errorMessageList.add(new ErrorMessage(excel.getLineNum(), errorMsg));
 			}
 		}
-		if (CollUtil.isNotEmpty(errorMessageList)) {
-			return R.failed(errorMessageList);
-		}
+		// if (CollUtil.isNotEmpty(errorMessageList)) {
+		// return R.failed(errorMessageList);
+		// }
 		return R.ok();
 	}
 

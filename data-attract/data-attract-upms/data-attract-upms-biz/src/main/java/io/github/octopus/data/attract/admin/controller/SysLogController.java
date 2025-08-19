@@ -27,7 +27,7 @@ import io.github.octopus.data.attract.admin.service.SysLogService;
 import io.github.octopus.data.attract.common.core.util.R;
 import io.github.octopus.data.attract.common.security.annotation.HasPermission;
 import io.github.octopus.data.attract.common.security.annotation.Inner;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -91,7 +91,6 @@ public class SysLogController {
 	 * @param sysLog 系统日志查询条件DTO
 	 * @return 符合查询条件的系统日志列表
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	@HasPermission("sys_log_export")
 	public List<SysLog> exportLogs(SysLogDTO sysLog) {

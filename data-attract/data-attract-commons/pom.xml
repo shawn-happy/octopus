@@ -32,16 +32,8 @@
     <modules>
         <module>data-attract-common-bom</module>
         <module>data-attract-common-core</module>
-        <module>data-attract-common-datasource</module>
         <module>data-attract-common-log</module>
-        <module>data-attract-common-mybatis</module>
         <module>data-attract-common-oss</module>
-        <module>data-attract-common-seata</module>
         <module>data-attract-common-security</module>
-        <module>data-attract-common-feign</module>
-        <module>data-attract-common-swagger</module>
-        <module>data-attract-common-websocket</module>
-        <module>data-attract-common-xss</module>
-        <module>data-attract-common-excel</module>
     </modules>
 </project>

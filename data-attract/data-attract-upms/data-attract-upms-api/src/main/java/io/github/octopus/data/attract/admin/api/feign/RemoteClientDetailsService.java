@@ -22,7 +22,7 @@ package io.github.octopus.data.attract.admin.api.feign;
 import io.github.octopus.data.attract.admin.api.entity.SysOauthClientDetails;
 import io.github.octopus.data.attract.common.core.constant.ServiceNameConstants;
 import io.github.octopus.data.attract.common.core.util.R;
-import io.github.octopus.data.attract.common.feign.annotation.NoToken;
+import io.github.octopus.data.attract.common.core.feign.NoToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -40,11 +40,6 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-        <!--断路器依赖-->
-        <dependency>
-            <groupId>io.github.octopus</groupId>
-            <artifactId>data-attract-common-feign</artifactId>
-        </dependency>
         <!--upms api、model 模块-->
         <dependency>
             <groupId>io.github.octopus</groupId>
@@ -63,26 +58,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
-        <!--undertow容器-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
         <!-- log -->
         <dependency>
             <groupId>io.github.octopus</groupId>
             <artifactId>data-attract-common-log</artifactId>
         </dependency>
-        <!-- 调用验证码核心模块 -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.octopus.plugin</groupId>-->
-<!--            <artifactId>captcha-core</artifactId>-->
-<!--            <version>${captcha.version}</version>-->
-<!--        </dependency>-->
         <!-- 加解密依赖 -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 

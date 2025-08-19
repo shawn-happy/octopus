@@ -32,7 +32,7 @@ import com.pig4cloud.pig.daemon.quartz.entity.SysJobLog;
 import com.pig4cloud.pig.daemon.quartz.service.SysJobLogService;
 import com.pig4cloud.pig.daemon.quartz.service.SysJobService;
 import com.pig4cloud.pig.daemon.quartz.util.TaskUtil;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -330,7 +330,6 @@ public class SysJobController {
 	 * @param sysJob 查询条件对象
 	 * @return 符合条件的任务列表
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	@Operation(description = "导出任务")
 	public List<SysJob> exportJobs(SysJob sysJob) {

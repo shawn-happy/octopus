@@ -27,8 +27,6 @@ import io.github.octopus.data.attract.admin.service.SysPostService;
 import io.github.octopus.data.attract.common.core.util.R;
 import io.github.octopus.data.attract.common.log.annotation.SysLog;
 import io.github.octopus.data.attract.common.security.annotation.HasPermission;
-import com.pig4cloud.plugin.excel.annotation.RequestExcel;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -145,7 +143,6 @@ public class SysPostController {
 	 * 导出岗位信息到Excel表格
 	 * @return 岗位信息Excel文件流
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	@HasPermission("sys_post_export")
 	public List<PostExcelVO> exportPosts() {
@@ -160,7 +157,7 @@ public class SysPostController {
 	 */
 	@PostMapping("/import")
 	@HasPermission("sys_post_export")
-	public R importRole(@RequestExcel List<PostExcelVO> excelVOList, BindingResult bindingResult) {
+	public R importRole(List<PostExcelVO> excelVOList, BindingResult bindingResult) {
 		return sysPostService.importPost(excelVOList, bindingResult);
 	}
 

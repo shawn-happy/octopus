@@ -14,17 +14,6 @@ import org.springframework.util.MultiValueMap;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
-/**
- * OAuth2 端点工具类
- *
- * <p>
- * 提供OAuth2相关端点操作的实用方法
- * </p>
- *
- * @author lengleng
- * @author jumuning
- * @date 2025/05/31
- */
 @UtilityClass
 public class OAuth2EndpointUtils {
 

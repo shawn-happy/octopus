@@ -18,7 +18,7 @@
 package com.pig4cloud.pig.codegen;
 
 import io.github.octopus.data.attract.common.datasource.annotation.EnableDynamicDataSource;
-import io.github.octopus.data.attract.common.feign.annotation.EnablePigFeignClients;
+import io.github.octopus.data.attract.common.core.feign.EnableOctopusFeignClients;
 import com.pig4cloud.pig.common.security.annotation.EnablePigResourceServer;
 import com.pig4cloud.pig.common.swagger.annotation.EnablePigDoc;
 import org.springframework.boot.SpringApplication;
@@ -32,7 +32,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @date 2025/05/31
  */
 @EnableDynamicDataSource
-@EnablePigFeignClients
+@EnableOctopusFeignClients
 @EnablePigDoc("gen")
 @EnableDiscoveryClient
 @EnablePigResourceServer

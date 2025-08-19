@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: @artifactId@
+    name: data-attract-auth
   cloud:
     nacos:
-      username: @nacos.username@
-      password: @nacos.password@
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_USERNAME:nacos}
       discovery:
         server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
       config:
@@ -16,6 +16,6 @@ spring:
     import:
       - nacos:application-@profiles.active@.yml
       - nacos:${spring.application.name}-@profiles.active@.yml
-
-
+  main:
+    allow-bean-definition-overriding: true
 

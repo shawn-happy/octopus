@@ -1,3 +1,0 @@
-io.github.octopus.data.attract.common.websocket.config.WebSocketAutoConfiguration
-io.github.octopus.data.attract.common.websocket.config.RedisMessageDistributorConfiguration
-io.github.octopus.data.attract.common.websocket.config.LocalMessageDistributorConfiguration

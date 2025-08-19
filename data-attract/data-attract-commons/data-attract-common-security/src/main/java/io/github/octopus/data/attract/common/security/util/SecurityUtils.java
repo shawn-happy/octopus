@@ -1,24 +1,8 @@
-/*
- * Copyright (c) 2020 pig4cloud Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package io.github.octopus.data.attract.common.security.util;
 
 import cn.hutool.core.util.StrUtil;
 import io.github.octopus.data.attract.common.core.constant.SecurityConstants;
-import io.github.octopus.data.attract.common.security.service.PigUser;
+import io.github.octopus.data.attract.common.security.service.LoginUser;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,12 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * 安全工具类
- *
- * @author lengleng
- * @date 2025/05/31
- */
 @UtilityClass
 public class SecurityUtils {
 
@@ -50,10 +28,10 @@ public class SecurityUtils {
 	 * @param authentication 认证信息
 	 * @return 用户对象，如果认证主体不是PigUser类型则返回null
 	 */
-	public PigUser getUser(Authentication authentication) {
+	public LoginUser getUser(Authentication authentication) {
 		Object principal = authentication.getPrincipal();
-		if (principal instanceof PigUser) {
-			return (PigUser) principal;
+		if (principal instanceof LoginUser) {
+			return (LoginUser) principal;
 		}
 		return null;
 	}
@@ -62,7 +40,7 @@ public class SecurityUtils {
 	 * 获取当前认证用户
 	 * @return 当前认证用户对象，未认证时返回null
 	 */
-	public PigUser getUser() {
+	public LoginUser getUser() {
 		Authentication authentication = getAuthentication();
 		if (authentication == null) {
 			return null;

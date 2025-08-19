@@ -1,3 +1,0 @@
-io.github.octopus.data.attract.common.feign.DataAttractFeignAutoConfiguration
-io.github.octopus.data.attract.common.feign.sentinel.SentinelAutoConfiguration
-io.github.octopus.data.attract.common.feign.sentinel.handle.GlobalBizExceptionHandler

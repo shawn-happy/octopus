@@ -31,8 +31,6 @@ import io.github.octopus.data.attract.common.core.constant.CacheConstants;
 import io.github.octopus.data.attract.common.core.util.R;
 import io.github.octopus.data.attract.common.log.annotation.SysLog;
 import io.github.octopus.data.attract.common.security.annotation.HasPermission;
-import com.pig4cloud.plugin.excel.annotation.RequestExcel;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -166,7 +164,6 @@ public class SysRoleController {
 	 * 导出角色数据到Excel表格
 	 * @return 角色数据列表
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	@HasPermission("sys_role_export")
 	public List<RoleExcelVO> exportRoles() {
@@ -181,7 +178,7 @@ public class SysRoleController {
 	 */
 	@PostMapping("/import")
 	@HasPermission("sys_role_export")
-	public R importRole(@RequestExcel List<RoleExcelVO> excelVOList, BindingResult bindingResult) {
+	public R importRole(List<RoleExcelVO> excelVOList, BindingResult bindingResult) {
 		return sysRoleService.importRole(excelVOList, bindingResult);
 	}
 

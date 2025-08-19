@@ -3,7 +3,7 @@ package io.github.octopus.data.attract.auth.support.core;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import io.github.octopus.data.attract.common.core.util.WebUtils;
-import io.github.octopus.data.attract.common.security.service.PigUserDetailsService;
+import io.github.octopus.data.attract.common.security.service.DataAttractUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import org.springframework.core.Ordered;
@@ -117,11 +117,11 @@ public class PigDaoAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			clientId = basicConvert.convert(request).getName();
 		}
 
-		Map<String, PigUserDetailsService> userDetailsServiceMap = SpringUtil
-			.getBeansOfType(PigUserDetailsService.class);
+		Map<String, DataAttractUserDetailsService> userDetailsServiceMap = SpringUtil
+			.getBeansOfType(DataAttractUserDetailsService.class);
 
 		String finalClientId = clientId;
-		Optional<PigUserDetailsService> optional = userDetailsServiceMap.values()
+		Optional<DataAttractUserDetailsService> optional = userDetailsServiceMap.values()
 			.stream()
 			.filter(service -> service.support(finalClientId, grantType))
 			.max(Comparator.comparingInt(Ordered::getOrder));

@@ -33,12 +33,7 @@
         <!--feign 处理-->
         <dependency>
             <groupId>io.github.octopus</groupId>
-            <artifactId>data-attract-common-feign</artifactId>
-        </dependency>
-        <!--mybatis-->
-        <dependency>
-            <groupId>io.github.octopus</groupId>
-            <artifactId>data-attract-common-mybatis</artifactId>
+            <artifactId>data-attract-common-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -48,11 +43,6 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-        <!--swagger-->
-        <dependency>
-            <groupId>io.github.octopus</groupId>
-            <artifactId>data-attract-common-swagger</artifactId>
         </dependency>
         <!--spring security 、oauth、jwt依赖-->
         <dependency>
@@ -68,11 +58,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!--undertow容器-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
     </dependencies>
 

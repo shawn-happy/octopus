@@ -30,8 +30,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>data-attract-codegen</module>
-        <module>data-attract-monitor</module>
-        <module>data-attract-quartz</module>
+<!--        <module>data-attract-codegen</module>-->
+<!--        <module>data-attract-monitor</module>-->
+<!--        <module>data-attract-quartz</module>-->
     </modules>
 </project>

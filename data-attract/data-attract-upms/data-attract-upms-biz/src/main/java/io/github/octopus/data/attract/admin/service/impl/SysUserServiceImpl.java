@@ -49,7 +49,6 @@ import io.github.octopus.data.attract.common.core.exception.ErrorCodes;
 import io.github.octopus.data.attract.common.core.util.MsgUtils;
 import io.github.octopus.data.attract.common.core.util.R;
 import io.github.octopus.data.attract.common.security.util.SecurityUtils;
-import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -302,7 +301,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public R importUsers(List<UserExcelVO> excelVOList, BindingResult bindingResult) {
 		// 通用校验获取失败的数据
-		List<ErrorMessage> errorMessageList = (List<ErrorMessage>) bindingResult.getTarget();
+		// List<ErrorMessage> errorMessageList = (List<ErrorMessage>)
+		// bindingResult.getTarget();
 		List<SysDept> deptList = sysDeptService.list();
 		List<SysRole> roleList = sysRoleService.list();
 		List<SysPost> postList = sysPostService.list();
@@ -352,14 +352,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			}
 			else {
 				// 数据不合法情况
-				errorMessageList.add(new ErrorMessage(excel.getLineNum(), errorMsg));
+				// errorMessageList.add(new ErrorMessage(excel.getLineNum(), errorMsg));
 			}
 
 		}
 
-		if (CollUtil.isNotEmpty(errorMessageList)) {
-			return R.failed(errorMessageList);
-		}
+		// if (CollUtil.isNotEmpty(errorMessageList)) {
+		// return R.failed(errorMessageList);
+		// }
 		return R.ok();
 	}
 

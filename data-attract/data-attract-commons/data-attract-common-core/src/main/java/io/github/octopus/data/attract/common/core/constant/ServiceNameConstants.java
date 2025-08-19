@@ -25,11 +25,11 @@ public interface ServiceNameConstants {
 	/**
 	 * 认证服务的SERVICEID
 	 */
-	String AUTH_SERVICE = "pig-auth";
+	String AUTH_SERVICE = "data-attract-auth";
 
 	/**
 	 * UPMS模块
 	 */
-	String UPMS_SERVICE = "pig-upms-biz";
+	String UPMS_SERVICE = "data-attract-upms-biz";
 
 }

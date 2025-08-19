@@ -1,7 +1,7 @@
-io.github.octopus.data.attract.common.security.service.PigUserDetailsServiceImpl
-io.github.octopus.data.attract.common.security.service.PigAppUserDetailsServiceImpl
-io.github.octopus.data.attract.common.security.service.PigRedisOAuth2AuthorizationService
-io.github.octopus.data.attract.common.security.service.PigRedisOAuth2AuthorizationConsentService
-io.github.octopus.data.attract.common.security.component.PigSecurityInnerAspect
-io.github.octopus.data.attract.common.security.component.PigSecurityMessageSourceConfiguration
-io.github.octopus.data.attract.common.security.service.PigRemoteRegisteredClientRepository
+io.github.octopus.data.attract.common.security.service.DataAttractUserDetailsServiceLoadByUsername
+io.github.octopus.data.attract.common.security.service.DataAttractUserDetailsServiceLoadByPhone
+io.github.octopus.data.attract.common.security.service.DataAttractRedisOAuth2AuthorizationService
+io.github.octopus.data.attract.common.security.service.DataAttractRedisOAuth2AuthorizationConsentService
+io.github.octopus.data.attract.common.security.component.DataAttractSecurityInnerAspect
+io.github.octopus.data.attract.common.security.component.DataAttractSecurityMessageSourceConfiguration
+io.github.octopus.data.attract.common.security.service.DataAttractRemoteRegisteredClientRepository

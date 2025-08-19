@@ -34,7 +34,6 @@ import io.github.octopus.data.attract.common.core.constant.CacheConstants;
 import io.github.octopus.data.attract.common.core.exception.ErrorCodes;
 import io.github.octopus.data.attract.common.core.util.MsgUtils;
 import io.github.octopus.data.attract.common.core.util.R;
-import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -111,7 +110,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 	@Override
 	public R importRole(List<RoleExcelVO> excelVOList, BindingResult bindingResult) {
 		// 通用校验获取失败的数据
-		List<ErrorMessage> errorMessageList = (List<ErrorMessage>) bindingResult.getTarget();
+		// List<ErrorMessage> errorMessageList = (List<ErrorMessage>)
+		// bindingResult.getTarget();
 
 		// 个性化校验逻辑
 		List<SysRole> roleList = this.list();
@@ -135,12 +135,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 			}
 			else {
 				// 数据不合法情况
-				errorMessageList.add(new ErrorMessage(excel.getLineNum(), errorMsg));
+				// errorMessageList.add(new ErrorMessage(excel.getLineNum(), errorMsg));
 			}
 		}
-		if (CollUtil.isNotEmpty(errorMessageList)) {
-			return R.failed(errorMessageList);
-		}
+		// if (CollUtil.isNotEmpty(errorMessageList)) {
+		// return R.failed(errorMessageList);
+		// }
 		return R.ok();
 	}
 

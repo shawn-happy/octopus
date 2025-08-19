@@ -32,8 +32,6 @@ import io.github.octopus.data.attract.common.log.annotation.SysLog;
 import io.github.octopus.data.attract.common.security.annotation.HasPermission;
 import io.github.octopus.data.attract.common.security.annotation.Inner;
 import io.github.octopus.data.attract.common.security.util.SecurityUtils;
-import com.pig4cloud.plugin.excel.annotation.RequestExcel;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -175,7 +173,6 @@ public class SysUserController {
 	 * @param userDTO 用户查询条件
 	 * @return 用户数据列表
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	@HasPermission("sys_user_export")
 	public List exportUsers(UserDTO userDTO) {
@@ -190,7 +187,7 @@ public class SysUserController {
 	 */
 	@PostMapping("/import")
 	@HasPermission("sys_user_export")
-	public R importUser(@RequestExcel List<UserExcelVO> excelVOList, BindingResult bindingResult) {
+	public R importUser(List<UserExcelVO> excelVOList, BindingResult bindingResult) {
 		return userService.importUsers(excelVOList, bindingResult);
 	}
 

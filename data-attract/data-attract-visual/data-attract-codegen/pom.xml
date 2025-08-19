@@ -31,15 +31,15 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <!--数据操作-->
-        <dependency>
-            <groupId>io.github.octopus</groupId>
-            <artifactId>data-attract-common-mybatis</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.octopus</groupId>-->
+<!--            <artifactId>data-attract-common-mybatis</artifactId>-->
+<!--        </dependency>-->
         <!--动态数据源 数据操作-->
-        <dependency>
-            <groupId>io.github.octopus</groupId>
-            <artifactId>data-attract-common-datasource</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.octopus</groupId>-->
+<!--            <artifactId>data-attract-common-datasource</artifactId>-->
+<!--        </dependency>-->
         <!--mybatis-->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -108,11 +108,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!--undertow容器-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
     </dependencies>
 

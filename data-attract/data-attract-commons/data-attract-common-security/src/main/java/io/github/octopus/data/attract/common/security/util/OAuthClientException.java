@@ -5,12 +5,6 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 
 import java.io.Serial;
 
-/**
- * OAuth客户端异常类
- *
- * @author lengleng
- * @date 2025/05/31
- */
 public class OAuthClientException extends OAuth2AuthenticationException {
 
 	@Serial

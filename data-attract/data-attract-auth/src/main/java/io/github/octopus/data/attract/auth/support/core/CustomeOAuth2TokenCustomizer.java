@@ -1,7 +1,7 @@
 package io.github.octopus.data.attract.auth.support.core;
 
 import io.github.octopus.data.attract.common.core.constant.SecurityConstants;
-import io.github.octopus.data.attract.common.security.service.PigUser;
+import io.github.octopus.data.attract.common.security.service.LoginUser;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsSet;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -29,10 +29,10 @@ public class CustomeOAuth2TokenCustomizer implements OAuth2TokenCustomizer<OAuth
 			return;
 		}
 
-		PigUser pigUser = (PigUser) context.getPrincipal().getPrincipal();
-		claims.claim(SecurityConstants.DETAILS_USER, pigUser);
-		claims.claim(SecurityConstants.DETAILS_USER_ID, pigUser.getId());
-		claims.claim(SecurityConstants.USERNAME, pigUser.getUsername());
+		LoginUser loginUser = (LoginUser) context.getPrincipal().getPrincipal();
+		claims.claim(SecurityConstants.DETAILS_USER, loginUser);
+		claims.claim(SecurityConstants.DETAILS_USER_ID, loginUser.getId());
+		claims.claim(SecurityConstants.USERNAME, loginUser.getUsername());
 	}
 
 }

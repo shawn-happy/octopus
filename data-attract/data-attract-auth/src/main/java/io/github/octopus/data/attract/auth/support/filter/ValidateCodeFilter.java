@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -68,6 +69,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 		}
 
 		// 如果是密码模式 && 客户端不需要校验验证码
+		if (CollectionUtils.isEmpty(authSecurityConfigProperties.getIgnoreClients())) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 		boolean isIgnoreClient = authSecurityConfigProperties.getIgnoreClients().contains(WebUtils.getClientId());
 		if (StrUtil.equalsAnyIgnoreCase(grantType, SecurityConstants.PASSWORD, SecurityConstants.CLIENT_CREDENTIALS,
 				SecurityConstants.AUTHORIZATION_CODE) && isIgnoreClient) {

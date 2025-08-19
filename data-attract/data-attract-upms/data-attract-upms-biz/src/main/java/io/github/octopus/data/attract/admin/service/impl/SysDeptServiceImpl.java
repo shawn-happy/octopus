@@ -1,22 +1,3 @@
-/*
- *
- *      Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- *  this list of conditions and the following disclaimer.
- *  Redistributions in binary form must reproduce the above copyright
- *  notice, this list of conditions and the following disclaimer in the
- *  documentation and/or other materials provided with the distribution.
- *  Neither the name of the pig4cloud.com developer nor the names of its
- *  contributors may be used to endorse or promote products derived from
- *  this software without specific prior written permission.
- *  Author: lengleng (wangiegie@gmail.com)
- *
- */
-
 package io.github.octopus.data.attract.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
@@ -31,7 +12,6 @@ import io.github.octopus.data.attract.admin.api.vo.DeptExcelVo;
 import io.github.octopus.data.attract.admin.mapper.SysDeptMapper;
 import io.github.octopus.data.attract.admin.service.SysDeptService;
 import io.github.octopus.data.attract.common.core.util.R;
-import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -40,13 +20,6 @@ import org.springframework.validation.BindingResult;
 
 import java.util.*;
 
-/**
- * 部门管理服务实现类
- *
- * @author lengleng
- * @date 2025/05/30
- * @since 2018-01-20
- */
 @Service
 @AllArgsConstructor
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
@@ -142,7 +115,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 	 */
 	@Override
 	public R importDept(List<DeptExcelVo> excelVOList, BindingResult bindingResult) {
-		List<ErrorMessage> errorMessageList = (List<ErrorMessage>) bindingResult.getTarget();
+		// List<ErrorMessage> errorMessageList = (List<ErrorMessage>)
+		// bindingResult.getTarget();
 
 		List<SysDept> deptList = this.list();
 		for (DeptExcelVo item : excelVOList) {
@@ -168,12 +142,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 			}
 			else {
 				// 数据不合法情况
-				errorMessageList.add(new ErrorMessage(item.getLineNum(), errorMsg));
+				// errorMessageList.add(new ErrorMessage(item.getLineNum(), errorMsg));
 			}
 		}
-		if (CollUtil.isNotEmpty(errorMessageList)) {
-			return R.failed(errorMessageList);
-		}
+		// if (CollUtil.isNotEmpty(errorMessageList)) {
+		// return R.failed(errorMessageList);
+		// }
 		return R.ok(null, "部门导入成功");
 	}
 

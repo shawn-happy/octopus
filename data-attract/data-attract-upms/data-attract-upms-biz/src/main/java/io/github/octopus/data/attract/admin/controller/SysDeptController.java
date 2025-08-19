@@ -1,22 +1,3 @@
-/*
- *
- *      Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- *  this list of conditions and the following disclaimer.
- *  Redistributions in binary form must reproduce the above copyright
- *  notice, this list of conditions and the following disclaimer in the
- *  documentation and/or other materials provided with the distribution.
- *  Neither the name of the pig4cloud.com developer nor the names of its
- *  contributors may be used to endorse or promote products derived from
- *  this software without specific prior written permission.
- *  Author: lengleng (wangiegie@gmail.com)
- *
- */
-
 package io.github.octopus.data.attract.admin.controller;
 
 import io.github.octopus.data.attract.admin.api.entity.SysDept;
@@ -25,8 +6,6 @@ import io.github.octopus.data.attract.admin.service.SysDeptService;
 import io.github.octopus.data.attract.common.core.util.R;
 import io.github.octopus.data.attract.common.log.annotation.SysLog;
 import io.github.octopus.data.attract.common.security.annotation.HasPermission;
-import com.pig4cloud.plugin.excel.annotation.RequestExcel;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -38,13 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * 部门管理前端控制器
- *
- * @author lengleng
- * @date 2025/05/30
- * @since 2018-01-20
- */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/dept")
@@ -134,7 +106,6 @@ public class SysDeptController {
 	 * 导出部门数据
 	 * @return 部门数据列表
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	public List<DeptExcelVo> exportDepts() {
 		return sysDeptService.exportDepts();
@@ -147,7 +118,7 @@ public class SysDeptController {
 	 * @return 导入结果
 	 */
 	@PostMapping("import")
-	public R importDept(@RequestExcel List<DeptExcelVo> excelVOList, BindingResult bindingResult) {
+	public R importDept(List<DeptExcelVo> excelVOList, BindingResult bindingResult) {
 
 		return sysDeptService.importDept(excelVOList, bindingResult);
 	}

@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2020 pig4cloud Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package io.github.octopus.data.attract.common.security.component;
 
 import cn.hutool.core.util.ReUtil;
@@ -32,14 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.util.*;
 import java.util.regex.Pattern;
 
-/**
- * 资源服务器对外直接暴露URL配置类
- * <p>
- * 用于配置不需要认证即可访问的URL路径，支持路径变量替换
- *
- * @author lengleng
- * @date 2025/05/31
- */
 @Slf4j
 @ConfigurationProperties(prefix = "security.oauth2.ignore")
 public class PermitAllUrlProperties implements InitializingBean {

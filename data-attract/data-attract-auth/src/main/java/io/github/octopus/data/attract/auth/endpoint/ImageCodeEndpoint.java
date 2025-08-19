@@ -31,17 +31,19 @@ public class ImageCodeEndpoint {
 	@SneakyThrows
 	@GetMapping("/image")
 	public void image(String randomStr, HttpServletResponse response) {
-//		ArithmeticCaptcha captcha = new ArithmeticCaptcha(DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
-//
-//		if (Validator.isMobile(randomStr)) {
-//			return;
-//		}
-//
-//		String result = captcha.text();
-//		RedisUtils.set(CacheConstants.DEFAULT_CODE_KEY + randomStr, result, SecurityConstants.CODE_TIME,
-//				TimeUnit.SECONDS);
-//		// 转换流信息写出
-//		captcha.out(response.getOutputStream());
+		// ArithmeticCaptcha captcha = new ArithmeticCaptcha(DEFAULT_IMAGE_WIDTH,
+		// DEFAULT_IMAGE_HEIGHT);
+		//
+		// if (Validator.isMobile(randomStr)) {
+		// return;
+		// }
+		//
+		// String result = captcha.text();
+		// RedisUtils.set(CacheConstants.DEFAULT_CODE_KEY + randomStr, result,
+		// SecurityConstants.CODE_TIME,
+		// TimeUnit.SECONDS);
+		// // 转换流信息写出
+		// captcha.out(response.getOutputStream());
 	}
 
 }

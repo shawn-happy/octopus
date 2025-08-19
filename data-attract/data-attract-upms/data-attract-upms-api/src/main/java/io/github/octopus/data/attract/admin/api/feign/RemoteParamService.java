@@ -1,22 +1,12 @@
 package io.github.octopus.data.attract.admin.api.feign;
 
 import io.github.octopus.data.attract.common.core.constant.ServiceNameConstants;
+import io.github.octopus.data.attract.common.core.feign.NoToken;
 import io.github.octopus.data.attract.common.core.util.R;
-import io.github.octopus.data.attract.common.feign.annotation.NoToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-/**
- * 远程参数服务接口
- * <p>
- * 通过Feign客户端调用UPMS服务获取参数配置
- * </p>
- *
- * @author lengleng
- * @date 2025/05/30
- * @see FeignClient
- */
 @FeignClient(contextId = "remoteParamService", value = ServiceNameConstants.UPMS_SERVICE)
 public interface RemoteParamService {
 

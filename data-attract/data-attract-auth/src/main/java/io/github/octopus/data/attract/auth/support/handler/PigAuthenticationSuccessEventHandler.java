@@ -24,8 +24,8 @@ import io.github.octopus.data.attract.common.core.constant.SecurityConstants;
 import io.github.octopus.data.attract.common.core.util.SpringContextHolder;
 import io.github.octopus.data.attract.common.log.event.SysLogEvent;
 import io.github.octopus.data.attract.common.log.util.SysLogUtils;
-import io.github.octopus.data.attract.common.security.component.PigCustomOAuth2AccessTokenResponseHttpMessageConverter;
-import io.github.octopus.data.attract.common.security.service.PigUser;
+import io.github.octopus.data.attract.common.security.component.DataAttractCustomOAuth2AccessTokenResponseHttpMessageConverter;
+import io.github.octopus.data.attract.common.security.service.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
@@ -54,7 +54,7 @@ import java.util.Map;
 @Slf4j
 public class PigAuthenticationSuccessEventHandler implements AuthenticationSuccessHandler {
 
-	private final HttpMessageConverter<OAuth2AccessTokenResponse> accessTokenHttpResponseConverter = new PigCustomOAuth2AccessTokenResponseHttpMessageConverter();
+	private final HttpMessageConverter<OAuth2AccessTokenResponse> accessTokenHttpResponseConverter = new DataAttractCustomOAuth2AccessTokenResponseHttpMessageConverter();
 
 	/**
 	 * 用户认证成功时调用
@@ -70,7 +70,7 @@ public class PigAuthenticationSuccessEventHandler implements AuthenticationSucce
 		Map<String, Object> map = accessTokenAuthentication.getAdditionalParameters();
 		if (MapUtil.isNotEmpty(map)) {
 			// 发送异步日志事件
-			PigUser userInfo = (PigUser) map.get(SecurityConstants.DETAILS_USER);
+			LoginUser userInfo = (LoginUser) map.get(SecurityConstants.DETAILS_USER);
 			log.info("用户：{} 登录成功", userInfo.getName());
 			SecurityContextHolder.getContext().setAuthentication(accessTokenAuthentication);
 			SysLog logVo = SysLogUtils.getSysLog();

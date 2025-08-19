@@ -27,7 +27,6 @@ import io.github.octopus.data.attract.common.core.util.R;
 import io.github.octopus.data.attract.common.log.annotation.SysLog;
 import io.github.octopus.data.attract.common.security.annotation.HasPermission;
 import io.github.octopus.data.attract.common.security.annotation.Inner;
-import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,12 +37,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 公共参数控制器：提供公共参数的增删改查及同步功能
- *
- * @author lengleng
- * @date 2025/05/30
- */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/param")
@@ -149,7 +142,6 @@ public class SysPublicParamController {
 	 * 导出excel 表格
 	 * @return
 	 */
-	@ResponseExcel
 	@GetMapping("/export")
 	@HasPermission("sys_syspublicparam_edit")
 	public List<SysPublicParam> exportParams() {
